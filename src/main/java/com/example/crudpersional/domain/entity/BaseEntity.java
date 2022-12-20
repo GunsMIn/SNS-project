@@ -15,13 +15,15 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity {
 
-    @Column(name = "created_date", nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false)
     @CreatedDate
-    private LocalDateTime createdDate;
+    private LocalDateTime registeredAt;
 
-    @Column(name = "modified_date")
+
     @LastModifiedDate
-    private LocalDateTime modifiedDate;
+    private LocalDateTime updatedAt;
 
-
+    //https://thalals.tistory.com/302
+    //삭제 시점
+    private LocalDateTime deletedAt;
 }
