@@ -9,18 +9,23 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static javax.persistence.CascadeType.*;
 import static javax.persistence.EnumType.*;
 
 @Getter
 @Entity
 @ToString
 @NoArgsConstructor
-@Where(clause = "deleted_at IS NULL")
-@SQLDelete(sql = "UPDATE user SET deleted_at = CURRENT_TIMESTAMP where id = ?")
+/*@Where(clause = "deleted_at IS NULL")
+@SQLDelete(sql = "UPDATE user SET deleted_at = CURRENT_TIMESTAMP where id = ?")*/
 public class User extends BaseEntity{
 
     @Id
     @GeneratedValue
+    @Column(name = "user_id")
     private Long id;
 
     private String userName;
@@ -29,6 +34,9 @@ public class User extends BaseEntity{
 
     @Enumerated(STRING)
     private UserRole role;
+
+    @OneToMany(mappedBy = "user", cascade = ALL)
+    private List<Post> posts = new ArrayList<>();
 
     @Builder
     public User(Long id, String userName, String password, UserRole role) {
