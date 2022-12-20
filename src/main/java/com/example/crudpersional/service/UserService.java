@@ -1,7 +1,7 @@
 package com.example.crudpersional.service;
 
 import com.example.crudpersional.config.jwt.JwtTokenUtil;
-import com.example.crudpersional.domain.dto.UserJoinRequest;
+import com.example.crudpersional.domain.dto.user.UserJoinRequest;
 import com.example.crudpersional.domain.entity.User;
 import com.example.crudpersional.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor @Slf4j
@@ -64,6 +66,10 @@ public class UserService {
     public User getUserByUserName(String userName) {
         return userRepository.findUserByUserName(userName)
                 .orElseThrow(() -> new RuntimeException("해당회원은 존재하지않습니다"));
+    }
+
+    public Optional<User> getUser(Long userId) {
+        return userRepository.findById(userId);
     }
 
 }
