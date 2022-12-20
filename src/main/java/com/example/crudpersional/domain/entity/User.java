@@ -15,8 +15,8 @@ import static javax.persistence.EnumType.*;
 @Entity
 @ToString
 @NoArgsConstructor
-/*@Where(clause = "deleted_at IS NULL")
-@SQLDelete(sql = "UPDATE user SET deleted_at = CURRENT_TIMESTAMP where id = ?")*/
+@Where(clause = "deleted_at IS NULL")
+@SQLDelete(sql = "UPDATE user SET deleted_at = CURRENT_TIMESTAMP where id = ?")
 public class User extends BaseEntity{
 
     @Id
