@@ -46,9 +46,10 @@ public class UserController {
     }
     //회원 전체 조회
     @GetMapping
-    public List<UserListResponse> getOne() {
+    public Result<List<UserListResponse>> getOne() {
+
         List<UserListResponse> responseList = userService.getUsers();
-        return responseList;
+        return new Result(responseList.size(),responseList);
     }
 
 }
