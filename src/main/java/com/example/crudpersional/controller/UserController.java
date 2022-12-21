@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -41,6 +43,12 @@ public class UserController {
         UserSelectResponse userSelectResponse = userService.getUser(userId);
         return Response.success(userSelectResponse);
 
+    }
+    //회원 전체 조회
+    @GetMapping
+    public List<UserListResponse> getOne() {
+        List<UserListResponse> responseList = userService.getUsers();
+        return responseList;
     }
 
 }
