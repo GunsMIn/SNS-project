@@ -2,6 +2,7 @@ package com.example.crudpersional.controller;
 
 import com.example.crudpersional.domain.dto.Response;
 import com.example.crudpersional.domain.dto.post.*;
+import com.example.crudpersional.domain.dto.user.UserDeleteRequest;
 import com.example.crudpersional.domain.entity.Post;
 import com.example.crudpersional.domain.entity.User;
 import com.example.crudpersional.service.PostService;
@@ -61,9 +62,9 @@ public class PostController {
         return Response.success(postUpdateResponse);
     }
 
-    @DeleteMapping("/api/v1/posts/{postId}/{userId}")
-    public Response<PostDeleteResponse> delete(@PathVariable Long postId,@PathVariable Long userId) {
-        PostDeleteResponse deletePost = postService.deletePost(postId,userId);
+    @DeleteMapping("/api/v1/posts/{postId}")
+    public Response<PostDeleteResponse> delete(@PathVariable Long postId, @RequestBody  UserDeleteRequest userDeleteRequest) {
+        PostDeleteResponse deletePost = postService.deletePost(postId,userDeleteRequest);
         return Response.success(deletePost);
     }
 }
