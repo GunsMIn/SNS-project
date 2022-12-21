@@ -16,6 +16,13 @@ public class ExceptionManager {
                 .body(Response.error(e.getErrorCode().getMessage()));
     }
 
+
+    @ExceptionHandler(PostException.class)
+    public ResponseEntity<?> postAppExceptionHandler(PostException e) {
+        return ResponseEntity.status(e.getErrorCode().getStatus())
+                .body(Response.error(e.getErrorCode().getMessage()));
+    }
+
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<?> runtimeExceptionHandler(RuntimeException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST) // 5xx에러를 400에러로 바꿔줌
