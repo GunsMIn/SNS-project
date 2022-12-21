@@ -1,18 +1,12 @@
 package com.example.crudpersional.controller;
 
 import com.example.crudpersional.domain.dto.*;
-import com.example.crudpersional.domain.dto.user.UserJoinRequest;
-import com.example.crudpersional.domain.dto.user.UserJoinResponse;
-import com.example.crudpersional.domain.dto.user.UserLoginRequest;
-import com.example.crudpersional.domain.dto.user.UserLoginResponse;
+import com.example.crudpersional.domain.dto.user.*;
 import com.example.crudpersional.domain.entity.User;
 import com.example.crudpersional.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,4 +33,10 @@ public class UserController {
         String token = userService.login(userLoginRequest.getUserName(), userLoginRequest.getPassword());
         return Response.success(new UserLoginResponse(token)); // 로그인 성공 시 토큰만 반환
     }
+
+   /* @GetMapping("/{userId}")
+    public Response<UserSelectResponse> getOne(@PathVariable Long userId) {
+
+    }*/
+
 }
