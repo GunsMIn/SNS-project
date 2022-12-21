@@ -2,6 +2,7 @@ package com.example.crudpersional.service;
 
 import com.example.crudpersional.config.jwt.JwtTokenUtil;
 import com.example.crudpersional.domain.dto.user.UserJoinRequest;
+import com.example.crudpersional.domain.dto.user.UserSelectResponse;
 import com.example.crudpersional.domain.entity.User;
 import com.example.crudpersional.exceptionManager.ErrorCode;
 import com.example.crudpersional.exceptionManager.UserException;
@@ -70,8 +71,17 @@ public class UserService {
                 .orElseThrow(() -> new UserException(ErrorCode.USERNAME_NOT_FOUND,String.format("%s은 등록되어있지 않은 이름 입니다.", userName)));
     }
 
-    public Optional<User> getUser(Long userId) {
-        return userRepository.findById(userId);
+    //회원 조회
+    public UserSelectResponse getUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(
+                        ErrorCode.USERNAME_NOT_FOUND, String.format("%d번의 회원을 찾을 수 없습니다.", userId)));
+
+
+        UserSelectResponse userSelectResponse
+                = new UserSelectResponse(user.getId(), user.getUserName(), user.getRole());
+
+        return userSelectResponse;
     }
 
 }
