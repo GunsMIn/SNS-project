@@ -3,6 +3,8 @@ package com.example.crudpersional.service;
 import com.example.crudpersional.config.jwt.JwtTokenUtil;
 import com.example.crudpersional.domain.dto.user.UserJoinRequest;
 import com.example.crudpersional.domain.entity.User;
+import com.example.crudpersional.exceptionManager.ErrorCode;
+import com.example.crudpersional.exceptionManager.UserException;
 import com.example.crudpersional.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +33,7 @@ public class UserService {
         List<User> userList = userRepository.findByUserName(userJoinRequest.getUserName());
 
         if (!userList.isEmpty()) {
-            throw new RuntimeException("이미 존재하는 이름입니다");
+            throw new UserException(ErrorCode.DUPLICATED_USER_NAME,String.format("%s은 이미 가입된 이름 입니다.", userJoinRequest.getUserName()));
         }
 
         String encodePassword = encoder.encode(userJoinRequest.getPassword());
