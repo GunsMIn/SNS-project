@@ -61,9 +61,9 @@ public class PostController {
         return Response.success(postUpdateResponse);
     }
 
-    @DeleteMapping("/api/v1/posts/{postId}")
-    public Response<PostDeleteResponse> delete(@PathVariable Long postId) {
-        PostDeleteResponse deletePost = postService.deletePost(postId);
+    @DeleteMapping("/api/v1/posts/{postId}/{userId}")
+    public Response<PostDeleteResponse> delete(@PathVariable Long postId,@PathVariable Long userId) {
+        PostDeleteResponse deletePost = postService.deletePost(postId,userId);
         return Response.success(deletePost);
     }
 }
