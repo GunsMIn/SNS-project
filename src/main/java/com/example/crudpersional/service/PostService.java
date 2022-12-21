@@ -1,6 +1,7 @@
 package com.example.crudpersional.service;
 
 import com.example.crudpersional.domain.dto.post.*;
+import com.example.crudpersional.domain.dto.user.UserDeleteRequest;
 import com.example.crudpersional.domain.entity.Post;
 import com.example.crudpersional.domain.entity.User;
 import com.example.crudpersional.exceptionManager.ErrorCode;
@@ -65,10 +66,14 @@ public class PostService {
     public PostUpdateResponse updatePost(Long postId, PostUpdateRequest postUpdateRequest) {
 
         log.info("수정 요청 dto :{}", postUpdateRequest);
-
         Post findPost =
                 postRepository.findById(postId).orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND,"해당 글 없습니다"));
-        //변경감지
+
+        // 수정 권한 확인
+        if (postUpdateRequest.getUserId() != findPost.getUser().getId()) {
+            throw new PostException(ErrorCode.INVALID_PERMISSION, "해당 회원은 수정할 권한이 없습니다");
+        }
+        //변경감지 수정
         findPost.setTitle(postUpdateRequest.getTitle());
         findPost.setBody(postUpdateRequest.getBody());
 
@@ -77,13 +82,16 @@ public class PostService {
 
     }
 
-    public PostDeleteResponse deletePost(Long postId,Long userId) {
+    public PostDeleteResponse deletePost(Long postId, UserDeleteRequest userDeleteRequest) {
         Optional<Post> optionalPost = postRepository.findById(postId);
         Post post =
                 optionalPost.orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND, "해당 글은 존재하지 않아서 삭제할 수 없습니다."));
 
+
         //글을 쓴 유저가 아닌 다른 사람이 해당 글을 지우려고 할 때 예외
-        if (userId != post.getUser().getId()) {
+        if (userDeleteRequest.getUserId() != post.getUser().getId()) {
+            log.info("userDeleteReq:{}" , userDeleteRequest.getUserId());
+            log.info("userDeleteReq:{}" , userDeleteRequest.getUserId());
             throw new UserException(ErrorCode.INVALID_PERMISSION, "당신을 글을 지울 수 있는 권한이없습니다");
         }
 
