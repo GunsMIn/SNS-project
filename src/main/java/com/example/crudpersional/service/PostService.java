@@ -77,10 +77,16 @@ public class PostService {
 
     }
 
-    public PostDeleteResponse deletePost(Long postId) {
+    public PostDeleteResponse deletePost(Long postId,Long userId) {
         Optional<Post> optionalPost = postRepository.findById(postId);
         Post post =
                 optionalPost.orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND, "해당 글은 존재하지 않아서 삭제할 수 없습니다."));
+
+        //글을 쓴 유저가 아닌 다른 사람이 해당 글을 지우려고 할 때 예외
+        if (userId != post.getUser().getId()) {
+            throw new UserException(ErrorCode.INVALID_PERMISSION, "당신을 글을 지울 수 있는 권한이없습니다");
+        }
+
         postRepository.delete(post);
         PostDeleteResponse deleteResponse = new PostDeleteResponse("포스트 삭제 완료", post.getId());
         return deleteResponse;
