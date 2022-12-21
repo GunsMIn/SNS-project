@@ -34,9 +34,13 @@ public class UserController {
         return Response.success(new UserLoginResponse(token)); // 로그인 성공 시 토큰만 반환
     }
 
-   /* @GetMapping("/{userId}")
+    //회원 조회
+    @GetMapping("/{userId}")
     public Response<UserSelectResponse> getOne(@PathVariable Long userId) {
 
-    }*/
+        UserSelectResponse userSelectResponse = userService.getUser(userId);
+        return Response.success(userSelectResponse);
+
+    }
 
 }
