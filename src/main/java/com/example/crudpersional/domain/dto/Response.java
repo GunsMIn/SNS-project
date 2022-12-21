@@ -11,8 +11,8 @@ public class Response<T> {
     // 성공을 반환할 때 result로 감싸서 리턴.
     private T result;
 
-    public static Response<Void> error(String resultCode) {
-        return new Response(resultCode, null);
+    public static Response<Void> error(String resultCode,String result) {
+        return new Response(resultCode, result);
     }
 
     public static <T> Response<T> success(T result){
