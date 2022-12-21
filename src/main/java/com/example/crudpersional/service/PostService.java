@@ -3,6 +3,9 @@ package com.example.crudpersional.service;
 import com.example.crudpersional.domain.dto.post.*;
 import com.example.crudpersional.domain.entity.Post;
 import com.example.crudpersional.domain.entity.User;
+import com.example.crudpersional.exceptionManager.ErrorCode;
+import com.example.crudpersional.exceptionManager.PostException;
+import com.example.crudpersional.exceptionManager.UserException;
 import com.example.crudpersional.repository.PostRepository;
 import com.example.crudpersional.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +30,7 @@ public class PostService {
 
     public PostSelectResponse getPost(Long postId) {
         Optional<Post> postOptional = postRepository.findById(postId);
-        Post post = postOptional.orElseThrow(() -> new RuntimeException("해당 글 없습니다"));
+        Post post = postOptional.orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND,"해당 글 없습니다"));
         PostSelectResponse postSelectResponse =
                 new PostSelectResponse(post.getId(), post.getTitle(),
                         post.getBody(), post.getUser().getUserName(),
@@ -45,7 +48,7 @@ public class PostService {
 
     public PostAddResponse addPost(PostAddRequest postAddRequest) {
 
-        User user = userRepository.findById(postAddRequest.getUserId()).orElseThrow(() -> new RuntimeException("can't find the author"));
+        User user = userRepository.findById(postAddRequest.getUserId()).orElseThrow(() -> new UserException(ErrorCode.USERNAME_NOT_FOUND,"회원가입 후 작성해주세요"));
 
         Post post = postAddRequest.toEntity(user);
         //save를 할때는 JpaRepository<Article,Long>를 사용해야 하기때문에
@@ -64,7 +67,7 @@ public class PostService {
         log.info("수정 요청 dto :{}", postUpdateRequest);
 
         Post findPost =
-                postRepository.findById(postId).orElseThrow(() -> new RuntimeException("해당 글이 없습니다"));
+                postRepository.findById(postId).orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND,"해당 글 없습니다"));
         //변경감지
         findPost.setTitle(postUpdateRequest.getTitle());
         findPost.setBody(postUpdateRequest.getBody());
@@ -75,8 +78,11 @@ public class PostService {
     }
 
     public PostDeleteResponse deletePost(Long postId) {
-        postRepository.deleteById(postId);
-        PostDeleteResponse deleteResponse = new PostDeleteResponse("포스트 삭제 완료", postId);
+        Optional<Post> optionalPost = postRepository.findById(postId);
+        Post post =
+                optionalPost.orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND, "해당 글은 존재하지 않아서 삭제할 수 없습니다."));
+        postRepository.delete(post);
+        PostDeleteResponse deleteResponse = new PostDeleteResponse("포스트 삭제 완료", post.getId());
         return deleteResponse;
     }
 }
