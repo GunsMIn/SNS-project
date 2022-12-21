@@ -2,6 +2,7 @@ package com.example.crudpersional.service;
 
 import com.example.crudpersional.config.jwt.JwtTokenUtil;
 import com.example.crudpersional.domain.dto.user.UserJoinRequest;
+import com.example.crudpersional.domain.dto.user.UserListResponse;
 import com.example.crudpersional.domain.dto.user.UserSelectResponse;
 import com.example.crudpersional.domain.entity.User;
 import com.example.crudpersional.exceptionManager.ErrorCode;
@@ -16,6 +17,9 @@ import org.springframework.stereotype.Service;
 import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.*;
 
 @Service
 @RequiredArgsConstructor @Slf4j
@@ -83,5 +87,14 @@ public class UserService {
 
         return userSelectResponse;
     }
+
+    //회원 전체 조회
+    public List<UserListResponse> getUsers() {
+        List<User> users = userRepository.findAll();
+        List<UserListResponse> userListResponses = users.stream().map(u -> new UserListResponse(u.getId(), u.getUserName()))
+                .collect(toList());
+        return userListResponses;
+    }
+
 
 }
