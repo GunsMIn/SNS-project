@@ -2,11 +2,14 @@ package com.example.crudpersional.controller;
 
 import com.example.crudpersional.domain.dto.Response;
 import com.example.crudpersional.domain.dto.post.*;
+import com.example.crudpersional.domain.entity.Post;
 import com.example.crudpersional.domain.entity.User;
 import com.example.crudpersional.service.PostService;
 import com.example.crudpersional.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -35,11 +38,13 @@ public class PostController {
     }
 
     @GetMapping("/api/v1/posts")
-    public Response<List<PostSelectResponse>> getAll(@PageableDefault(size = 20, sort ="registeredAt",
+    public Page<PostSelectResponse> getAll(@PageableDefault(size = 20, sort ="registeredAt",
             direction = Sort.Direction.DESC) Pageable pageable) {
         List<PostSelectResponse> posts = postService.getPosts(pageable);
-        return Response.success(posts);
+
+        return new PageImpl<>(posts);
     }
+
 
     @PostMapping("/api/v1/posts")
     public Response<PostAddResponse> add(@RequestBody PostAddRequest postAddRequest) {
