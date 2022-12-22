@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .csrf().disable()
                 .cors().and()
                 .authorizeRequests()
-                .antMatchers("/api/v1/users/join", "/api/v1/users/login","/posts/form").permitAll() // join, login은 언제나 가능
+                .antMatchers("/api/v1/users/join", "/api/v1/users/login").permitAll() // join, login은 언제나 가능
                 .antMatchers(HttpMethod.POST, "/api/v1/**").authenticated()
                 // 모든 post요청을 인증된사용자인지! 순서 중요! authenticated 🡪 인증된 사용자인지 확인한다
                 // .antMatchers("/api/**").authenticated() // 다른 api는 인증 필요
