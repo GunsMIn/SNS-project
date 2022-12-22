@@ -6,14 +6,14 @@
     <meta name="description" content="" />
     <meta name="author" content="" />
     <title>Clean Blog - Start Bootstrap Theme</title>
-    <link rel="icon" type="image/x-icon" href="../static/assets/favicon.ico" />
+    <!-- <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />-->
     <!-- Font Awesome icons (free version)-->
     <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
     <!-- Google fonts-->
     <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css" />
     <!-- Core theme CSS (includes Bootstrap)-->
-    <link href="../static/css/styles.css" rel="stylesheet" />
+    <!--<link type="text/css" href="/css/styles.css" rel="stylesheet" />-->
 </head>
 <style>
 
@@ -11273,78 +11273,73 @@
         </div>
     </div>
 </nav>
-<!-- Page Header-->
-<header class="masthead" style="background-image: url('../static/assets/img/home-bg.jpg')">
+&lt;!&ndash; Page Header&ndash;&gt;
+<header class="masthead" style="background-image: url('../static/assets/img/contact-bg.jpg')">
     <div class="container position-relative px-4 px-lg-5">
         <div class="row gx-4 gx-lg-5 justify-content-center">
             <div class="col-md-10 col-lg-8 col-xl-7">
-                <div class="site-heading">
-                    <h1 th:text="|멋쟁이 ${member.userName}님 환영합니다🤗 |">멋쟁이사자🦁</h1>
-                    <span class="subheading">GunWoo's shop</span>
+                <div class="page-heading">
+                    <h1>글 작성하기</h1>
+                    <span class="subheading">Have questions?</span>
                 </div>
             </div>
         </div>
     </div>
 </header>
 <!-- Main Content-->
-<div class="container px-4 px-lg-5">
-    <div class="row gx-4 gx-lg-5 justify-content-center">
-        <div class="col-md-10 col-lg-8 col-xl-7">
-            <!-- Post preview-->
-            <div class="post-preview">
-                <a href="post.html">
-                    <h2 class="post-title">회원가입하기</h2>
-                    <h3 class="post-subtitle">간단하게 회원가입을 진행해주세요😄</h3>
-                </a>
+<main class="mb-4">
+    <div class="container px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <p>Want to get in touch? Fill out the form below to send me a message and I will get back to you as soon as possible!</p>
+                <div class="my-5">
+
+
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">글 제목</th>
+                            <th scope="col">글 내용</th>
+                            <th scope="col"></th>
+                            <th scope="col">병원 유형</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+                     </table>
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th scope="col">리뷰 제목</th>
+                            <th scope="col">리뷰 내용</th>
+                            <th scope="col">작성자</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                    <a class="btn btn-primary" href="/articles/{{id}}/edit">Modify</a>
+                    <a class="btn btn-danger" href="/articles/{{id}}/delete">Delete</a>
+                </div>
             </div>
-            <!-- Divider-->
-            <hr class="my-4" />
-            <!-- Post preview-->
-            <div class="post-preview">
-                <a href="post.html"><h2 class="post-title">로그인하기</h2>
-                    <h3 class="post-subtitle">저희 사이트에 오신걸 환영합니다😄 로그인 후에 더 많은 기능을 사용할 수 있어요</h3>
-                </a>
-                <p class="post-meta">
-                    Posted by
-                    <a href="#!">Start Bootstrap</a>
-                    on September 18, 2022
-                </p>
-            </div>
-            <!-- Divider-->
-            <hr class="my-4" />
-            <!-- Post preview-->
-            <div class="post-preview">
-                <a href="post.html">
-                    <h2 class="post-title">글 작성하기</h2>
-                    <h3 class="post-subtitle">글을 작성해주세요!🤗</h3>
-                </a>
-                <p class="post-meta">
-                    Posted by
-                    <a href="#!">Start Bootstrap</a>
-                    on August 24, 2022
-                </p>
-            </div>
-            <!-- Divider-->
-            <hr class="my-4" />
-            <!-- Post preview-->
-            <div class="post-preview">
-                <a href="post.html">
-                    <h2 class="post-title">Failure is not an option</h2>
-                    <h3 class="post-subtitle">Many say exploration is part of our destiny, but it’s actually our duty to future generations.</h3>
-                </a>
-                <p class="post-meta">
-                    Posted by
-                    <a href="#!">Start Bootstrap</a>
-                    on July 8, 2022
-                </p>
-            </div>
-            <!-- Divider-->
-            <hr class="my-4" />
-            <!-- Pager-->
-            <div class="d-flex justify-content-end mb-4"><a class="btn btn-primary text-uppercase" href="#!">Older Posts →</a></div>
         </div>
     </div>
-</div>
+</main>
 <!-- Footer-->
 <footer class="border-top">
     <div class="container px-4 px-lg-5">
@@ -11384,6 +11379,11 @@
 <!-- Bootstrap core JS-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Core theme JS-->
-<script src="../static/js/scripts.js"></script>
+<script src="/js/scripts.js"></script>
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+<!-- * *                               SB Forms JS                               * *-->
+<!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+<script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
 </body>
 </html>
