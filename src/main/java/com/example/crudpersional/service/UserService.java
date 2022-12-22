@@ -34,7 +34,7 @@ public class UserService {
     private long expireTimeMs = 1000 * 60 * 60; // 1시간
 
     public User join(UserJoinRequest userJoinRequest) {
-
+        log.info("서비스 단 유저:{}",userJoinRequest);
         List<User> userList = userRepository.findByUserName(userJoinRequest.getUserName());
 
         if (!userList.isEmpty()) {
@@ -44,6 +44,22 @@ public class UserService {
         String encodePassword = encoder.encode(userJoinRequest.getPassword());
 
         User user = userJoinRequest.toEntity(encodePassword);
+
+        User savedUser = userRepository.save(user);
+        log.info("저장된 회원 : {}",savedUser);
+
+        return savedUser;
+    }
+
+    public User joinmvc(UserJoinRequest userJoinRequest) {
+        log.info("서비스 단 유저:{}",userJoinRequest);
+        List<User> userList = userRepository.findByUserName(userJoinRequest.getUserName());
+
+        if (!userList.isEmpty()) {
+            throw new UserException(ErrorCode.DUPLICATED_USER_NAME,String.format("%s은 이미 가입된 이름 입니다.", userJoinRequest.getUserName()));
+        }
+
+        User user = new User(userJoinRequest.getUserName(), userJoinRequest.getPassword());
 
         User savedUser = userRepository.save(user);
         log.info("저장된 회원 : {}",savedUser);

@@ -39,11 +39,11 @@ public class PostController {
     }
 
     @GetMapping("/api/v1/posts")
-    public Page<PostSelectResponse> getAll(@PageableDefault(size = 20, sort ="registeredAt",
+    public Response<Page<PostSelectResponse>> getAll(@PageableDefault(size = 20, sort ="registeredAt",
             direction = Sort.Direction.DESC) Pageable pageable) {
         List<PostSelectResponse> posts = postService.getPosts(pageable);
 
-        return new PageImpl<>(posts);
+        return Response.success(new PageImpl<>(posts));
     }
 
 
