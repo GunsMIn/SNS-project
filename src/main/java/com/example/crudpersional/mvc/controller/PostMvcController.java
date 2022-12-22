@@ -28,6 +28,8 @@ public class PostMvcController {
     public String doWriteForm(@ModelAttribute PostAddRequest postAddRequest) {
         log.info("제목과 내용 : {} ",postAddRequest);
         postService.addPost(postAddRequest);
-        return "redirect:/posts/form";
+        return "redirect:/";
     }
+
+
 }
