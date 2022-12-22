@@ -46,5 +46,5 @@ public abstract class BaseEntity {
 
     //https://thalals.tistory.com/302
     //삭제 시점
-    private LocalDateTime deletedAt;
+   /* private LocalDateTime deletedAt;*/
 }

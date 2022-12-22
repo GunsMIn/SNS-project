@@ -7,6 +7,7 @@ import com.example.crudpersional.domain.dto.user.UserSelectResponse;
 import com.example.crudpersional.domain.entity.User;
 import com.example.crudpersional.exceptionManager.ErrorCode;
 import com.example.crudpersional.exceptionManager.UserException;
+import com.example.crudpersional.mvc.dto.MemberForm;
 import com.example.crudpersional.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,15 +52,15 @@ public class UserService {
         return savedUser;
     }
 
-    public User joinmvc(UserJoinRequest userJoinRequest) {
-        log.info("서비스 단 유저:{}",userJoinRequest);
-        List<User> userList = userRepository.findByUserName(userJoinRequest.getUserName());
+    public User joinmvc(MemberForm memberForm) {
+        log.info("서비스 단 유저:{}",memberForm);
+        List<User> userList = userRepository.findByUserName(memberForm.getUserName());
 
         if (!userList.isEmpty()) {
-            throw new UserException(ErrorCode.DUPLICATED_USER_NAME,String.format("%s은 이미 가입된 이름 입니다.", userJoinRequest.getUserName()));
+            throw new UserException(ErrorCode.DUPLICATED_USER_NAME,String.format("%s은 이미 가입된 이름 입니다.", memberForm.getUserName()));
         }
 
-        User user = new User(userJoinRequest.getUserName(), userJoinRequest.getPassword());
+        User user = new User(memberForm.getUserName(), memberForm.getPassword());
 
         User savedUser = userRepository.save(user);
         log.info("저장된 회원 : {}",savedUser);
