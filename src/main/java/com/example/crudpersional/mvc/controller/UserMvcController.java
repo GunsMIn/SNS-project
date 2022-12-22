@@ -43,6 +43,14 @@ public class UserMvcController {
         return "/members/login";
     }
 
+    @PostMapping("/members/loginForm")
+    public String doLogin(@ModelAttribute LoginForm loginForm, Model model) {
+        userService.login(loginForm.getUserName(), loginForm.getPassword());
+        User user = loginForm.toEntity();
+        model.addAttribute("member", user);
+        return "loginIndex";
+    }
+
  /*   @GetMapping("/members/loginIndex")
     public String goLoginIndex(@SessionAttribute(name = "loginMember", required = false) User loginMember,@ModelAttribute LoginForm loginForm,Model model) {
         model.addAttribute("member", loginMember);
@@ -56,13 +64,7 @@ public class UserMvcController {
     }*/
 
 
-    @PostMapping("/members/loginForm")
-    public String doLogin(@ModelAttribute LoginForm loginForm, Model model) {
-        userService.login(loginForm.getUserName(), loginForm.getPassword());
-        User user = loginForm.toEntity();
-        model.addAttribute("member", user);
-        return "loginIndex";
-    }
+
 
 /*    @PostMapping("/members/loginForm")
     public String doLogin(@ModelAttribute LoginForm loginForm, Model model, HttpServletRequest request) {
