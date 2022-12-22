@@ -1,3 +1,4 @@
+/*
 package com.example.crudpersional.mvc.controller;
 
 import com.example.crudpersional.domain.dto.user.UserJoinRequest;
@@ -51,21 +52,26 @@ public class UserMvcController {
         return "loginIndex";
     }
 
- /*   @GetMapping("/members/loginIndex")
+ */
+/*   @GetMapping("/members/loginIndex")
     public String goLoginIndex(@SessionAttribute(name = "loginMember", required = false) User loginMember,@ModelAttribute LoginForm loginForm,Model model) {
         model.addAttribute("member", loginMember);
         return "/loginindex";
-    }*/
+    }*//*
 
-    /*@GetMapping("/members/loginIndex")
+
+    */
+/*@GetMapping("/members/loginIndex")
     public String goLoginIndex(@ModelAttribute LoginForm loginForm,Model model) {
         model.addAttribute("member", loginMember);
         return "/loginindex";
-    }*/
+    }*//*
 
 
 
 
+
+*/
 /*    @PostMapping("/members/loginForm")
     public String doLogin(@ModelAttribute LoginForm loginForm, Model model, HttpServletRequest request) {
         userService.login(loginForm.getUserName(), loginForm.getPassword());
@@ -74,9 +80,11 @@ public class UserMvcController {
         HttpSession session = request.getSession(true); // 세션이 없다면 새로운 세션 생성
         session.setAttribute("loginMember",loginMember);
         return "loginIndex";
-    }*/
+    }*//*
+
 
 
 
 }
 
+*/
