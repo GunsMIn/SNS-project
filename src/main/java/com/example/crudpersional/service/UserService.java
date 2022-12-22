@@ -52,22 +52,6 @@ public class UserService {
         return savedUser;
     }
 
-    public User joinmvc(MemberForm memberForm) {
-        log.info("서비스 단 유저:{}",memberForm);
-        List<User> userList = userRepository.findByUserName(memberForm.getUserName());
-
-        if (!userList.isEmpty()) {
-            throw new UserException(ErrorCode.DUPLICATED_USER_NAME,String.format("%s은 이미 가입된 이름 입니다.", memberForm.getUserName()));
-        }
-
-        User user = new User(memberForm.getUserName(), memberForm.getPassword());
-
-        User savedUser = userRepository.save(user);
-        log.info("저장된 회원 : {}",savedUser);
-
-        return savedUser;
-    }
-
 
     //로그인 -> (1.아이디 존재 여부 2.비밀번호 일치 여부)
     public String login(String userName,String password) {

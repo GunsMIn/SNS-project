@@ -49,5 +49,22 @@ public class UserMvcService {
         return savedUser;
     }
 
+    //로그인 -> (1.아이디 존재 여부 2.비밀번호 일치 여부)
+    public String login(String userName,String password) {
+        log.info("서비스 아이디 비밀번호 :{} / {}" , userName,password);
+        //1.아이디 존재 여부 체크
+        User user = userRepository.findUserByUserName(userName)
+                .orElseThrow(() -> new UserException(ErrorCode.USERNAME_NOT_FOUND,String.format("%s은 등록되어있지 않은 이름 입니다.", userName)));
+
+
+        //2.비밀번호 유효성 검사
+        if (!encoder.matches(password, user.getPassword())) {
+            throw new UserException(ErrorCode.INVALID_PASSWORD,"해당 userName의 password가 잘못됐습니다");
+        }
+        //두 가지 확인중 예외 안났으면 Token발행
+        String token = JwtTokenUtil.generateToken(userName, secretKey, expireTimeMs);
+        return token;
+    }
+
 
 }
