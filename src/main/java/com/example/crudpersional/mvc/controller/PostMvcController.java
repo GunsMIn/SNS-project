@@ -27,18 +27,12 @@ public class PostMvcController {
     private final PostService postService;
 
 
-    @GetMapping("/posts/form")
+/*    @GetMapping("/posts/form")
     public String goWriteForm(@ModelAttribute PostAddRequest postAddRequest) {
         log.info("뷰는 들어오는거야?");
         return "/post/writePost";
     }
 
- /*   @PostMapping("/posts/form")
-    public String doWriteForm(@ModelAttribute PostAddRequest postAddRequest) {
-        log.info("제목과 내용 : {} ",postAddRequest);
-        postService.addPost(postAddRequest);
-        return "redirect:/";
-    }*/
 
 
     @GetMapping("/posts/list")
@@ -60,8 +54,16 @@ public class PostMvcController {
         log.info("id :{}" ,id);
         PostSelectResponse post = postService.getPost(id);
         return "/posts/list";
-    }
+    }*/
 
+
+
+     /*   @PostMapping("/posts/form")
+    public String doWriteForm(@ModelAttribute PostAddRequest postAddRequest) {
+        log.info("제목과 내용 : {} ",postAddRequest);
+        postService.addPost(postAddRequest);
+        return "redirect:/";
+    }*/
 
 }
 
