@@ -53,7 +53,7 @@ public class UserMvcController {
         User user = loginForm.toEntity();
 
         if(user==null){
-            return "/members/loginForm";
+            return "members/loginForm";
         }
 
         HttpSession session = request.getSession(true); // 세션이 없다면 새로운 세션 생성
@@ -65,7 +65,7 @@ public class UserMvcController {
   @GetMapping("/members/loginIndex")
     public String goLoginIndex(@SessionAttribute(name = "loginMember", required = false) User loginMember,@ModelAttribute LoginForm loginForm,Model model) {
         model.addAttribute("member", loginMember);
-        return "/loginindex";
+        return "loginindex";
     }
 
 

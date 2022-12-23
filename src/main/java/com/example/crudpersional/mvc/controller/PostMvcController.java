@@ -38,7 +38,7 @@ public class PostMvcController {
 
         log.info("userName : {}", userName);
         postForm.setUserName(userName);
-        return "/post/writePost";
+        return "post/writePost";
     }
 
     @PostMapping("/posts/doForm")
@@ -68,7 +68,7 @@ public class PostMvcController {
     public String getPost(@PathVariable Long id) {
         log.info("id :{}" ,id);
         PostSelectResponse post = postService.getPost(id);
-        return "/posts/list";
+        return "post/list";
     }
 
 
