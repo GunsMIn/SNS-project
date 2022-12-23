@@ -29,19 +29,6 @@ public class PostMvcController {
     private final PostService postService;
     private final UserRepository userRepository;
 
-  /*  @GetMapping("/posts/form")
-    public String goWriteForm(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) User loginMember, @ModelAttribute PostAddRequest postAddRequest, Model model) {
-        log.info("글 작성 뷰");
-        String userName = loginMember.getUserName();
-
-
-        model.addAttribute("userName", userName);
-        User user = userRepository.findOptionalByUserName(userName)
-                .get();
-        model.addAttribute("userId", user.getId());
-        log.info("userid : {}" ,user.getId());
-        return "/post/writePost";
-    }*/
 
     @GetMapping("/posts/form")
     public String goWriteForm(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) User loginMember, @ModelAttribute PostForm postForm, Model model) {
@@ -53,6 +40,13 @@ public class PostMvcController {
         return "/post/writePost";
     }
 
+    @PostMapping("/posts/doForm")
+    public String doWriteForm(@ModelAttribute PostAddRequest postAddRequest,String userName) {
+        log.info("제목과 내용 : {} ",postAddRequest);
+        log.info("이름 : {} ",userName);
+        postService.addPost(postAddRequest,userName);
+        return "redirect:/";
+    }
 
 
     @GetMapping("/posts/list")
@@ -78,13 +72,7 @@ public class PostMvcController {
 
 
 
-        @PostMapping("/posts/form")
-    public String doWriteForm(@ModelAttribute PostAddRequest postAddRequest,String userName) {
-        log.info("제목과 내용 : {} ",postAddRequest);
-        log.info("이름 : {} ",userName);
-        postService.addPost(postAddRequest,userName);
-        return "redirect:/";
-    }
+
 
 }
 
