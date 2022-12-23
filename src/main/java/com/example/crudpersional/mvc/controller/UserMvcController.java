@@ -70,7 +70,7 @@ public class UserMvcController {
 
 
 
-    @PostMapping("/members/loginForm")
+   /* @PostMapping("/members/loginForm")
     public String doLogin(@ModelAttribute LoginForm loginForm, Model model, HttpServletRequest request) {
         userService.login(loginForm.getUserName(), loginForm.getPassword());
         User loginMember = loginForm.toEntity();
@@ -78,7 +78,7 @@ public class UserMvcController {
         HttpSession session = request.getSession(true); // 세션이 없다면 새로운 세션 생성
         session.setAttribute("loginMember",loginMember);
         return "loginIndex";
-    }
+    }*/
 
 
 

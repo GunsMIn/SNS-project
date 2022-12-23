@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,9 +48,10 @@ public class PostService {
         return postSelectResponseList;
     }
 
-    public PostAddResponse addPost(PostAddRequest postAddRequest) {
+    public PostAddResponse addPost(PostAddRequest postAddRequest, String userName) {
 
-        User user = userRepository.findById(postAddRequest.getUserId()).orElseThrow(() -> new UserException(ErrorCode.USERNAME_NOT_FOUND,"회원가입 후 작성해주세요"));
+        User user = userRepository.findOptionalByUserName(userName)
+                .orElseThrow(() -> new UserException(ErrorCode.USERNAME_NOT_FOUND, "회원가입 후 작성해주세요"));
 
         Post post = postAddRequest.toEntity(user);
         //save를 할때는 JpaRepository<Article,Long>를 사용해야 하기때문에

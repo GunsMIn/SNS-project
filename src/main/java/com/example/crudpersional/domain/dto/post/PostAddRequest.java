@@ -12,15 +12,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostAddRequest {
 
-    private Long userId;
+    //private Long userId;
     private String title;
     private String body;
 
+    //User user
     public Post toEntity(User user) {
        return Post.builder()
                 .title(title)
                 .body(body)
-                .user(user)
                 .build();
     }
 }

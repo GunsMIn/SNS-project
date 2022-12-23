@@ -33,12 +33,12 @@ public class PostMvcController {
         return "/post/writePost";
     }
 
-    @PostMapping("/posts/form")
+ /*   @PostMapping("/posts/form")
     public String doWriteForm(@ModelAttribute PostAddRequest postAddRequest) {
         log.info("제목과 내용 : {} ",postAddRequest);
         postService.addPost(postAddRequest);
         return "redirect:/";
-    }
+    }*/
 
 
     @GetMapping("/posts/list")

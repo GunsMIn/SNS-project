@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,10 +49,10 @@ public class PostController {
 
 
     @PostMapping("/api/v1/posts")
-    public Response<PostAddResponse> add(@RequestBody PostAddRequest postAddRequest) {
+    public Response<PostAddResponse> add(@RequestBody PostAddRequest postAddRequest, Authentication authentication) {
         log.info("postAddRequest : {}", postAddRequest);
 
-        PostAddResponse postAddResponse = postService.addPost(postAddRequest);
+        PostAddResponse postAddResponse = postService.addPost(postAddRequest,authentication.getName());
         return Response.success(postAddResponse);
     }
 
