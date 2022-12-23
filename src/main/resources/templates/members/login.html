@@ -61,7 +61,7 @@
     </div>
 
     <div class="card-body">
-        <form class="form-signin" action="/members/loginForm" th:object="${loginForm}" method="POST" onSubmit="logincall();return false">
+        <form class="form-signin" action="/members/doLoginForm" th:object="${loginForm}" method="POST" onSubmit="logincall();return false">
             <h5 class="form-signin-heading">로그인 정보를 입력하세요</h5>
             <label for="userName" class="sr-only">Your NAME</label>
             <input type="text" id="userName"  th:field="*{userName}" class="form-control" placeholder="Your ID" required autofocus><BR>

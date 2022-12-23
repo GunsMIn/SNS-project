@@ -33,7 +33,7 @@ public class UserMvcController {
         return "/members/join";
     }
 
-    @PostMapping("/members/joinForm")
+    @PostMapping("/members/doJoinForm")
     public String doJoin(@ModelAttribute MemberForm memberForm) {
         log.info("유저:{}", memberForm);
         userService.join(memberForm);
@@ -45,7 +45,7 @@ public class UserMvcController {
         return "/members/login";
     }
 
-    @PostMapping("/members/loginForm")
+    @PostMapping("/members/doLoginForm")
     public String doLogin(@ModelAttribute LoginForm loginForm, Model model) {
         userService.login(loginForm.getUserName(), loginForm.getPassword());
         User user = loginForm.toEntity();
