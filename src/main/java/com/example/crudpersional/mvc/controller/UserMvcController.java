@@ -42,7 +42,7 @@ public class UserMvcController {
 
     @GetMapping("/members/loginForm")
     public String goLogin(@ModelAttribute LoginForm loginForm) {
-        return "/members/userLogin";
+        return "about";
     }
 
     @PostMapping("/members/doLoginForm")
