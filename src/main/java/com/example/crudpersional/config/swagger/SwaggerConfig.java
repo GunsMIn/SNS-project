@@ -28,10 +28,11 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/");
     }
 
-   /* @Override
+    @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
         argumentResolvers.add( new PageableHandlerMethodArgumentResolver());
-    }*/
+    }
+
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.OAS_30)
