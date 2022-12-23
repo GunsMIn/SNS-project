@@ -8,9 +8,10 @@ import javax.persistence.*;
 
 import static javax.persistence.FetchType.*;
 
-@Getter @Setter
+@Builder
+@Setter
+@Getter
 @Entity
-@ToString
 @NoArgsConstructor
 /*@Where(clause = "deleted_at IS NULL")
 @SQLDelete(sql = "UPDATE user SET deleted_at = CURRENT_TIMESTAMP where id = ?")*/

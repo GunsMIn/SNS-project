@@ -40,12 +40,18 @@ public class PostService {
         return postSelectResponse;
     }
 
-    public List<PostSelectResponse> getPosts(Pageable pageable) {
+/*    public List<PostSelectResponse> getPosts(Pageable pageable) {
         Page<Post> posts = postRepository.findAll(pageable);
         List<PostSelectResponse> postSelectResponseList =
                 posts.stream().map(p -> new PostSelectResponse(p)).collect(Collectors.toList());
 
         return postSelectResponseList;
+    }*/
+
+    public Page<PostSelectResponse> getAllItems(Pageable pageable) {
+        Page<Post> postEntities = postRepository.findAll(pageable);
+        Page<PostSelectResponse> postDtos = PostSelectResponse.toDtoList(postEntities);
+        return postDtos;
     }
 
     public PostAddResponse addPost(PostAddRequest postAddRequest, String userName) {
