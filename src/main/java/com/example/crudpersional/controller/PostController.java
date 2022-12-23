@@ -58,15 +58,15 @@ public class PostController {
     }
 
     @PutMapping("/api/v1/posts/{postId}")
-    public Response<PostUpdateResponse> update(@PathVariable Long postId, @RequestBody PostUpdateRequest postUpdateRequest) {
+    public Response<PostUpdateResponse> update(@PathVariable Long postId, @RequestBody PostUpdateRequest postUpdateRequest,Authentication authentication) {
         log.info("수정 controller :{}", postUpdateRequest);
-        PostUpdateResponse postUpdateResponse = postService.updatePost(postId, postUpdateRequest);
+        PostUpdateResponse postUpdateResponse = postService.updatePost(postId, postUpdateRequest,authentication.getName());
         return Response.success(postUpdateResponse);
     }
 
     @DeleteMapping("/api/v1/posts/{postId}")
-    public Response<PostDeleteResponse> delete(@PathVariable Long postId, @RequestBody  UserDeleteRequest userDeleteRequest) {
-        PostDeleteResponse deletePost = postService.deletePost(postId,userDeleteRequest);
+    public Response<PostDeleteResponse> delete(@PathVariable Long postId, Authentication authentication) {
+        PostDeleteResponse deletePost = postService.deletePost(postId,authentication.getName());
         return Response.success(deletePost);
     }
 }

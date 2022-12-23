@@ -72,14 +72,20 @@ public class PostService {
     }
 
 
-    public PostUpdateResponse updatePost(Long postId, PostUpdateRequest postUpdateRequest) {
+    public PostUpdateResponse updatePost(Long postId, PostUpdateRequest postUpdateRequest,String userName) {
 
         log.info("수정 요청 dto :{}", postUpdateRequest);
         Post findPost =
                 postRepository.findById(postId).orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND,"해당 글 없습니다"));
 
+        log.info("userName:{}",userName);
+
+        User user = userRepository.findOptionalByUserName(userName)
+                .orElseThrow(() -> new UserException(ErrorCode.USERNAME_NOT_FOUND, String.format("%s not founded", userName)));
+        Long userId = user.getId();
+
         // 수정 권한 확인
-        if (postUpdateRequest.getUserId() != findPost.getUser().getId()) {
+        if (userId != findPost.getUser().getId()) {
             throw new PostException(ErrorCode.INVALID_PERMISSION, "해당 회원은 수정할 권한이 없습니다");
         }
         //변경감지 수정
@@ -91,16 +97,17 @@ public class PostService {
 
     }
 
-    public PostDeleteResponse deletePost(Long postId, UserDeleteRequest userDeleteRequest) {
+    public PostDeleteResponse deletePost(Long postId, String userName) {
         Optional<Post> optionalPost = postRepository.findById(postId);
         Post post =
                 optionalPost.orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND, "해당 글은 존재하지 않아서 삭제할 수 없습니다."));
 
+        User user = userRepository.findOptionalByUserName(userName)
+                .orElseThrow(()
+                        -> new UserException(ErrorCode.USERNAME_NOT_FOUND, String.format("%s not founded", userName)));
 
         //글을 쓴 유저가 아닌 다른 사람이 해당 글을 지우려고 할 때 예외
-        if (userDeleteRequest.getUserId() != post.getUser().getId()) {
-            log.info("userDeleteReq:{}" , userDeleteRequest.getUserId());
-            log.info("userDeleteReq:{}" , userDeleteRequest.getUserId());
+        if (user.getId() != post.getUser().getId()) {
             throw new UserException(ErrorCode.INVALID_PERMISSION, "당신을 글을 지울 수 있는 권한이없습니다");
         }
 

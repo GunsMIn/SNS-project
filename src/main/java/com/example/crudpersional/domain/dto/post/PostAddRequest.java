@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostAddRequest {
 
-    private Long userId;
+    //private Long userId;
     private String title;
     private String body;
 
