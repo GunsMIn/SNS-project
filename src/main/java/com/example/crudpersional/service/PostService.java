@@ -48,15 +48,10 @@ public class PostService {
         return postSelectResponseList;
     }
 
-   /* public Page<PostSelectResponse> getAllItems(Pageable pageable) {
-        Page<Post> postEntities = postRepository.findAll(pageable);
-        Page<PostSelectResponse> postDtos = PostSelectResponse.toDtoList(postEntities);
-        return postDtos;
-    }*/
-
+                                                                //인증으로 들어온 userName
     public PostAddResponse addPost(PostAddRequest postAddRequest, String userName) {
-
         log.info("서비스 userName:{}",userName);
+        //userName으로 해당 User엔티티 찾아옴
         User user = userRepository.findOptionalByUserName(userName)
                 .orElseThrow(() -> new UserException(ErrorCode.USERNAME_NOT_FOUND, "회원가입 후 작성해주세요"));
 
@@ -73,7 +68,6 @@ public class PostService {
 
 
     public PostUpdateResponse updatePost(Long postId, PostUpdateRequest postUpdateRequest,String userName) {
-
         log.info("수정 요청 dto :{}", postUpdateRequest);
         Post findPost =
                 postRepository.findById(postId).orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND,"해당 글 없습니다"));

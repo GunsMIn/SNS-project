@@ -29,16 +29,14 @@ public class PostController {
 
     private final PostService postService;
 
-/*  "userId":"2",
-    "title":"박두식",
-   "body":"1234"*/
+    //인증 필요 없음
     @GetMapping("/api/v1/posts/{postId}")
     public Response<PostSelectResponse> get(@PathVariable Long postId) {
-
         PostSelectResponse postSelectResponse = postService.getPost(postId);
         return Response.success(postSelectResponse);
     }
 
+    //인증 필요 없음
     @GetMapping("/api/v1/posts")
     public Response<PageImpl<PostSelectResponse>> getAll(@PageableDefault(size = 20, sort ="registeredAt",
             direction = Sort.Direction.DESC) Pageable pageable) {
@@ -51,8 +49,7 @@ public class PostController {
     public Response<PostAddResponse> add(@RequestBody PostAddRequest postAddRequest, Authentication authentication) {
         log.info("postAddRequest : {}", postAddRequest);
         log.info("authentication.getName() : {}", authentication.getName());
-
-
+        //여기 아래에서 jwt토큰을 사용한 userName을 가져와서 service단에서 처리
         PostAddResponse postAddResponse = postService.addPost(postAddRequest,authentication.getName());
         return Response.success(postAddResponse);
     }

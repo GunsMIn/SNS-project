@@ -5,6 +5,7 @@ import com.example.crudpersional.domain.dto.user.UserJoinRequest;
 import com.example.crudpersional.domain.entity.User;
 import com.example.crudpersional.mvc.dto.LoginForm;
 import com.example.crudpersional.mvc.dto.MemberForm;
+import com.example.crudpersional.mvc.dto.SessionConst;
 import com.example.crudpersional.mvc.service.UserMvcService;
 import com.example.crudpersional.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.net.http.HttpRequest;
 
 @Controller
 @Slf4j
@@ -26,7 +28,6 @@ import javax.servlet.http.HttpSession;
 public class UserMvcController {
 
     private final UserMvcService userService;
-
 
 
     @GetMapping("/members/joinUser")
@@ -47,9 +48,16 @@ public class UserMvcController {
     }
 
     @PostMapping("/members/doLoginForm")
-    public String doLogin(@ModelAttribute LoginForm loginForm, Model model) {
+    public String doLogin(@ModelAttribute LoginForm loginForm, Model model,HttpServletRequest request) {
         userService.login(loginForm.getUserName(), loginForm.getPassword());
         User user = loginForm.toEntity();
+
+        if(user==null){
+            return "/members/loginForm";
+        }
+
+        HttpSession session = request.getSession(true); // 세션이 없다면 새로운 세션 생성
+        session.setAttribute(SessionConst.LOGIN_MEMBER,user);
         model.addAttribute("member", user);
         return "loginIndex";
     }

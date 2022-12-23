@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 public class PostForm {
 
     //userId는 추후 다르게 넣어 줄것이다.
-    private Long userId;
+    private String userName;
     private String title;
     private String body;
 }
