@@ -48,6 +48,10 @@ public class PostService {
         return postSelectResponseList;
     }
 
+    public Page<Post> getViewPosts(Pageable pageable) {
+        return postRepository.findAll(pageable);
+    }
+
                                                                 //인증으로 들어온 userName
     public PostAddResponse addPost(PostAddRequest postAddRequest, String userName) {
         log.info("서비스 userName:{}",userName);

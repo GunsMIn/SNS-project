@@ -3,6 +3,7 @@ package com.example.crudpersional.mvc.controller;
 
 import com.example.crudpersional.domain.dto.post.PostAddRequest;
 import com.example.crudpersional.domain.dto.post.PostSelectResponse;
+import com.example.crudpersional.domain.entity.Post;
 import com.example.crudpersional.domain.entity.User;
 import com.example.crudpersional.mvc.dto.PostForm;
 import com.example.crudpersional.mvc.dto.SessionConst;
@@ -54,7 +55,7 @@ public class PostMvcController {
             direction = Sort.Direction.DESC) Pageable pageable, Model model) {
 
         log.info("list에는 들어오나?");
-        List<PostSelectResponse> posts = postService.getPosts(pageable);
+        Page<Post> posts = postService.getViewPosts(pageable);
         log.info("list:{}",posts);
         model.addAttribute("posts", posts);
         return "post/postList";

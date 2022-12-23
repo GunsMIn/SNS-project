@@ -63,8 +63,8 @@
             <td th:text="${post.id}" th:href="@{/post/getOne/{id}(id=${post.id})}"></td>
             <td th:text="${post.title}"></td>
             <td th:text="${post.body}"></td>
-            <td th:text="${post.createdAt}"></td>
-            <td th:text="${post.userName}"></td>
+            <td th:text="${post.registeredAt}"></td>
+            <td th:text="${post.user.userName}"></td>
 
 
             <td>
