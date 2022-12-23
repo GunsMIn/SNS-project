@@ -1,4 +1,4 @@
-/*
+
 package com.example.crudpersional.mvc.controller;
 
 import com.example.crudpersional.domain.dto.post.PostAddRequest;
@@ -40,8 +40,7 @@ public class PostMvcController {
         return "redirect:/";
     }
 
-*/
-/*
+
     @GetMapping("/posts/list")
     public String getPostList(@PageableDefault(size = 20, sort ="registeredAt",
             direction = Sort.Direction.DESC) Pageable pageable, Model model) {
@@ -52,7 +51,7 @@ public class PostMvcController {
         model.addAttribute("posts", posts);
         return "post/postList";
     }
-*//*
+
 
 
     //포스트 상세보기
@@ -65,4 +64,4 @@ public class PostMvcController {
 
 
 }
-*/
+
