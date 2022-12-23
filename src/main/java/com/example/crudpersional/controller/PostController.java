@@ -40,16 +40,18 @@ public class PostController {
     }
 
     @GetMapping("/api/v1/posts")
-    public Response<Page<PostSelectResponse>> getAll(@PageableDefault(size = 20, sort ="registeredAt",
+    public Response<PageImpl<PostSelectResponse>> getAll(@PageableDefault(size = 20, sort ="registeredAt",
             direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<PostSelectResponse> posts = postService.getAllItems(pageable);
-        return Response.success(posts);
+        List<PostSelectResponse> posts = postService.getPosts(pageable);
+        return Response.success(new PageImpl<>(posts));
     }
 
 
     @PostMapping("/api/v1/posts")
     public Response<PostAddResponse> add(@RequestBody PostAddRequest postAddRequest, Authentication authentication) {
         log.info("postAddRequest : {}", postAddRequest);
+        log.info("authentication.getName() : {}", authentication.getName());
+
 
         PostAddResponse postAddResponse = postService.addPost(postAddRequest,authentication.getName());
         return Response.success(postAddResponse);

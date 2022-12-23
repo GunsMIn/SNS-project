@@ -21,6 +21,7 @@ public class PostAddRequest {
        return Post.builder()
                 .title(title)
                 .body(body)
+               .user(user)
                 .build();
     }
 }

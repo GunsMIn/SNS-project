@@ -37,7 +37,7 @@ public class PostSelectResponse {
         this.lastModifiedAt = post.getUpdatedAt();
     }
 
-    public static Page<PostSelectResponse> toDtoList(Page<Post> postEntities){
+/*    public static Page<PostSelectResponse> toDtoList(Page<Post> postEntities){
         Page<PostSelectResponse> postDtoList = postEntities.map(m -> PostSelectResponse.builder()
                 .id(m.getId())
                 .title(m.getTitle())
@@ -46,5 +46,5 @@ public class PostSelectResponse {
                 .createdAt(m.getRegisteredAt())
                 .build());
         return postDtoList;
-    }
+    }*/
 }

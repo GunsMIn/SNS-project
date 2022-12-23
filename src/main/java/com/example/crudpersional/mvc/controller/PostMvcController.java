@@ -41,7 +41,7 @@ public class PostMvcController {
             direction = Sort.Direction.DESC) Pageable pageable, Model model) {
 
         log.info("list에는 들어오나?");
-        Page<PostSelectResponse> posts = postService.getAllItems(pageable);
+        List<PostSelectResponse> posts = postService.getPosts(pageable);
         log.info("list:{}",posts);
         model.addAttribute("posts", posts);
         return "post/postList";
