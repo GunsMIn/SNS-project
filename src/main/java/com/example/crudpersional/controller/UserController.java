@@ -16,10 +16,7 @@ import java.util.List;
 @RequestMapping("/api/v1/users")
 public class UserController {
 
-    /*{
-	 "userName":"손흥민",
-   	 "password":"1234"
-}	*/
+
     private final UserService userService;
 
     //회원가입 컨트롤러

@@ -27,7 +27,7 @@ public class UserMvcController {
 
     private final UserMvcService userService;
 
-/*
+
     @GetMapping("/members/joinForm")
     public String goJoin(@ModelAttribute MemberForm memberForm) {
         return "/members/join";
@@ -59,7 +59,7 @@ public class UserMvcController {
         return "/loginindex";
     }
 
-*/
+
 
 
 /*@GetMapping("/members/loginIndex")

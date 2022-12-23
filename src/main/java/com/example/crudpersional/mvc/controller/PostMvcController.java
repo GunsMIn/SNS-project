@@ -7,6 +7,7 @@ import com.example.crudpersional.mvc.dto.PostForm;
 import com.example.crudpersional.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -27,7 +28,7 @@ public class PostMvcController {
     private final PostService postService;
 
 
-/*    @GetMapping("/posts/form")
+    @GetMapping("/posts/form")
     public String goWriteForm(@ModelAttribute PostAddRequest postAddRequest) {
         log.info("뷰는 들어오는거야?");
         return "/post/writePost";
@@ -40,7 +41,7 @@ public class PostMvcController {
             direction = Sort.Direction.DESC) Pageable pageable, Model model) {
 
         log.info("list에는 들어오나?");
-        List<PostSelectResponse> posts = postService.getPosts(pageable);
+        Page<PostSelectResponse> posts = postService.getAllItems(pageable);
         log.info("list:{}",posts);
         model.addAttribute("posts", posts);
         return "post/postList";
@@ -54,7 +55,7 @@ public class PostMvcController {
         log.info("id :{}" ,id);
         PostSelectResponse post = postService.getPost(id);
         return "/posts/list";
-    }*/
+    }
 
 
 
