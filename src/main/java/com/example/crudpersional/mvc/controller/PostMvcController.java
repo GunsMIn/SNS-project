@@ -38,7 +38,7 @@ public class PostMvcController {
 
         log.info("userName : {}", userName);
         postForm.setUserName(userName);
-        return "post/writePost";
+        return "writePost";
     }
 
     @PostMapping("/posts/doForm")

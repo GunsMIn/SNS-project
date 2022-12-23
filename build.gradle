@@ -27,6 +27,15 @@ dependencies {
     implementation 'org.springframework.security:spring-security-test'
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
     compileOnly 'org.projectlombok:lombok'
+    
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+
+    compileOnly 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.20'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
+
     //swagger 기능 추가
     // swagger dependency
     implementation "io.springfox:springfox-boot-starter:3.0.0"

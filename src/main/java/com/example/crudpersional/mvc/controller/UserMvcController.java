@@ -59,7 +59,7 @@ public class UserMvcController {
         HttpSession session = request.getSession(true); // 세션이 없다면 새로운 세션 생성
         session.setAttribute(SessionConst.LOGIN_MEMBER,user);
         model.addAttribute("member", user);
-        return "loginIndex";
+        return "redirect:/members/loginIndex";
     }
 
   @GetMapping("/members/loginIndex")
