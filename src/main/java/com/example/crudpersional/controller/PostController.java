@@ -44,7 +44,7 @@ public class PostController {
             direction = Sort.Direction.DESC) Pageable pageable) {
         List<PostSelectResponse> posts = postService.getPosts(pageable);
         return Response.success(new PageImpl<>(posts));
-    }
+    } // 
 
 
     @PostMapping("/api/v1/posts")
