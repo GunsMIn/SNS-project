@@ -30,7 +30,7 @@ public class UserMvcController {
 
     @GetMapping("/members/joinForm")
     public String goJoin(@ModelAttribute MemberForm memberForm) {
-        return "/members/userJoin";
+        return "/members/join";
     }
 
     @PostMapping("/members/doJoinForm")
@@ -42,7 +42,7 @@ public class UserMvcController {
 
     @GetMapping("/members/loginForm")
     public String goLogin(@ModelAttribute LoginForm loginForm) {
-        return "about";
+        return "members/login";
     }
 
     @PostMapping("/members/doLoginForm")
