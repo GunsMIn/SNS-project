@@ -11318,11 +11318,13 @@
         </tbody>
     </table>
 
+    <div style="text-align: center;">
     <th:block th:each="page:${#numbers.sequence(startPage,endPage)}">
         <a class="page-item" th:if="${page != nowPage}" th:href="@{/posts/list(page=${page-1})}" th:text ="${page}"></a>
         <strong th:if="${page==nowPage}" th:text ="${page}" style="color:red"></strong>
-
     </th:block>
+    </div>
+
     <!--    <ul class="pagination justify-content-center">
             <li class="page-item"><a class="page-link" href="?page={{previous}}">Previous</a></li>
             <li class="page-item"><a class="page-link" href="?page={{next}}">Next</a></li>
