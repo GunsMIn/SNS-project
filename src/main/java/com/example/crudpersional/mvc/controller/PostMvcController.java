@@ -18,6 +18,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -51,11 +53,13 @@ public class PostMvcController {
     public String goWriteForm(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) User loginMember, @ModelAttribute PostForm postForm, HttpServletResponse response) throws Exception{
 
         String url = "";
+        //아래의 코드는 로그인을 하지 않았다면 alert를 띄우고 로그인 안내
         if (loginMember != null) {
+            //세션에 저장된 user의 정보
             String userName = loginMember.getUserName();
             postForm.setUserName(userName);
             url = "writePost";
-        }else{
+        }else{// -> 로그인 안되어 있을 시 알림창 후 메인화면으로
             response.setContentType("text/html; charset=UTF-8");
             PrintWriter out = response.getWriter();
             out.println("<script>alert('글 작성은 로그인 후에 진행해주세요🤗'); history.go(-1);</script>");
@@ -64,14 +68,49 @@ public class PostMvcController {
         return url;
     }
 
+    //validated 적용
     @PostMapping("/posts/doForm")
-    public String doWriteForm(@ModelAttribute PostAddRequest postAddRequest,String userName) {
-        log.info("제목과 내용 : {} ",postAddRequest);
-        log.info("이름 : {} ",userName);
-        postService.addPost(postAddRequest,userName);
-        return "redirect:/";
+    public String doWriteForm(@Validated @ModelAttribute PostForm postForm, BindingResult result, String userName,HttpServletResponse response) throws Exception {
+        //postForm dto에 설정한 validation에 걸릴 시 글 쓰기 폼으로 view 이동
+        if(result.hasErrors()){
+            return "writePost";
+        }
+
+        String url = "";
+        //if문안에 조건은 제목 또는 내용이 없을 시 경고창을 띄우고 /members/loginIndex로 리다이렉트 전송
+        if (postForm.getTitle()!=null && postForm.getBody()!=null) {
+            log.info("제목과 내용 : {} ", postForm);
+            log.info("이름 : {} ", userName);
+            postService.addMvcPost(postForm, userName);
+
+            response.setContentType("text/html; charset=UTF-8");
+            PrintWriter out = response.getWriter();
+            out.println("<script>alert('글 작성이 완료되었습니다.🤗');location.assign('/members/loginIndex');</script>");
+            out.flush();
+        }else{
+            url = "redirect:/posts/form";
+        }
+        return url;
     }
 
+
+
+    /*@PostMapping("/posts/doForm")
+    public String doWriteForm(@Validated @ModelAttribute PostForm postForm, BindingResult result, String userName) {
+
+        if(result.hasErrors()){
+            return "writePost";
+        }
+        if (postForm != null) {
+
+        }
+
+        log.info("제목과 내용 : {} ", postForm);
+        log.info("이름 : {} ", userName);
+        postService.addMvcPost(postForm, userName);
+        return "redirect:/members/loginIndex";
+    }
+*/
 
     @GetMapping("/posts/list")
     public String getPostList(@PageableDefault(page = 0 ,size = 10, sort ="registeredAt",

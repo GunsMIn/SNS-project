@@ -7,6 +7,7 @@ import com.example.crudpersional.domain.entity.User;
 import com.example.crudpersional.exceptionManager.ErrorCode;
 import com.example.crudpersional.exceptionManager.PostException;
 import com.example.crudpersional.exceptionManager.UserException;
+import com.example.crudpersional.mvc.dto.PostForm;
 import com.example.crudpersional.repository.PostRepository;
 import com.example.crudpersional.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -54,6 +55,23 @@ public class PostService {
 
                                                                 //인증으로 들어온 userName
     public PostAddResponse addPost(PostAddRequest postAddRequest, String userName) {
+        log.info("서비스 userName:{}",userName);
+        //userName으로 해당 User엔티티 찾아옴
+        User user = userRepository.findOptionalByUserName(userName)
+                .orElseThrow(() -> new UserException(ErrorCode.USERNAME_NOT_FOUND, "회원가입 후 작성해주세요"));
+
+        Post post = postAddRequest.toEntity(user);
+        //save를 할때는 JpaRepository<Article,Long>를 사용해야 하기때문에
+        //articleRequestDto -> 를 Article 타입으로 바꿔줘야한다.
+        Post savedPost = postRepository.save(post);
+        if (savedPost.getId() == null) {
+            throw new RuntimeException("해당 파일은 존재하지 않습니다");
+        }
+        PostAddResponse postAddResponse = new PostAddResponse("포스트 등록 완료",savedPost.getId());
+        return postAddResponse;
+    }
+
+    public PostAddResponse addMvcPost(PostForm postAddRequest, String userName) {
         log.info("서비스 userName:{}",userName);
         //userName으로 해당 User엔티티 찾아옴
         User user = userRepository.findOptionalByUserName(userName)
