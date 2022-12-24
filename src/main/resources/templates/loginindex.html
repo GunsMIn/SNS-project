@@ -11291,18 +11291,13 @@
     <div class="row gx-4 gx-lg-5 justify-content-center">
         <div class="col-md-10 col-lg-8 col-xl-7">
             <!-- Post preview-->
-            <div class="post-preview">
-                <a href="/members/joinForm">
-                    <h2 class="post-title">회원가입하기</h2>
-                    <h3 class="post-subtitle">간단하게 회원가입을 진행해주세요🦁</h3>
-                </a>
-            </div>
             <!-- Divider-->
             <hr class="my-4" />
             <!-- Post preview-->
             <div class="post-preview">
-                <a href="/members/loginForm"><h2 class="post-title">로그인하기</h2>
-                    <h3 class="post-subtitle">저희 사이트에 오신걸 환영합니다🦁 로그인 후에 더 많은 기능을 사용할 수 있어요</h3>
+
+                <a href="javascript:void(0)" onClick="javascript:goPost()" ><h2 class="post-title">로그아웃</h2>
+                    <h3 class="post-subtitle">저희 사이트에 오신걸 환영합니다🦁 다음에 또 방문해주세요.</h3>
                 </a>
                 <p class="post-meta">
                     Posted by
@@ -11384,6 +11379,14 @@
 <!-- Bootstrap core JS-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Core theme JS-->
-<script src="../static/js/scripts.js"></script>
+<script >
+    function goPost(){
+        let f = document.createElement('form');
+        f.setAttribute('method', 'post');
+        f.setAttribute('action', '/members/logout');
+        document.body.appendChild(f);
+        f.submit();
+    }
+</script>
 </body>
 </html>
