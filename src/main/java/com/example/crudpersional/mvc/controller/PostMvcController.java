@@ -81,10 +81,7 @@ public class PostMvcController {
         String url = "";
         //if문안에 조건은 제목 또는 내용이 없을 시 경고창을 띄우고 /members/loginIndex로 리다이렉트 전송
         if (postForm.getTitle()!=null && postForm.getBody()!=null) {
-            log.info("제목과 내용 : {} ", postForm);
-            log.info("이름 : {} ", userName);
             postService.addMvcPost(postForm, userName);
-
             response.setContentType("text/html; charset=UTF-8");
             PrintWriter out = response.getWriter();
             out.println("<script>alert('글 작성이 완료되었습니다.🤗');location.assign('/members/loginIndex');</script>");
@@ -152,7 +149,7 @@ public class PostMvcController {
 
 
         PostSelectResponse post = postService.getPost(id);
-        if (!loginMember.getUserName().equals(post.getUserName()) || loginMember == null || id==null) {
+        if (!loginMember.getUserName().equals(post.getUserName())) {
             throw new UserException(ErrorCode.INVALID_PERMISSION, "글을 작성한 회원만 수정할 권한이 있습니다");
         }
         model.addAttribute("postForm", post);
@@ -161,11 +158,26 @@ public class PostMvcController {
         return "updatePost";
     }
 
+    // 글 수정
     @PostMapping("/post/{id}/edit")
-    public String doUpdatePost(@PathVariable Long id,@ModelAttribute PostForm postForm) {
-        log.info("post 넘길 id:{}", id);
-        postService.updateMvcPost(id,postForm);
-        return "redirect:/members/loginIndex";
+    public String doUpdatePost(@PathVariable Long id,@Validated @ModelAttribute PostForm postForm,BindingResult result,HttpServletResponse response) throws Exception{
+        //postForm dto에 설정한 validation에 걸릴 시 글 쓰기 폼으로 view 이동
+        if(result.hasErrors()){
+            return "updatePost";
+        }
+
+        String url = "";
+        //if문안에 조건은 제목 또는 내용이 없을 시 경고창을 띄우고 /members/loginIndex로 리다이렉트 전송
+        if (postForm.getTitle()!=null && postForm.getBody()!=null) {
+            postService.updateMvcPost(id,postForm);
+            response.setContentType("text/html; charset=UTF-8");
+            PrintWriter out = response.getWriter();
+            out.println("<script>alert('글 수정이 완료되었습니다.🤗');location.assign('/members/loginIndex');</script>");
+            out.flush();
+        }else{
+            url = "redirect:/post/{id}/edit";
+        }
+        return url;
     }
 
 

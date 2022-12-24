@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.PrintWriter;
 import java.net.http.HttpRequest;
 
 @Controller
@@ -70,12 +72,16 @@ public class UserMvcController {
 
 
     @PostMapping("/members/logout")
-    public String logOut(HttpServletRequest request) {
+    public String logOut(HttpServletRequest request , HttpServletResponse response) throws Exception {
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
+            response.setContentType("text/html; charset=UTF-8");
+            PrintWriter out = response.getWriter();
+            out.println("<script>alert('로그아웃 성공! 다음에 또 찾아주세요🤗');location.assign('/');</script>");
+            out.flush();
         }
-        return "redirect:/";
+        return "/";
     }
 
 
