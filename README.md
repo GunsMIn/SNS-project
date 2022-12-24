@@ -3,6 +3,11 @@
 
 ## Running Docker on AWS EC2(Hospital Project🔽)
 ### http://ec2-3-35-209-220.ap-northeast-2.compute.amazonaws.com:8080
+- 1.로그인 회원만 글 작성 가능 - controller 내에서 alert 구현
+- 2.글 작성시 Validation 도입. 제목,내용 하나라도 안쓸 시 validate작동
+- 3.글 목록 페이징 처리 -> 한 페이지의 10개의 글 / 글 최신 순 정렬
+- 4.해당 글 작성 회원만 글 수정할 수 있는 기능
+- 5.view 단 Thymeleaf 사용
 ## RestApi Swagger 
 ### http://ec2-3-35-209-220.ap-northeast-2.compute.amazonaws.com:8080/swagger-ui/index.html
 
@@ -29,12 +34,12 @@
 - **2.비밀번호 틀릴 시 로그인 실패->HttpStatus.BAD_REQUEST(400), message = "Not correct password errorCode"처리**
 <img width="550" alt="캡처6" src="https://user-images.githubusercontent.com/104709432/204980562-6777a266-6046-480a-bed1-be44673ac462.PNG"><br>
 
-## Article RestApi(게시글)
-### @GetMapping("/api/articles/{id}") : 해당 ID로 게시글 조회
-### @PostMapping("/api/articles") : 게시글 등록 
-### @PatchMapping("/api/articles/{id}") : 게시글 수정(변경감지 dirty cash 사용)
-### @DeleteMapping("/api/articles/{id}") : 게시글 삭제
-### @GetMapping("/api/articles") : 게시글 전체 조회(제네릭타입을 응답 타입으로 사용하여 회원 count 기능 추가)
+## Post RestApi(게시글)
+### @GetMapping("/api/v1/posts/{postId}") : 해당 ID로 게시글 조회
+### @PostMapping("/api/v1/posts") : 게시글 등록 
+### @PutMapping("/api/v1/posts/{postId}") : 게시글 수정(변경감지 dirty cash 사용)
+### @DeleteMapping("/api/v1/posts/{postId}") : 게시글 삭제
+### @GetMapping("/api/v1/posts") : 게시글 전체 조회(제네릭타입을 응답 타입으로 사용하여 회원 count 기능 추가)
 
 <br><br>
 
