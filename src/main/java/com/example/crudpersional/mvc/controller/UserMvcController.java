@@ -13,6 +13,8 @@ import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,15 +35,22 @@ public class UserMvcController {
 
 
     @GetMapping("/members/joinUser")
-    public String joinUser(@ModelAttribute MemberForm memberForm) {
+    public String joinUser(@ModelAttribute MemberForm memberForm){
         return "members/join";
     }
 
     @PostMapping("/members/doJoinForm")
-    public String doJoin(@ModelAttribute MemberForm memberForm) {
+    public String doJoin(@Validated @ModelAttribute MemberForm memberForm , BindingResult result, HttpServletResponse response)  throws Exception{
+        if (result.hasErrors()) {
+            return "members/join";
+        }
         log.info("유저:{}", memberForm);
         userService.join(memberForm);
-        return "redirect:/";
+        response.setContentType("text/html; charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        out.println("<script>alert('반갑습니다🤗, 이제 로그인 후 글을 작성하실 수 있습니다.저희 사이트는 더 개발을 진행중이니 기대해주세요😎');location.assign('/');</script>");
+        out.flush();
+        return "/";
     }
 
     @GetMapping("/members/loginForm")
@@ -50,7 +59,10 @@ public class UserMvcController {
     }
 
     @PostMapping("/members/doLoginForm")
-    public String doLogin(@ModelAttribute LoginForm loginForm, Model model,HttpServletRequest request) {
+    public String doLogin(@Validated @ModelAttribute LoginForm loginForm, BindingResult result,Model model,HttpServletRequest request) {
+        if (result.hasErrors()) {
+            return "members/login";
+        }
         //세션 로그인 사용
         User user = userService.loginMvc(loginForm.getUserName(), loginForm.getPassword());
 
@@ -66,7 +78,7 @@ public class UserMvcController {
         return "redirect:/members/loginIndex";
     }
 
-  @GetMapping("/members/loginIndex")
+   @GetMapping("/members/loginIndex")
     public String goLoginIndex(@SessionAttribute(name = "loginMember", required = false) User loginMember,@ModelAttribute LoginForm loginForm,Model model) {
         model.addAttribute("member", loginMember);
         return "loginindex";

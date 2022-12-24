@@ -7,15 +7,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotEmpty;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class MemberForm {
 
+    @NotEmpty(message = "회원 id를 입력해주세요")
     private String userName;
-
-    private String Password;
+    @NotEmpty(message = "password를 입력해주세요")
+    private String password;
 
     public User toEntity(String password) {
         return User.builder()

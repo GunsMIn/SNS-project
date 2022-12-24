@@ -97,24 +97,6 @@ public class PostMvcController {
     }
 
 
-
-    /*@PostMapping("/posts/doForm")
-    public String doWriteForm(@Validated @ModelAttribute PostForm postForm, BindingResult result, String userName) {
-
-        if(result.hasErrors()){
-            return "writePost";
-        }
-        if (postForm != null) {
-
-        }
-
-        log.info("제목과 내용 : {} ", postForm);
-        log.info("이름 : {} ", userName);
-        postService.addMvcPost(postForm, userName);
-        return "redirect:/members/loginIndex";
-    }
-*/
-
     @GetMapping("/posts/list")
     public String getPostList(@PageableDefault(page = 0 ,size = 10, sort ="registeredAt",
             direction = Sort.Direction.DESC) Pageable pageable, Model model) {

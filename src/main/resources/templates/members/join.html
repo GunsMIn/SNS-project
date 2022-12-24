@@ -23,6 +23,7 @@
                     <!-- <input type="submit" value="확인"> -->
                     <p></p>
                 </label>
+                <div class="field-error" th:errors="*{userName}" />
 
                 <label>
                     <!-- <span>PW</span> -->
@@ -30,7 +31,7 @@
                     <input type="text" id="password"  th:field="*{password}"  placeholder="비밀번호를 입력" class="size">
                     <!-- <input type="submit" value="확인"> -->
                 </label>
-
+                <div class="field-error" th:errors="*{password}" />
                 <p>
                     <input type="submit" value="Sign in" class="btn">
                 </p>
@@ -153,6 +154,10 @@
 
     .find a:hover{
         color:#707070;
+    }
+    .field-error {
+        border-color: #dc3545;
+        color: #dc3545;
     }
 </style>
 
