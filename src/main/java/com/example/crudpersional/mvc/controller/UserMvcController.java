@@ -69,27 +69,15 @@ public class UserMvcController {
     }
 
 
+    @PostMapping("/members/logout")
+    public String logOut(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        return "redirect:/";
+    }
 
-
-/*@GetMapping("/members/loginIndex")
-    public String goLoginIndex(@ModelAttribute LoginForm loginForm,Model model) {
-        model.addAttribute("member", loginMember);
-        return "/loginindex";
-    }*/
-
-
-
-
-
-   /* @PostMapping("/members/loginForm")
-    public String doLogin(@ModelAttribute LoginForm loginForm, Model model, HttpServletRequest request) {
-        userService.login(loginForm.getUserName(), loginForm.getPassword());
-        User loginMember = loginForm.toEntity();
-        //로그인 성공 시 session 처리
-        HttpSession session = request.getSession(true); // 세션이 없다면 새로운 세션 생성
-        session.setAttribute("loginMember",loginMember);
-        return "loginIndex";
-    }*/
 
 
 
