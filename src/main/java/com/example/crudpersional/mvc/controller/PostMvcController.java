@@ -5,6 +5,8 @@ import com.example.crudpersional.domain.dto.post.PostAddRequest;
 import com.example.crudpersional.domain.dto.post.PostSelectResponse;
 import com.example.crudpersional.domain.entity.Post;
 import com.example.crudpersional.domain.entity.User;
+import com.example.crudpersional.exceptionManager.ErrorCode;
+import com.example.crudpersional.exceptionManager.UserException;
 import com.example.crudpersional.mvc.dto.PostForm;
 import com.example.crudpersional.mvc.dto.SessionConst;
 import com.example.crudpersional.repository.UserRepository;
@@ -136,14 +138,35 @@ public class PostMvcController {
 
     //포스트 상세보기
     @GetMapping("/post/getOne/{id}")
-    public String getPost(@PathVariable Long id) {
+    public String getPost(@PathVariable Long id,Model model) {
         log.info("id :{}" ,id);
         PostSelectResponse post = postService.getPost(id);
-        return "post/list";
+        model.addAttribute("post", post);
+        return "post/postDetail";
     }
 
 
+    @GetMapping("/post/{id}/edit")
+    public String updatePost(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) User loginMember, @PathVariable Long id,Model model) {
+        log.info("id :{}" ,id);
 
+
+        PostSelectResponse post = postService.getPost(id);
+        if (!loginMember.getUserName().equals(post.getUserName()) || loginMember == null || id==null) {
+            throw new UserException(ErrorCode.INVALID_PERMISSION, "글을 작성한 회원만 수정할 권한이 있습니다");
+        }
+        model.addAttribute("postForm", post);
+        model.addAttribute("postId", id);
+        log.info("타임리프에 넘길 id:{}", id);
+        return "updatePost";
+    }
+
+    @PostMapping("/post/{id}/edit")
+    public String doUpdatePost(@PathVariable Long id,@ModelAttribute PostForm postForm) {
+        log.info("post 넘길 id:{}", id);
+        postService.updateMvcPost(id,postForm);
+        return "redirect:/members/loginIndex";
+    }
 
 
 }

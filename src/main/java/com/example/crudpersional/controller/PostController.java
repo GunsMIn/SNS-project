@@ -37,6 +37,7 @@ public class PostController {
     }
 
     //인증 필요 없음
+    //post list 페이징 처리 1. 20개 , 2. 최신순
     @GetMapping("/api/v1/posts")
     public Response<PageImpl<PostSelectResponse>> getAll(@PageableDefault(size = 20, sort ="registeredAt",
             direction = Sort.Direction.DESC) Pageable pageable) {

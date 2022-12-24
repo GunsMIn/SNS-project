@@ -131,4 +131,12 @@ public class PostService {
         PostDeleteResponse deleteResponse = new PostDeleteResponse("포스트 삭제 완료", post.getId());
         return deleteResponse;
     }
+
+    /*****/
+    public void updateMvcPost(Long id,PostForm postForm) {
+
+        Post post = postRepository.findById(id).orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND, "해당 포스트는 없습니다"));
+        post.setTitle(postForm.getTitle());
+        post.setBody(postForm.getBody());
+    }
 }
