@@ -6,11 +6,14 @@ import com.example.crudpersional.domain.dto.post.PostSelectResponse;
 import com.example.crudpersional.domain.entity.Post;
 import com.example.crudpersional.domain.entity.User;
 import com.example.crudpersional.exceptionManager.ErrorCode;
+import com.example.crudpersional.exceptionManager.PostException;
 import com.example.crudpersional.exceptionManager.UserException;
 import com.example.crudpersional.mvc.dto.PostForm;
 import com.example.crudpersional.mvc.dto.SessionConst;
+import com.example.crudpersional.repository.PostRepository;
 import com.example.crudpersional.repository.UserRepository;
 import com.example.crudpersional.service.PostService;
+import com.sun.xml.bind.v2.model.core.ID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -34,6 +37,7 @@ import java.util.List;
 public class PostMvcController {
 
     private final PostService postService;
+    private final PostRepository postRepository;
     private final UserRepository userRepository;
 
 
@@ -178,6 +182,25 @@ public class PostMvcController {
             url = "redirect:/post/{id}/edit";
         }
         return url;
+    }
+
+    @PostMapping("post/{id}/delete")
+    public String delete(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) User loginMember,@PathVariable Long id,HttpServletResponse response) throws Exception {
+
+        Post post = postRepository.findById(id).orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND, "해당 post는 존재하지 않습니다."));
+        log.info("session id:{}",loginMember.getId());
+        log.info("posted user id:{}",post.getUser().getId());
+        if (loginMember.getId() != post.getUser().getId()) {
+            throw new PostException(ErrorCode.INVALID_PERMISSION, "글을 작성한 본인만 글을 삭제할 수 있습니다");
+        }else{
+            postService.deleteMvcPost(id);
+            response.setContentType("text/html; charset=UTF-8");
+            PrintWriter out = response.getWriter();
+            out.println("<script>alert('글 삭제가 완료되었습니다.🤗');location.assign('/posts/list');</script>");
+            out.flush();
+
+        }
+        return "/";
     }
 
 

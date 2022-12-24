@@ -58,11 +58,14 @@
         </div>
 
         <div style="margin-top : 20px">
-            <form th:action="@{/post/{id}/edit (id=${post.id})}" method="get">
+            <form th:action="@{/post/{id}/edit (id=${post.id})}" method="get" style="float: left">
             <button type="submit" class="btn btn-sm btn-primary" id="btnUpdate">수정</button>
             </form>
-            <button type="button" class="btn btn-sm btn-primary" id="btnDelete">삭제</button>
-            <button type="button" class="btn btn-sm btn-primary" id="btnList">목록</button>
+            <form th:action="@{/post/{id}/delete (id=${post.id})}" method="post" style="float: left">
+            <button type="submit" class="btn btn-sm btn-primary" id="btnDelete">삭제</button>
+            </form>
+            <form th:action="@{/posts/list}" method="get" style="float: left">
+            <button type="submit" class="btn btn-sm btn-primary" id="btnList">목록</button>
         </div>
     </div>
 

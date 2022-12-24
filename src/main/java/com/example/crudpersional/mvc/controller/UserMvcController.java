@@ -51,8 +51,8 @@ public class UserMvcController {
 
     @PostMapping("/members/doLoginForm")
     public String doLogin(@ModelAttribute LoginForm loginForm, Model model,HttpServletRequest request) {
-        userService.login(loginForm.getUserName(), loginForm.getPassword());
-        User user = loginForm.toEntity();
+        //세션 로그인 사용
+        User user = userService.loginMvc(loginForm.getUserName(), loginForm.getPassword());
 
         if(user==null){
             return "members/loginForm";
@@ -60,6 +60,8 @@ public class UserMvcController {
 
         HttpSession session = request.getSession(true); // 세션이 없다면 새로운 세션 생성
         session.setAttribute(SessionConst.LOGIN_MEMBER,user);
+        log.info("로그인 user :{} ",user);
+        log.info("세션 저장 된 user :{}",session.getAttribute(SessionConst.LOGIN_MEMBER));
         model.addAttribute("member", user);
         return "redirect:/members/loginIndex";
     }
@@ -83,6 +85,8 @@ public class UserMvcController {
         }
         return "/";
     }
+
+
 
 
 

@@ -16,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 
@@ -66,5 +67,17 @@ public class UserMvcService {
         return token;
     }
 
+
+    /**mvc 로그인 **/
+    public User loginMvc(String userName,String password) {
+
+        log.info("mvc로그인 user:{}/{}",userName,password);
+        Optional<User> optionalUser = userRepository.findOptionalByUserName(userName);
+        User user = optionalUser.filter(m -> encoder.matches(password, m.getPassword()))
+                .orElseThrow(() -> new UserException(ErrorCode.USERNAME_NOT_FOUND, "해당 유저는 존재하지 않습니다."));
+
+        log.info("mvc 로그인 :{}",user);
+        return user;
+    }
 
 }
