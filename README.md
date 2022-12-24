@@ -35,6 +35,9 @@
 <img width="550" alt="캡처7" src="https://user-images.githubusercontent.com/104709432/204981292-1375306f-966a-4b19-8f80-c15d5b97d5a0.PNG"><br>
 - **2.비밀번호 틀릴 시 로그인 실패->HttpStatus.BAD_REQUEST(400), message = "Not correct password errorCode"처리**
 <img width="550" alt="캡처6" src="https://user-images.githubusercontent.com/104709432/204980562-6777a266-6046-480a-bed1-be44673ac462.PNG"><br>
+### @GetMapping("/api/v1/users/{userId}") : 회원 단건 조회
+### @GettMapping("/api/v1/users") : 회원 전체 조회
+***
 
 ## Post RestApi(게시글)
 ### @GetMapping("/api/v1/posts/{postId}") : 해당 ID로 게시글 조회
