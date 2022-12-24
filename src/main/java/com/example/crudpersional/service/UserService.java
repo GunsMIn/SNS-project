@@ -53,7 +53,7 @@ public class UserService {
     }
 
 
-    //로그인 -> (1.아이디 존재 여부 2.비밀번호 일치 여부)
+    //로그인 -> (1.아이디 존재 여부 2.비밀번호 일치 여부) -> 성공 시 토큰 응답
     public String login(String userName,String password) {
         log.info("서비스 아이디 비밀번호 :{} / {}" , userName,password);
         //1.아이디 존재 여부 체크
