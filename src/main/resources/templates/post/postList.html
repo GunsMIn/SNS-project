@@ -11320,8 +11320,8 @@
 
     <div style="text-align: center;">
     <th:block th:each="page:${#numbers.sequence(startPage,endPage)}">
-        <a class="page-item" th:if="${page != nowPage}" th:href="@{/posts/list(page=${page-1})}" th:text ="${page}"></a>
-        <strong th:if="${page==nowPage}" th:text ="${page}" style="color:red"></strong>
+        <a class="page-item" th:if="${page != nowPage}" th:href="@{/posts/list(page=${page-1})}" th:text ="${page}" style="font-size:25px"></a>
+        <strong th:if="${page==nowPage}" th:text ="${page}" style="color:lightskyblue; font-size:25px"></strong>
     </th:block>
     </div>
 
