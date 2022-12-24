@@ -20,6 +20,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
 import java.util.List;
 
 @Controller
@@ -31,14 +33,35 @@ public class PostMvcController {
     private final UserRepository userRepository;
 
 
-    @GetMapping("/posts/form")
+  /*  @GetMapping("/posts/form")
     public String goWriteForm(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) User loginMember, @ModelAttribute PostForm postForm, Model model) {
         log.info("글 작성 뷰");
-        String userName = loginMember.getUserName();
 
+        if (loginMember == null) {
+            return "redirect:/members/joinUser";
+        }
+
+        String userName = loginMember.getUserName();
         log.info("userName : {}", userName);
         postForm.setUserName(userName);
         return "writePost";
+    }*/
+
+    @GetMapping("/posts/form")
+    public String goWriteForm(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) User loginMember, @ModelAttribute PostForm postForm, HttpServletResponse response) throws Exception{
+
+        String url = "";
+        if (loginMember != null) {
+            String userName = loginMember.getUserName();
+            postForm.setUserName(userName);
+            url = "writePost";
+        }else{
+            response.setContentType("text/html; charset=UTF-8");
+            PrintWriter out = response.getWriter();
+            out.println("<script>alert('글 작성은 로그인 후에 진행해주세요🤗'); history.go(-1);</script>");
+            out.flush();
+        }
+        return url;
     }
 
     @PostMapping("/posts/doForm")
