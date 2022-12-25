@@ -41,9 +41,9 @@
 <!-- Main Content-->
 <article>
     <div class="container" role="main">
-        <h2>  해당 글 상세보기</h2>
+        <!--<h2>  해당 글 상세보기</h2>-->
         <div class="bg-white rounded shadow-sm">
-            <div class="board_title" th:text="${post.title}" ></div>
+            <div class="board_title" th:text="|제목 : ${post.title}|" ></div>
             <div class="board_info_box">
                 <span class="board_author" >글 번호 : </span><span class="board_date" th:text="${post.id}"></span>
             </div>
@@ -53,26 +53,26 @@
             <div class="board_info_box">
                 <span class="board_author" >작성 날짜 : </span><span class="board_date" th:text="${post.createdAt}"></span>
             </div>
+            <h5>&nbsp;&nbsp;글 내용 </h5>
             <div class="board_content" th:text="${post.body}"></div>
             <div class="board_tag"></div>
         </div>
 
         <div style="margin-top : 20px">
             <form th:action="@{/post/{id}/edit (id=${post.id})}" method="get" style="float: left">
-            <button type="submit" class="btn btn-sm btn-primary" id="btnUpdate">수정</button>
+                <button class="btn-hover color-8"><span>edit</span></button>
             </form>
             <form th:action="@{/post/{id}/delete (id=${post.id})}" method="post" style="float: left">
-            <button type="submit" class="btn btn-sm btn-primary" id="btnDelete">삭제</button>
+                <button class="btn-hover color-8"><span>delete</span></button>
             </form>
-            <form th:action="@{/posts/list}" method="get" style="float: left">
-            <button type="submit" class="btn btn-sm btn-primary" id="btnList">목록</button>
+            <form th:action="@{/posts/list}" method="get" >
+                <button class="btn-hover color-8"><span>postList</span></button>
+            </form>
         </div>
     </div>
 
 </article>
-<div class="mb-5 container-fluid"> <hr>
-    <p>@ ChangBoard <a href="/hi">Privacy</a> <a href="/hi/chang">Terms</a></p>
-</div>
+
 <!-- Footer-->
 <footer class="border-top">
     <div class="container px-4 px-lg-5">
@@ -111,13 +111,60 @@
 </footer>
 </body>
 <style>
-    body {
+
+    * {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+
+    .buttons {
+        margin: 10%;
+        text-align: center;
+    }
+
+    .btn-hover {
+        width: 200px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #fff;
+        cursor: pointer;
+        margin: 20px;
+        height: 55px;
+        text-align:center;
+        border: none;
+        background-size: 300% 100%;
+
+        border-radius: 50px;
+        moz-transition: all .4s ease-in-out;
+        -o-transition: all .4s ease-in-out;
+        -webkit-transition: all .4s ease-in-out;
+        transition: all .4s ease-in-out;
+    }
+
+    .btn-hover:hover {
+        background-position: 100% 0;
+        moz-transition: all .4s ease-in-out;
+        -o-transition: all .4s ease-in-out;
+        -webkit-transition: all .4s ease-in-out;
+        transition: all .4s ease-in-out;
+    }
+
+    .btn-hover:focus {
+        outline: none;
+    }
+
+    .btn-hover.color-8 {
+        background-image: linear-gradient(to right, #29323c, #485563, #2b5876, #4e4376);
+        box-shadow: 0 4px 15px 0 rgba(45, 54, 65, 0.75);
+    }
+    /*body {
 
         padding-top: 70px;
 
         padding-bottom: 30px;
 
-    }
+    }*/
 
     .board_title {
 
