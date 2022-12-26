@@ -11367,6 +11367,49 @@
         background-image: linear-gradient(to right, #29323c, #485563, #2b5876, #4e4376);
         box-shadow: 0 4px 15px 0 rgba(45, 54, 65, 0.75);
     }
+    .search_box {
+        width: 520px;
+        height: 50px;
+        border: 2px solid #78c7d2;
+        display: flex;
+        margin-top: 20px;
+        float: right;
+        margin: 0 40px;
+    }
+
+    .search_box input {
+        width: 90%;
+        height: 46px;
+        padding-left: 12px;
+        padding-right: 12px;
+        border: none;
+        outline: none;
+        font-size: 18px;
+
+    }
+
+    .search_box button {
+        width: 10%;
+        height: 46px;
+        margin: 0;
+        padding: 0;
+        border: none;
+        background: #78c7d2;
+    }
+
+    .search_box i {
+        color: white;
+        font-size: 22px;
+        text-align: center;
+    }
+
+    #keyboard {
+        color: lightgray;
+        font-size: 20px;
+        text-align: center;
+        width: 10%;
+        padding-top:12px;
+    }
 </style>
 <body>
 <!-- Navigation-->
@@ -11408,6 +11451,25 @@
         <button class="btn-hover color-8">GO HOME!</button>
     </form>
 </div>
+<form th:action="@{/posts/list}" method="GET">
+<div class="search_box">
+    <input name="title" th:value="${title}" type="text" class="form-control" placeholder="제목으로 검색" maxlength="225"> <i id="keyboard" class="fa fa-keyboard-o"></i>
+    <button type="submit">
+        <i class="fa fa-search"></i>
+    </button>
+</div>
+</form>
+<!--<form th:action="@{/posts/list}" method="GET">
+    <div class="mx-quto input-group mt-5">
+        <mx-auto>
+            <input name="title" th:value="${title}" type="text" class="form-control" placeholder="제목으로 검색" aria-label="search" aria-describedby="button-addon2">
+        </mx-auto>
+        <button class=" btn-success" type="submit" id="button-addon2">검색</button>
+    </div>
+</form>-->
+
+
+
 <div style="margin-left: 30px;">
     <table class="table table-hover">
         <thead>
@@ -11442,10 +11504,18 @@
     </table>
 
     <div style="text-align: center;">
-    <th:block th:each="page:${#numbers.sequence(startPage,endPage)}">
+        <th:block  th:each="page:${#numbers.sequence(startPage,endPage)}">
+            <a class="page-item" th:if="${page != nowPage}" th:href="@{/posts/list(page=${page-1},title=${param.title})}" th:text ="${page}" style="font-size:25px"></a>
+            <strong th:if="${page==nowPage}" th:text ="${page}" style="color:lightskyblue; font-size:25px"></strong>
+        </th:block>
+   <!-- <th:block th:if="${not #strings.isEmpty(title)}" th:each="page:${#numbers.sequence(startPage,endPage)}">
         <a class="page-item" th:if="${page != nowPage}" th:href="@{/posts/list(page=${page-1})}" th:text ="${page}" style="font-size:25px"></a>
         <strong th:if="${page==nowPage}" th:text ="${page}" style="color:lightskyblue; font-size:25px"></strong>
     </th:block>
+        <th:block th:if="${#strings.isEmpty(title)}" th:each="page:${#numbers.sequence(startPage,endPage)}">
+            <a class="page-item" th:if="${page != nowPage}" th:href="@{/posts/list(page=${page-1},title=${title})}" th:text ="${page}" style="font-size:25px"></a>
+            <strong th:if="${page==nowPage}" th:text ="${page}" style="color:lightskyblue; font-size:25px"></strong>
+        </th:block>-->
     </div>
 
     <!--    <ul class="pagination justify-content-center">
