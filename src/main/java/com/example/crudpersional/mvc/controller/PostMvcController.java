@@ -99,8 +99,15 @@ public class PostMvcController {
 
     @GetMapping("/posts/list")
     public String getPostList(@PageableDefault(page = 0 ,size = 10, sort ="registeredAt",
-            direction = Sort.Direction.DESC) Pageable pageable, Model model) {
-
+            direction = Sort.Direction.DESC) Pageable pageable, Model model, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) User loginMember,HttpServletResponse response) throws Exception {
+        //비 로그인 사용자 시 로그인 유도 
+        if (loginMember == null) {
+            response.setContentType("text/html; charset=UTF-8");
+            PrintWriter out = response.getWriter();
+            out.println("<script>alert('글 목록 보기는 로그인 후에 진행해주세요🤗'); history.go(-1);</script>");
+            out.flush();
+        }
+        
         log.info("list에는 들어오나?");
         Page<Post> posts = postService.getViewPosts(pageable);
         //페이지블럭 처리
