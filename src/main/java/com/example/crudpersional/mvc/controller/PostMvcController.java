@@ -28,6 +28,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.PrintWriter;
 import java.util.List;
 
@@ -97,18 +98,11 @@ public class PostMvcController {
         return url;
     }
 
-
     @GetMapping("/posts/list")
     public String getPostList(@PageableDefault(page = 0 ,size = 10, sort ="registeredAt",
             direction = Sort.Direction.DESC) Pageable pageable, Model model, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) User loginMember,HttpServletResponse response) throws Exception {
         //비 로그인 사용자 시 로그인 유도
-        if (loginMember == null) {
-            response.setContentType("text/html; charset=UTF-8");
-            PrintWriter out = response.getWriter();
-            out.println("<script>alert('글 목록 보기는 로그인 후에 진행해주세요🤗'); history.go(-1);</script>");
-            out.flush();
-        }
-        
+
         log.info("list에는 들어오나?");
         Page<Post> posts = postService.getViewPosts(pageable);
         //페이지블럭 처리
@@ -126,7 +120,6 @@ public class PostMvcController {
     }
 
 
-
     //포스트 상세보기
     @GetMapping("/post/getOne/{id}")
     public String getPost(@PathVariable Long id,Model model) {
@@ -138,14 +131,21 @@ public class PostMvcController {
 
 
     @GetMapping("/post/{id}/edit")
-    public String updatePost(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) User loginMember, @PathVariable Long id,Model model) {
+    public String updatePost(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) User loginMember, @PathVariable Long id,Model model,HttpServletResponse response) throws Exception{
         log.info("id :{}" ,id);
 
+        if (loginMember == null) {
+            response.setContentType("text/html; charset=UTF-8");
+            PrintWriter out = response.getWriter();
+            out.println("<script>alert('해당 글을 작성한 회원만 수정 할 권한이 있습니다.🤗'); history.go(-1);</script>");
+            out.flush();
+        }
 
         PostSelectResponse post = postService.getPost(id);
         if (!loginMember.getUserName().equals(post.getUserName())) {
-            throw new UserException(ErrorCode.INVALID_PERMISSION, "글을 작성한 회원만 수정할 권한이 있습니다");
+            throw new UserException(ErrorCode.INVALID_PERMISSION, "해당 글을 작성한 회원만 수정 할 권한이 있습니다");
         }
+
         model.addAttribute("postForm", post);
         model.addAttribute("postId", id);
         log.info("타임리프에 넘길 id:{}", id);
@@ -175,12 +175,12 @@ public class PostMvcController {
     }
 
     @PostMapping("post/{id}/delete")
-    public String delete(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) User loginMember,@PathVariable Long id,HttpServletResponse response) throws Exception {
+    public String delete(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) User loginMember, @PathVariable Long id, HttpServletResponse response, HttpSession session) throws Exception {
 
         Post post = postRepository.findById(id).orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND, "해당 post는 존재하지 않습니다."));
         log.info("session id:{}",loginMember.getId());
         log.info("posted user id:{}",post.getUser().getId());
-        if (loginMember.getId() != post.getUser().getId()) {
+        if (loginMember.getId() != post.getUser().getId() || session.getAttribute("loginMember") == null) {
             throw new PostException(ErrorCode.INVALID_PERMISSION, "글을 작성한 본인만 글을 삭제할 수 있습니다");
         }else{
             postService.deleteMvcPost(id);
