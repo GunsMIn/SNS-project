@@ -72,6 +72,7 @@ public class PostMvcController {
             out.flush();
         }
         return url;
+        //
     }
 
     //validated 적용
@@ -100,7 +101,7 @@ public class PostMvcController {
     @GetMapping("/posts/list")
     public String getPostList(@PageableDefault(page = 0 ,size = 10, sort ="registeredAt",
             direction = Sort.Direction.DESC) Pageable pageable, Model model, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) User loginMember,HttpServletResponse response) throws Exception {
-        //비 로그인 사용자 시 로그인 유도 
+        //비 로그인 사용자 시 로그인 유도
         if (loginMember == null) {
             response.setContentType("text/html; charset=UTF-8");
             PrintWriter out = response.getWriter();

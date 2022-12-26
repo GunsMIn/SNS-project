@@ -28,7 +28,7 @@
                 <label>
                     <!-- <span>PW</span> -->
                     <p style="text-align: left; font-size:12px; color:#666">Password </p>
-                    <input type="text" id="password"  th:field="*{password}"  placeholder="비밀번호를 입력" class="size">
+                    <input type="password" id="password"  th:field="*{password}"  placeholder="비밀번호를 입력" class="size">
                     <!-- <input type="submit" value="확인"> -->
                 </label>
                 <div class="field-error" th:errors="*{password}" />
