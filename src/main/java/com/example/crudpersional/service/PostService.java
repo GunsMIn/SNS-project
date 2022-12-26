@@ -57,6 +57,14 @@ public class PostService {
         return postSelectResponseList;
     }
 
+    /**글 제목으로 조회**/
+    public List<PostSelectResponse> getPostsByTitle (Pageable pageable,String title) {
+        Page<Post> posts = postRepository.findByTitleContaining(pageable, title);
+        List<PostSelectResponse> postSelectResponseList =
+                posts.stream().map(p -> new PostSelectResponse(p)).collect(Collectors.toList());
+        return postSelectResponseList;
+    }
+
     /**글 등록**/                                                 //인증으로 들어온 userName
     public PostAddResponse addPost(PostAddRequest postAddRequest, String userName) {
         log.info("서비스 userName:{}",userName);
@@ -186,4 +194,9 @@ public class PostService {
     public Page<Post> getViewPosts(Pageable pageable) {
         return postRepository.findAll(pageable);
     }
+
+    public Page<Post> searchByTitle(Pageable pageable,String title) {
+        return postRepository.findByTitleContaining(pageable,title);
+    }
+
 }

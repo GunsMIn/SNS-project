@@ -100,11 +100,15 @@ public class PostMvcController {
 
     @GetMapping("/posts/list")
     public String getPostList(@PageableDefault(page = 0 ,size = 10, sort ="registeredAt",
-            direction = Sort.Direction.DESC) Pageable pageable, Model model, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) User loginMember,HttpServletResponse response) throws Exception {
+            direction = Sort.Direction.DESC) Pageable pageable, Model model,String title) throws Exception {
         //비 로그인 사용자 시 로그인 유도
-
-        log.info("list에는 들어오나?");
-        Page<Post> posts = postService.getViewPosts(pageable);
+        Page<Post> posts = null;
+        //title 있을 시 검색조건 페이징 처리 작동
+        if (title == null) {
+            posts = postService.getViewPosts(pageable);
+        }else{
+            posts = postService.searchByTitle(pageable, title);
+        }
         //페이지블럭 처리
         //1을 더해주는 이유는 pageable은 0부터라 1을 처리하려면 1을 더해서 시작해주어야 한다.
         int nowPage = posts.getPageable().getPageNumber() + 1;
@@ -112,6 +116,7 @@ public class PostMvcController {
         int startPage =  Math.max(nowPage - 4, 1);
         int endPage = Math.min(nowPage+9, posts.getTotalPages());
         log.info("list:{}",posts);
+        model.addAttribute("title", title);
         model.addAttribute("posts", posts);
         model.addAttribute("nowPage",nowPage);
         model.addAttribute("startPage", startPage);
