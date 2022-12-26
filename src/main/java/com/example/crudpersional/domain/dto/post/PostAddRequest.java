@@ -2,12 +2,10 @@ package com.example.crudpersional.domain.dto.post;
 
 import com.example.crudpersional.domain.entity.Post;
 import com.example.crudpersional.domain.entity.User;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostAddRequest {

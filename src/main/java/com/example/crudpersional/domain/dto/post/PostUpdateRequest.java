@@ -3,7 +3,7 @@ package com.example.crudpersional.domain.dto.post;
 import com.example.crudpersional.domain.entity.Post;
 import lombok.*;
 
-@Getter @AllArgsConstructor @NoArgsConstructor @ToString
+@Getter @AllArgsConstructor @NoArgsConstructor @ToString @Builder
 public class PostUpdateRequest {
 
     //private Long userId;
