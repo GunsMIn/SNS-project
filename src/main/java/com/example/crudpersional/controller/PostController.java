@@ -67,4 +67,17 @@ public class PostController {
         PostDeleteResponse deletePost = postService.deletePost(postId,authentication.getName());
         return Response.success(deletePost);
     }
+
+    @PostMapping("/{postId}/likes")
+    public Response<Void> like(@PathVariable Long postId, Authentication authentication) {
+        String authenticationName = authentication.getName();
+        postService.like(postId,authenticationName);
+        return Response.success(String.format("%s번의 글 좋아요(Like) 성공",postId));
+    }
+
+    @GetMapping("/{postId}/likes")
+    public Response<String> getLikeCount(@PathVariable Long postId) {
+        Integer likeCount = postService.getLikeCount(postId);
+        return Response.successToMessage(String.format("%s번 게시글의 좋아요 개수 : %d", postId, likeCount));
+    }
 }
