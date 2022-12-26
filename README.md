@@ -48,6 +48,7 @@
 ### @PutMapping("/api/v1/posts/{postId}") : 게시글 수정(변경감지 dirty cash 사용)
 ### @DeleteMapping("/api/v1/posts/{postId}") : 게시글 삭제
 ### @GetMapping("/api/v1/posts") : 게시글 전체 조회(제네릭타입을 응답 타입으로 사용하여 회원 count 기능 추가)
-
+### @PostMapping("/{postId}/likes") : 해당 게시글 좋아요 누르기 기능 -> 회원이 이미 좋아요를 눌렀다면 Exception(LikeException) 발생 => 상태코드 <CONFLICT 409>
+### @GetMapping("/{postId}/likes") : 해당 게시글 좋아요 COUNT 반환 
 <br><br>
 
