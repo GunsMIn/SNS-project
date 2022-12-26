@@ -2,9 +2,11 @@ package com.example.crudpersional.service;
 
 import com.example.crudpersional.domain.dto.post.*;
 import com.example.crudpersional.domain.dto.user.UserDeleteRequest;
+import com.example.crudpersional.domain.entity.LikeEntity;
 import com.example.crudpersional.domain.entity.Post;
 import com.example.crudpersional.domain.entity.User;
 import com.example.crudpersional.exceptionManager.ErrorCode;
+import com.example.crudpersional.exceptionManager.LikeException;
 import com.example.crudpersional.exceptionManager.PostException;
 import com.example.crudpersional.exceptionManager.UserException;
 import com.example.crudpersional.mvc.dto.PostForm;
@@ -36,7 +38,6 @@ public class PostService {
     private final CommentRepository commentRepository;
 
     /**글 단건 조회**/
-    @Transactional(readOnly = true)
     public PostSelectResponse getPost(Long postId) {
         Optional<Post> postOptional = postRepository.findById(postId);
         Post post = postOptional.orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND,"해당 글 없습니다"));
@@ -48,7 +49,6 @@ public class PostService {
     }
 
     /**글 전체 조회**/
-    @Transactional(readOnly = true)
     public List<PostSelectResponse> getPosts(Pageable pageable) {
         Page<Post> posts = postRepository.findAll(pageable);
         List<PostSelectResponse> postSelectResponseList =
@@ -121,10 +121,32 @@ public class PostService {
 
     /**like**/
     public void like(Long postId,String userName) {
+        //해당 글 찾음
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND, "해당 글은 존재하지 않습니다"));
-        
+        //해당 유저 찾음
+        User user = userRepository.findOptionalByUserName(userName)
+                .orElseThrow(() -> new UserException(ErrorCode.USERNAME_NOT_FOUND, String.format("%s님은 좋아요 권한이 없습니다.", userName)));
 
+        //글(post) 회원(user) 찾음으로 like 눌렀는지 확인
+        //ifPresent() 메소드 = 값을 가지고 있는지 확인 후 예외처리 / 값이 존재한다면 예외처리 진행
+        likeEntityRepository.findByUserAndPost(user,post)
+                .ifPresent(item -> new LikeException(ErrorCode.ALREADY_LIKED, String.format("이미 %d번 글의 좋아요를 눌렀습니다",postId)));
+
+        LikeEntity like = LikeEntity.of(user, post);
+        likeEntityRepository.save(like);
+    }
+
+    /**
+     * 해당 글 좋아요 개수
+     * @PathVarable로 들어오는 postId로 post entity조회 후 좋아요 count 계산 후 반환
+     * */
+    public Integer getLikeCount(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND, "해당 글은 존재하지 않습니다."));
+
+        Integer postLikeCount = likeEntityRepository.countByPost(post);
+        return postLikeCount;
     }
 
 
