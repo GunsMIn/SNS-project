@@ -8,6 +8,8 @@ import com.example.crudpersional.exceptionManager.ErrorCode;
 import com.example.crudpersional.exceptionManager.PostException;
 import com.example.crudpersional.exceptionManager.UserException;
 import com.example.crudpersional.mvc.dto.PostForm;
+import com.example.crudpersional.repository.CommentRepository;
+import com.example.crudpersional.repository.LikeRepository;
 import com.example.crudpersional.repository.PostRepository;
 import com.example.crudpersional.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +32,11 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final LikeRepository likeEntityRepository;
+    private final CommentRepository commentRepository;
 
+    /**글 단건 조회**/
+    @Transactional(readOnly = true)
     public PostSelectResponse getPost(Long postId) {
         Optional<Post> postOptional = postRepository.findById(postId);
         Post post = postOptional.orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND,"해당 글 없습니다"));
@@ -41,7 +47,9 @@ public class PostService {
         return postSelectResponse;
     }
 
-   public List<PostSelectResponse> getPosts(Pageable pageable) {
+    /**글 전체 조회**/
+    @Transactional(readOnly = true)
+    public List<PostSelectResponse> getPosts(Pageable pageable) {
         Page<Post> posts = postRepository.findAll(pageable);
         List<PostSelectResponse> postSelectResponseList =
                 posts.stream().map(p -> new PostSelectResponse(p)).collect(Collectors.toList());
@@ -49,11 +57,7 @@ public class PostService {
         return postSelectResponseList;
     }
 
-    public Page<Post> getViewPosts(Pageable pageable) {
-        return postRepository.findAll(pageable);
-    }
-
-                                                                //인증으로 들어온 userName
+    /**글 등록**/                                                 //인증으로 들어온 userName
     public PostAddResponse addPost(PostAddRequest postAddRequest, String userName) {
         log.info("서비스 userName:{}",userName);
         //userName으로 해당 User엔티티 찾아옴
@@ -71,7 +75,7 @@ public class PostService {
         return postAddResponse;
     }
 
-
+    /**글 수정**/
     public PostUpdateResponse updatePost(Long postId, PostUpdateRequest postUpdateRequest,String userName) {
         log.info("수정 요청 dto :{}", postUpdateRequest);
         Post findPost =
@@ -95,7 +99,7 @@ public class PostService {
         return postUpdateResponse;
 
     }
-
+    /**글 삭제**/
     public PostDeleteResponse deletePost(Long postId, String userName) {
         Optional<Post> optionalPost = postRepository.findById(postId);
         Post post =
@@ -114,6 +118,22 @@ public class PostService {
         PostDeleteResponse deleteResponse = new PostDeleteResponse("포스트 삭제 완료", post.getId());
         return deleteResponse;
     }
+
+    /**like**/
+    public void like(Long postId,String userName) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND, "해당 글은 존재하지 않습니다"));
+        
+
+    }
+
+
+
+
+
+
+
+
 
     /***********************************************MVC********************************************************/
     public Post addMvcPost(PostForm postAddRequest, String userName) {
@@ -139,5 +159,9 @@ public class PostService {
 
     public void deleteMvcPost(Long id) {
         postRepository.deleteById(id);
+    }
+
+    public Page<Post> getViewPosts(Pageable pageable) {
+        return postRepository.findAll(pageable);
     }
 }
