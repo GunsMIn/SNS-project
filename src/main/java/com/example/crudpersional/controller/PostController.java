@@ -45,6 +45,12 @@ public class PostController {
         return Response.success(new PageImpl<>(posts));
     } //
 
+    @GetMapping("/api/v1/posts/{title}")
+    public Response<PageImpl<PostSelectResponse>> getByTitle(@PageableDefault(size = 20, sort = "registeredAt",
+            direction = Sort.Direction.DESC) Pageable pageable, String title) {
+        List<PostSelectResponse> postsByTitle = postService.getPostsByTitle(pageable, title);
+        return Response.success(new PageImpl<>(postsByTitle));
+    }
 
     @PostMapping("/api/v1/posts")
     public Response<PostAddResponse> add(@RequestBody PostAddRequest postAddRequest, Authentication authentication) {
@@ -80,4 +86,7 @@ public class PostController {
         Integer likeCount = postService.getLikeCount(postId);
         return Response.successToMessage(String.format("%s번 게시글의 좋아요 개수 : %d", postId, likeCount));
     }
+
+
+
 }
