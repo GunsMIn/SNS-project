@@ -38,5 +38,12 @@ public class Post extends BaseEntity{
         this.user = user;
     }
 
+    public static Post of(String title, String body, User user) {
+        Post entity = new Post();
+        entity.setTitle(title);
+        entity.setBody(body);
+        entity.setUser(user);
+        return entity;
+    }
 
 }

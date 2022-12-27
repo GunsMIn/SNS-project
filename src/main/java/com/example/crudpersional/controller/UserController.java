@@ -4,6 +4,7 @@ import com.example.crudpersional.domain.dto.*;
 import com.example.crudpersional.domain.dto.user.*;
 import com.example.crudpersional.domain.entity.User;
 import com.example.crudpersional.service.UserService;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ public class UserController {
     private final UserService userService;
 
     //회원가입 컨트롤러
+    @ApiOperation(value = "회원가입", notes = "회원가입 API")
     @PostMapping("/join")
     public Response<UserJoinResponse> join(@RequestBody UserJoinRequest userJoinRequest) {
         log.info("userJoinRequest :{} ", userJoinRequest);
@@ -30,6 +32,7 @@ public class UserController {
     }
 
     //로그인 컨트롤러
+    @ApiOperation(value = "로그인", notes = "로그인 성공 후 JWT토큰 발급")
     @PostMapping("/login")
     public Response<UserLoginResponse> login(@RequestBody UserLoginRequest userLoginRequest) {
         log.info("userLoginRequest : {} ",userLoginRequest);
@@ -38,6 +41,7 @@ public class UserController {
     }
 
     //회원 조회
+    @ApiOperation(value = "회원 단건 조회(admin)", notes = "userId로 회원 단건 조회")
     @GetMapping("/{userId}")
     public Response<UserSelectResponse> getOne(@PathVariable Long userId) {
 
@@ -46,6 +50,7 @@ public class UserController {
 
     }
     //회원 전체 조회
+    @ApiOperation(value = "회원 전체 조회(admin)", notes = "회원 전체 조회")
     @GetMapping
     public Result<List<UserListResponse>> getOne() {
         List<UserListResponse> responseList = userService.getUsers();

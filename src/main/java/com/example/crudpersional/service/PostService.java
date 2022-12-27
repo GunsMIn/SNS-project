@@ -35,7 +35,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final LikeRepository likeEntityRepository;
-    private final CommentRepository commentRepository;
+    //private final CommentRepository commentRepository;
 
     /**글 단건 조회**/
     public PostSelectResponse getPost(Long postId) {

@@ -53,4 +53,12 @@ public class User extends BaseEntity{
         this.userName = userName;
         this.password = password;
     }
+
+    public static User of(String userName, String encodedPwd) {
+        User entity = new User();
+        entity.setUserName(userName);
+        entity.setPassword(encodedPwd);
+        return entity;
+    }
+
 }
