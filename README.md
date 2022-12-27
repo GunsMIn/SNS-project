@@ -4,13 +4,15 @@
 
 ## Running Docker on AWS EC2(Hospital Project🔽)
 ### http://ec2-3-35-209-220.ap-northeast-2.compute.amazonaws.com:8080
-#### 메인화면 
-![Screenshot 2022-12-24 at 18 39 43](https://user-images.githubusercontent.com/104709432/209433782-d7684bf1-7ff5-4c7b-bbf6-135f84551d53.JPG)
+#### MY VIEW 
+![Screenshot 2022-12-27 at 17 08 36](https://user-images.githubusercontent.com/104709432/209633961-f3a94bb2-09c7-4e34-ba06-0b31e89068a3.JPG)
+
 - 1.로그인 회원만 글 작성 가능 - controller 내에서 alert 구현
 - 2.글 작성시 Validation 도입. 제목,내용 하나라도 안쓸 시 validate작동
 - 3.글 목록 페이징 처리 -> 한 페이지의 10개의 글 / 글 최신 순 정렬
 - 4.해당 글 작성 회원만 글 수정/삭제할 수 있는 기능
 - 5.view 단 Thymeleaf 사용
+- 6.제목으로 게시글 검색 
 ## RestApi Swagger 
 ### http://ec2-3-35-209-220.ap-northeast-2.compute.amazonaws.com:8080/swagger-ui/index.html
 # ERD 다이어그램
