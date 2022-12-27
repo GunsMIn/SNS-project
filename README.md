@@ -11,7 +11,7 @@
 - [x] Gitlab CI & Crontab CD
 - [x] 화면 UI 개발 (회원가입, 로그인, 글쓰기, 조회)
 - [x] ADMIN 회원으로 등급업하는 기능
-## Running Docker on AWS EC2(Hospital Project🔽)
+## Running Docker on AWS EC2(ec2 server🔽)
 ### http://ec2-3-35-209-220.ap-northeast-2.compute.amazonaws.com:8080
 #### MY VIEW 
 ![Screenshot 2022-12-27 at 17 08 36](https://user-images.githubusercontent.com/104709432/209633961-f3a94bb2-09c7-4e34-ba06-0b31e89068a3.JPG)
