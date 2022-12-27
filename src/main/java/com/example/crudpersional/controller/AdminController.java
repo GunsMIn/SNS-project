@@ -43,7 +43,7 @@ public class AdminController {
     }
 
     @ApiOperation(value = "회원 UserRole 전환", notes = "회원 UserRole(USER,ADMIN) 전환 API")
-    @PostMapping("/users/{id}/role/change")
+    @PostMapping("/{id}/role/change")
     public Response<UserAdminResponse> updateUserRole(@PathVariable Long id, @RequestBody UserRoleDto userRoleDto,Authentication authentication) {
         log.info("유저 권한 변경 userId:{}", id);
         UserAdminResponse changeRoleResponse = userService.changeRole(authentication.getName(), id, userRoleDto);
