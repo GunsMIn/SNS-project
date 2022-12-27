@@ -1,12 +1,11 @@
 package com.example.crudpersional.service;
-
 import com.example.crudpersional.domain.dto.post.PostAddRequest;
 import com.example.crudpersional.domain.dto.post.PostAddResponse;
 import com.example.crudpersional.domain.dto.post.PostSelectResponse;
-import com.example.crudpersional.domain.dto.post.PostUpdateRequest;
 import com.example.crudpersional.domain.entity.Post;
 import com.example.crudpersional.domain.entity.User;
 import com.example.crudpersional.domain.entity.UserRole;
+import com.example.crudpersional.exceptionManager.ErrorCode;
 import com.example.crudpersional.exceptionManager.UserException;
 import com.example.crudpersional.repository.LikeRepository;
 import com.example.crudpersional.repository.PostRepository;
@@ -15,36 +14,14 @@ import lombok.Data;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
-
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 
 import java.util.Optional;
@@ -79,7 +56,7 @@ class PostServiceTest {
             PostAndUser p = new PostAndUser();
             p.setPostId(1L);
             p.setUserId(1L);
-            p.setUserName("KIMGUNWOO");
+            p.setUserName("test");
             p.setPassword("1234");
             p.setTitle("테스트 제목");
             p.setBody("테스트 내용");
@@ -139,23 +116,46 @@ class PostServiceTest {
 
     @Test
     @DisplayName("글 등록 성공 테스트")
-    void post_success() {
+    void 등록성공() {
         PostAndUser postAndUser = new PostAndUser();
-        PostAndUser dto = postAndUser.getDto();
+        PostAndUser postAndUserDto = postAndUser.getDto();
 
         //목 객체 생성
         Post mockPost = mock(Post.class);
         User mockUser = mock(User.class);
 
-        when(userRepository.findByUserName(fixture.getUserName()))
-                .thenReturn(Optional.of(mockUserEntity));
+       // when(userRepository.save(user)).thenReturn(Optional.of(User));
+        //user 확인
+        when(userRepository.findOptionalByUserName(any()))
+                .thenReturn(Optional.of(mockUser));
+       //post save 확인
         when(postRepository.save(any()))
-                .thenReturn(mockPostEntity);
+                .thenReturn(mockPost);
 
-        Assertions.assertDoesNotThrow(() -> postService.write(fixture.getTitle(), fixture.getBody(), fixture.getUserName()));
+        PostAddRequest postAddRequest = new PostAddRequest(postAndUser.getTitle(), postAndUser.getBody());
+
+        PostAddResponse postAddResponse = postService.addPost(postAddRequest, postAndUser.getUserName());
+        //Assertions.assertEquals(postAddResponse.getPostId(),0l);
+        Assertions.assertDoesNotThrow(() -> postService.addPost(postAddRequest, postAndUser.getUserName()));
     }
 
 
+    //포스트생성시 유저가 존재하지 않을 때 에러
+    @Test
+    @WithMockUser
+    @DisplayName("등록 실패 : 유저 존재하지 않음")
+    void 등록실패() {
+        PostAndUser postAndUser = new PostAndUser();
+        PostAndUser postAndUserDto = postAndUser.getDto();
 
+        PostAddRequest postAddRequest = new PostAddRequest(postAndUser.getTitle(), postAndUser.getBody());
+
+
+        when(userRepository.findOptionalByUserName(postAndUserDto.getUserName())).thenReturn(Optional.empty());
+        when(postRepository.save(any())).thenReturn(mock(Post.class));
+
+        UserException exception = Assertions.assertThrows(UserException.class, () -> postService.addPost(postAddRequest, postAndUser.getUserName()));
+        assertEquals(ErrorCode.USERNAME_NOT_FOUND, exception.getErrorCode());
+    }
 
 }
