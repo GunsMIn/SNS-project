@@ -42,20 +42,6 @@ public class PostMvcController {
     private final UserRepository userRepository;
 
 
-  /*  @GetMapping("/posts/form")
-    public String goWriteForm(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) User loginMember, @ModelAttribute PostForm postForm, Model model) {
-        log.info("글 작성 뷰");
-
-        if (loginMember == null) {
-            return "redirect:/members/joinUser";
-        }
-
-        String userName = loginMember.getUserName();
-        log.info("userName : {}", userName);
-        postForm.setUserName(userName);
-        return "writePost";
-    }*/
-
     @GetMapping("/posts/form")
     public String goWriteForm(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) User loginMember, @ModelAttribute PostForm postForm, HttpServletResponse response) throws Exception{
 
@@ -78,7 +64,7 @@ public class PostMvcController {
 
     //validated 적용
     @PostMapping("/posts/doForm")
-    public String doWriteForm(@Validated @ModelAttribute PostForm postForm, BindingResult result, String userName,HttpServletResponse response) throws Exception {
+    public String doWriteForm(@Validated @ModelAttribute PostForm postForm, BindingResult result, String userName,HttpServletResponse response,Model model) throws Exception {
         //postForm dto에 설정한 validation에 걸릴 시 글 쓰기 폼으로 view 이동
         if(result.hasErrors()){
             return "writePost";
@@ -88,9 +74,12 @@ public class PostMvcController {
         //if문안에 조건은 제목 또는 내용이 없을 시 경고창을 띄우고 /members/loginIndex로 리다이렉트 전송
         if (postForm.getTitle()!=null && postForm.getBody()!=null) {
             postService.addMvcPost(postForm, userName);
+            //model.addAttribute("post", post);
+            //url = "/posts/list";
+            //url = "/post/getOne/"+post.getId();
             response.setContentType("text/html; charset=UTF-8");
             PrintWriter out = response.getWriter();
-            out.println("<script>alert('글 작성이 완료되었습니다.🤗');location.assign('/members/loginIndex');</script>");
+            out.println("<script>alert('글 작성이 완료되었습니다.🤗'); window.location.href = '/posts/list';</script>");
             out.flush();
         }else{
             url = "redirect:/posts/form";

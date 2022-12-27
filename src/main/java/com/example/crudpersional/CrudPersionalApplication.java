@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import javax.persistence.EntityManager;
 
-@EnableJpaAuditing
+
 @SpringBootApplication
 public class CrudPersionalApplication {
 
@@ -16,9 +16,9 @@ public class CrudPersionalApplication {
         SpringApplication.run(CrudPersionalApplication.class, args);
     }
 
-    @Bean
+/*    @Bean
     JPAQueryFactory jpaQueryFactory(EntityManager em) {
         return new JPAQueryFactory(em);
-    }
+    }*/
 
 }
