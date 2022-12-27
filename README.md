@@ -14,7 +14,7 @@
 **화면 UI 개발 (회원가입, 로그인, 글쓰기, 조회, 검색기능 , Validation , Thymeleaf 사용)** | :heavy_check_mark: |  
 **ADMIN 회원으로 등급업하는 기능** | :heavy_check_mark: |  
 **ADMIN 회원만이 일반 회원을 ADMIN으로 승격시키는 기능(일반회원 등급업 기능 불가)** | :heavy_check_mark: |  
-**포스트 좋아요 (Like) / 해당 postId 좋아요 Count 응답** | :heavy_check_mark: |  
+**포스트 좋아요 (Like) / 해당 postId 좋아요 Count** | :heavy_check_mark: |  
 **좋아요 취소** |  |  
 
 ## Running Docker on AWS EC2(ec2 server🔽)
