@@ -51,4 +51,6 @@
 ### @PostMapping("/{postId}/likes") : 해당 게시글 좋아요 누르기 기능 -> 회원이 이미 좋아요를 눌렀다면 Exception(LikeException) 발생 => 상태코드 <CONFLICT 409>
 ### @GetMapping("/{postId}/likes") : 해당 게시글 좋아요 COUNT 반환 
 <br><br>
-
+***
+## Admin RestApi(관리자)
+### @PostMapping("/api/v1/admins/{id}") : Id에 해당하는 회원의 UserRole(USER,ADMIN) 전환 API
