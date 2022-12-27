@@ -2,10 +2,12 @@ package com.example.crudpersional.service;
 import com.example.crudpersional.domain.dto.post.PostAddRequest;
 import com.example.crudpersional.domain.dto.post.PostAddResponse;
 import com.example.crudpersional.domain.dto.post.PostSelectResponse;
+import com.example.crudpersional.domain.dto.post.PostUpdateRequest;
 import com.example.crudpersional.domain.entity.Post;
 import com.example.crudpersional.domain.entity.User;
 import com.example.crudpersional.domain.entity.UserRole;
 import com.example.crudpersional.exceptionManager.ErrorCode;
+import com.example.crudpersional.exceptionManager.PostException;
 import com.example.crudpersional.exceptionManager.UserException;
 import com.example.crudpersional.repository.LikeRepository;
 import com.example.crudpersional.repository.PostRepository;
@@ -156,6 +158,26 @@ class PostServiceTest {
 
         UserException exception = Assertions.assertThrows(UserException.class, () -> postService.addPost(postAddRequest, postAndUser.getUserName()));
         assertEquals(ErrorCode.USERNAME_NOT_FOUND, exception.getErrorCode());
+    }
+
+    @Test
+    @DisplayName("수정 실패 : 작성자!=유저")
+    void 수정_실패() {
+        PostAndUser postAndUser = new PostAndUser();
+        PostAndUser postAndUserDto = postAndUser.getDto();
+        User user1 = UserTestEntity.get("user", "password");
+        User user2 = UserTestEntity.get("user2", "password2");
+
+        //when(postRepository.findById(fixture.getPostId())).thenReturn(Optional.of(mockPostEntity));
+        when(postRepository.findById(postAndUserDto.getPostId())).thenReturn(Optional.of(Post.of("title","body",user1)));
+        when(userRepository.findOptionalByUserName(user1.getUserName())).thenReturn(Optional.of(User.of(user2.getUserName(), user2.getPassword())));
+
+        PostUpdateRequest postUpdateRequest = new PostUpdateRequest(postAndUserDto.getTitle(), postAndUserDto.getBody());
+
+        UserException exception = Assertions.assertThrows(UserException.class, ()
+                -> postService.updatePost(postAndUserDto.getPostId(), postUpdateRequest ,postAndUserDto.getUserName()));
+
+        assertEquals(ErrorCode.INVALID_PERMISSION, exception.getErrorCode());
     }
 
 }
