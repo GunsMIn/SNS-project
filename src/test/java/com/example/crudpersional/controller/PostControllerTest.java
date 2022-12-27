@@ -78,12 +78,11 @@ public class PostControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(postEntity)))
                 .andDo(print())
-                .andExpect(status().isOk());
-                  /* .andExpect(jsonPath("$.id").value(1L));
-             .andExpect(jsonPath("$.title").exists())
-                .andExpect(jsonPath("$.userName").exists())
-                .andExpect(jsonPath("$.createdAt").exists())
-                .andExpect(jsonPath("$.body").exists());*/
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.result.id").value(1L))
+                .andExpect(jsonPath("$.result.title").exists())
+                .andExpect(jsonPath("$.result.userName").exists())
+                .andExpect(jsonPath("$.result.body").exists());
     }
 
 
@@ -232,7 +231,7 @@ public class PostControllerTest {
         when(postService.deletePost(any(), any()))
                 .thenThrow(new PostException(ErrorCode.INVALID_PERMISSION, ""));
 
-        mockMvc.perform(delete("/api/v1/posts/1")
+        mockMvc.perform(delete("/api/v1/posts/1L")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())

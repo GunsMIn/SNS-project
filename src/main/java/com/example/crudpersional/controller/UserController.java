@@ -40,21 +40,6 @@ public class UserController {
         return Response.success(new UserLoginResponse(token)); // 로그인 성공 시 토큰만 반환
     }
 
-    //회원 조회
-    @ApiOperation(value = "회원 단건 조회(admin)", notes = "userId로 회원 단건 조회")
-    @GetMapping("/{userId}")
-    public Response<UserSelectResponse> getOne(@PathVariable Long userId) {
 
-        UserSelectResponse userSelectResponse = userService.getUser(userId);
-        return Response.success(userSelectResponse);
-
-    }
-    //회원 전체 조회
-    @ApiOperation(value = "회원 전체 조회(admin)", notes = "회원 전체 조회")
-    @GetMapping
-    public Result<List<UserListResponse>> getOne() {
-        List<UserListResponse> responseList = userService.getUsers();
-        return new Result(responseList.size(),responseList);
-    }
 
 }

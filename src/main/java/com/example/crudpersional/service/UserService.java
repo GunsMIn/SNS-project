@@ -1,10 +1,9 @@
 package com.example.crudpersional.service;
 
 import com.example.crudpersional.config.jwt.JwtTokenUtil;
-import com.example.crudpersional.domain.dto.user.UserJoinRequest;
-import com.example.crudpersional.domain.dto.user.UserListResponse;
-import com.example.crudpersional.domain.dto.user.UserSelectResponse;
+import com.example.crudpersional.domain.dto.user.*;
 import com.example.crudpersional.domain.entity.User;
+import com.example.crudpersional.domain.entity.UserRole;
 import com.example.crudpersional.exceptionManager.ErrorCode;
 import com.example.crudpersional.exceptionManager.UserException;
 import com.example.crudpersional.mvc.dto.MemberForm;
@@ -14,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.swing.text.html.Option;
 import java.util.List;
@@ -97,5 +97,22 @@ public class UserService {
         return userListResponses;
     }
 
-
+    @Transactional
+    public UserAdminResponse changeRole(String name, Long id, UserRoleDto userRoleDto) {
+        log.info("name : {}",name);
+        log.info("userRoleDto : {}",userRoleDto);
+        User findUser = userRepository.findOptionalByUserName(name).orElseGet(null);
+        UserRole[] roles = UserRole.values();
+        User user = userRepository.findById(id).orElseGet(null);
+        for (UserRole role : roles) {
+            if (role.name().contains(userRoleDto.getRole())) {
+                user.setRole(role);
+            }
+            if (userRoleDto.getRole() == null) {
+                throw new UserException(ErrorCode.USER_ROLE_NOT_FOUND, "잘못되 사용자 권한입니다");
+            }
+        }
+        UserAdminResponse userAdminResponse = UserAdminResponse.transferResponse(user);
+        return userAdminResponse;
+    }
 }
