@@ -3,14 +3,18 @@
 </p>
 
 ## 구현 완료
-- [x] Swagger
-- [x] Spring Security 인증 / 인가 필터 구현
-- [x] 회원가입 / 로그인 구현 (JWT 토큰 발급)
-- [x] 포스트 작성, 수정, 삭제, 리스트 
-- [x] AWS EC2에 Docker 배포
-- [x] Gitlab CI & Crontab CD
-- [x] 화면 UI 개발 (회원가입, 로그인, 글쓰기, 조회, 검색기능 , Validation , Thymeleaf 사용)
-- [x] ADMIN 회원으로 등급업하는 기능
+Function | 완료 | 
+:------------ | :-------------| 
+Swagger | :heavy_check_mark: |  
+Spring Security 인증 / 인가 필터 구현 | :heavy_check_mark: |  
+회원가입 / 로그인 구현 (JWT 토큰 발급) | :heavy_check_mark: |  
+포스트 작성, 수정, 삭제, 리스트 | :heavy_check_mark: |  
+AWS EC2에 Docker 배포 | :heavy_check_mark: |  
+Gitlab CI & Crontab CD | :heavy_check_mark: |  
+화면 UI 개발 (회원가입, 로그인, 글쓰기, 조회, 검색기능 , Validation , Thymeleaf 사용) | :heavy_check_mark: |  
+ADMIN 회원으로 등급업하는 기능 | :heavy_check_mark: |  
+ADMIN 회원만이 일반 회원을 ADMIN으로 승격시키는 기능(일반회원 등급업 기능 불가) | :heavy_check_mark: |  
+
 - [x] ADMIN 회원만이 일반 회원을 ADMIN으로 승격시키는 기능(일반회원 등급업 기능 불가)
 ## Running Docker on AWS EC2(ec2 server🔽)
 ### http://ec2-3-35-209-220.ap-northeast-2.compute.amazonaws.com:8080
