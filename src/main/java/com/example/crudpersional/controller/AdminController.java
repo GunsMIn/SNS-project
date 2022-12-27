@@ -20,7 +20,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/api/v1/admins")
+@RequestMapping("/api/v1/users")
 public class AdminController {
 
     private final UserService userService;
@@ -43,8 +43,8 @@ public class AdminController {
     }
 
     @ApiOperation(value = "회원 UserRole 전환", notes = "회원 UserRole(USER,ADMIN) 전환 API")
-    @PostMapping("/{id}")
-    public Response<UserAdminResponse> updateUserRole(Authentication authentication, @PathVariable Long id, @RequestBody UserRoleDto userRoleDto) {
+    @PostMapping("/users/{id}/role/change")
+    public Response<UserAdminResponse> updateUserRole(@PathVariable Long id, @RequestBody UserRoleDto userRoleDto,Authentication authentication) {
         log.info("유저 권한 변경 userId:{}", id);
         UserAdminResponse changeRoleResponse = userService.changeRole(authentication.getName(), id, userRoleDto);
         return Response.success(changeRoleResponse);
