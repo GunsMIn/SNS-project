@@ -45,12 +45,6 @@ public class PostController {
         return Response.success(new PageImpl<>(posts));
     } //
 
-    @GetMapping("/api/v1/posts/{title}")
-    public Response<PageImpl<PostSelectResponse>> getByTitle(@PageableDefault(size = 20, sort = "registeredAt",
-            direction = Sort.Direction.DESC) Pageable pageable, String title) {
-        List<PostSelectResponse> postsByTitle = postService.getPostsByTitle(pageable, title);
-        return Response.success(new PageImpl<>(postsByTitle));
-    }
 
     @PostMapping("/api/v1/posts")
     public Response<PostAddResponse> add(@RequestBody PostAddRequest postAddRequest, Authentication authentication) {
@@ -61,10 +55,10 @@ public class PostController {
         return Response.success(postAddResponse);
     }
 
-    @PutMapping("/api/v1/posts/{postId}")
-    public Response<PostUpdateResponse> update(@PathVariable Long postId, @RequestBody PostUpdateRequest postUpdateRequest,Authentication authentication) {
+    @PutMapping("/api/v1/posts/{id}")
+    public Response<PostUpdateResponse> update(@PathVariable Long id, @RequestBody PostUpdateRequest postUpdateRequest,Authentication authentication) {
         log.info("수정 controller :{}", postUpdateRequest);
-        PostUpdateResponse postUpdateResponse = postService.updatePost(postId, postUpdateRequest,authentication.getName());
+        PostUpdateResponse postUpdateResponse = postService.updatePost(id, postUpdateRequest,authentication.getName());
         return Response.success(postUpdateResponse);
     }
 
