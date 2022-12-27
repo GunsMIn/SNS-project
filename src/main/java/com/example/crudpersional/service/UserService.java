@@ -108,19 +108,26 @@ public class UserService {
     }
 
     private User checkUserRole(String name, Long id, UserRoleDto userRoleDto) {
-        //회원 존재 유무 확인
-        userRepository.findOptionalByUserName(name)
-                .orElseThrow(() -> new UserException(ErrorCode.USERNAME_NOT_FOUND,"해당 회원은 존재하지 않습니다"));
-        //회원 id로 조회 후 엔티티 반환
+        //주의! findUser와 user 변수 혼동 No
+        //findUser는 토큰을 통해 인증 된 회원 -> 로그인된 회원
+        User findUser = userRepository.findOptionalByUserName(name)
+                .orElseThrow(() -> new UserException(ErrorCode.USERNAME_NOT_FOUND, "해당 회원은 존재하지 않습니다"));
+        log.info("findUser.getRole() :{}", findUser.getRole());
+        //Admin회원만 UserRole 전환 가능
+        if (!findUser.getRole().equals(UserRole.ADMIN)) {
+            throw new UserException(ErrorCode.INVALID_PERMISSION, "관리자(ADMIN)만 권한 변경을 할 수 있습니다.");
+        }
+        //@PathVariable로 들어온 id로 조회 -> role 변환 될 대상
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND, String.format("%d번 회원은 존재하지 않습니다", id)));
 
-        //RequestBody의 값(role) check
+        //RequestBody의 값(role)이 UserRole에 해당하는 값 check (RequestBody의 값이 string으로 들어와서 "" 문자열 비교)
         if (!userRoleDto.getRole().equals("ADMIN") && !userRoleDto.getRole().equals("USER")) {
             throw new UserException(ErrorCode.USER_ROLE_NOT_FOUND, "권한은 일반회원(USER),관리자(ADMIN)입니다.");
         }
         //enum타입 값
         UserRole[] roles = UserRole.values();
+        //반복 돌면서 UserRole에 해당하는 값을 User엔티티의 role필드에 setter로 넣어줌
         for (UserRole role : roles) {
             if (role.name().equals(userRoleDto.getRole())) {
                 user.setRole(role);
