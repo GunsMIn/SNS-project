@@ -11,6 +11,6 @@ public class HelloController {
 
     @GetMapping("/api/v1/hello")
     public ResponseEntity<String> hello() {
-        return ResponseEntity.ok().body("kimgunwoo");
+        return ResponseEntity.ok().body("김건우");
     }
 }
