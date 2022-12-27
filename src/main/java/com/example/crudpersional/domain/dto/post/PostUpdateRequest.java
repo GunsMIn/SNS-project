@@ -6,7 +6,6 @@ import lombok.*;
 @Getter @AllArgsConstructor @NoArgsConstructor @ToString @Builder
 public class PostUpdateRequest {
 
-    //private Long userId;
     private String title;
     private String body;
 
