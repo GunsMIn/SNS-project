@@ -1,6 +1,12 @@
 # 개인프로젝트 게시판  / JPA를 이용한 RestApi 구현 / Spring Security (JWT 토큰)
 <p align="center"><img width="750" alt="jenkins-docker-springboot-cicd" src="https://user-images.githubusercontent.com/104709432/209429451-36eac449-39d0-40a0-ac41-194c979c021d.png">
 </p>
+</br>
+
+## RestApi Swagger 
+### http://ec2-3-35-209-220.ap-northeast-2.compute.amazonaws.com:8080/swagger-ui/index.html</br>
+
+***
 
 ## 구현 완료
 **Function** | **완료** | 
@@ -28,8 +34,7 @@
 - 4.해당 글 작성 회원만 글 수정/삭제할 수 있는 기능
 - 5.view 단 Thymeleaf 사용
 - 6.제목으로 게시글 검색 
-## RestApi Swagger 
-### http://ec2-3-35-209-220.ap-northeast-2.compute.amazonaws.com:8080/swagger-ui/index.html
+
 # ERD 다이어그램
 <p align="center">
 <img width="360" alt="erd7" src="https://user-images.githubusercontent.com/104709432/209429249-e094ff1d-f979-4604-88fa-b60e72de62d1.PNG">
