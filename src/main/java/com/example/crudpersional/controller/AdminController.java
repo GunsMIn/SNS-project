@@ -7,6 +7,8 @@ import com.example.crudpersional.domain.dto.user.UserListResponse;
 import com.example.crudpersional.domain.dto.user.UserRoleDto;
 import com.example.crudpersional.domain.dto.user.UserSelectResponse;
 import com.example.crudpersional.service.UserService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +44,16 @@ public class AdminController {
         return new Result(responseList.size(),responseList);
     }
 
-    @ApiOperation(value = "회원 UserRole 전환", notes = "회원 UserRole(USER,ADMIN) 전환 API")
+    @ApiOperation(value = "회원 UserRole 전환", notes = "회원 UserRole(USER,ADMIN) 전환 API ")
+    @ApiImplicitParams({
+                    @ApiImplicitParam(
+                            name = "id"
+                            , value = "회원 ID"
+                            , required = true
+                            , dataType = "Long"
+                            , paramType = "path"
+                            , defaultValue = "None")
+            })
     @PostMapping("/{id}/role/change")
     public Response<UserAdminResponse> updateUserRole(@PathVariable Long id, @RequestBody UserRoleDto userRoleDto,Authentication authentication) {
         log.info("유저 권한 변경 userId:{}", id);

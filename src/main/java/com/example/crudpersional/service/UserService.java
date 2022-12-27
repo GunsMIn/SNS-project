@@ -101,21 +101,31 @@ public class UserService {
     public UserAdminResponse changeRole(String name, Long id, UserRoleDto userRoleDto) {
         log.info("name : {}",name);
         log.info("userRoleDto : {}",userRoleDto);
-
-        userRepository.findOptionalByUserName(name)
-                .orElseThrow(() -> new UserException(ErrorCode.USERNAME_NOT_FOUND,"해당 회원은 존재하지 않습니다"));
-
-        UserRole[] roles = UserRole.values();
-        User user = userRepository.findById(id).orElseGet(null);
-        for (UserRole role : roles) {
-            if (role.name().contains(userRoleDto.getRole())) {
-                user.setRole(role);
-            }
-            if (userRoleDto.getRole() == null) {
-                throw new UserException(ErrorCode.USER_ROLE_NOT_FOUND, "잘못되 사용자 권한입니다");
-            }
-        }
+        //회원 검즘 + UserRole 검증 메서드
+        User user = checkUserRole(name, id, userRoleDto);
         UserAdminResponse userAdminResponse = UserAdminResponse.transferResponse(user);
         return userAdminResponse;
+    }
+
+    private User checkUserRole(String name, Long id, UserRoleDto userRoleDto) {
+        //회원 존재 유무 확인
+        userRepository.findOptionalByUserName(name)
+                .orElseThrow(() -> new UserException(ErrorCode.USERNAME_NOT_FOUND,"해당 회원은 존재하지 않습니다"));
+        //회원 id로 조회 후 엔티티 반환
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND, String.format("%d번 회원은 존재하지 않습니다", id)));
+
+        //RequestBody의 값(role) check
+        if (!userRoleDto.getRole().equals("ADMIN") && !userRoleDto.getRole().equals("USER")) {
+            throw new UserException(ErrorCode.USER_ROLE_NOT_FOUND, "권한은 일반회원(USER),관리자(ADMIN)입니다.");
+        }
+        //enum타입 값
+        UserRole[] roles = UserRole.values();
+        for (UserRole role : roles) {
+            if (role.name().equals(userRoleDto.getRole())) {
+                user.setRole(role);
+            }
+        }
+        return user;
     }
 }
