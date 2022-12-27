@@ -101,7 +101,10 @@ public class UserService {
     public UserAdminResponse changeRole(String name, Long id, UserRoleDto userRoleDto) {
         log.info("name : {}",name);
         log.info("userRoleDto : {}",userRoleDto);
-        User findUser = userRepository.findOptionalByUserName(name).orElseGet(null);
+
+        userRepository.findOptionalByUserName(name)
+                .orElseThrow(() -> new UserException(ErrorCode.USERNAME_NOT_FOUND,"해당 회원은 존재하지 않습니다"));
+
         UserRole[] roles = UserRole.values();
         User user = userRepository.findById(id).orElseGet(null);
         for (UserRole role : roles) {

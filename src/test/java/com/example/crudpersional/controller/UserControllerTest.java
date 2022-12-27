@@ -57,7 +57,7 @@ class UserControllerTest {
     @Test
     @DisplayName("회원가입 성공 테스트")
     @WithMockUser
-    void join() throws Exception {
+    void 회원가입_성공() throws Exception {
 
         UserJoinRequest request
                 = UserJoinRequest
@@ -89,7 +89,7 @@ class UserControllerTest {
     @Test
     @DisplayName("회원가입 실패 : username 중복")
     @WithMockUser
-    void join_fail() throws Exception {
+    void 회원가입_실패() throws Exception {
         UserJoinRequest userJoinRequest = UserJoinRequest.builder()
                 .userName("김건우")
                 .password("1234")
@@ -110,7 +110,7 @@ class UserControllerTest {
     @Test
     @DisplayName("로그인 성공")
     @WithMockUser
-    void login_success() throws Exception {
+    void 로그인_성공() throws Exception {
         UserLoginRequest userLoginRequest = UserLoginRequest.builder()
                 .userName("김건우")
                 .password("1234")
@@ -134,7 +134,7 @@ class UserControllerTest {
     @Test
     @DisplayName("로그인 실패 - username 없음")
     @WithMockUser
-    void login_fail1() throws Exception {
+    void 로그인실패_username_없음() throws Exception {
         UserLoginRequest userLoginRequest = UserLoginRequest.builder()
                 .userName("김건우")
                 .password("1234")
@@ -155,7 +155,7 @@ class UserControllerTest {
     @Test
     @DisplayName("로그인 실패 - password틀림")
     @WithMockUser
-    void login_fail2() throws Exception {
+    void 로그인실패_password틀림() throws Exception {
         UserLoginRequest userLoginRequest = UserLoginRequest.builder()
                 .userName("김건우")
                 .password("1234")

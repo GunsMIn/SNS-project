@@ -116,8 +116,8 @@ public class PostControllerTest {
 
     @Test
     @WithAnonymousUser // 인증 된지 않은 상태
-    @DisplayName("포스트 작성 실패(1) : 인증 실패")
-    void post_fail1() throws Exception {
+    @DisplayName("포스트 작성 실패 : 인증 실패")
+    void 작성실패() throws Exception {
 
         PostAddRequest postRequest = PostAddRequest.builder()
                 .title("테스트 제목")
@@ -138,7 +138,7 @@ public class PostControllerTest {
     @Test
     @WithMockUser   // 인증된 상태
     @DisplayName("포스트 수정 성공")
-    void modify_success() throws Exception {
+    void 수정성공() throws Exception {
 
         PostUpdateRequest modifyRequest = PostUpdateRequest.builder()
                 .title("테스트 제목")
@@ -165,8 +165,8 @@ public class PostControllerTest {
 
     @Test
     @WithAnonymousUser // 인증 되지 않은 상태
-    @DisplayName("포스트 수정 실패(1) : 인증 실패")
-    void modify_fail1() throws Exception {
+    @DisplayName("포스트 수정 실패 : 인증 실패")
+    void 수정실패() throws Exception {
 
         PostUpdateRequest modifyRequest = PostUpdateRequest.builder()
                 .title("테스트 제목")
@@ -187,9 +187,9 @@ public class PostControllerTest {
 
 
     @Test
-    @WithMockUser   // 인증된 상태
-    @DisplayName("포스트 수정 실패(3) : 작성자 불일치")
-    void modify_fail3() throws Exception {
+    @WithMockUser
+    @DisplayName("포스트 수정 실패 : 작성자 불일치")
+    void 수정실패_작성자불일치() throws Exception {
 
         PostUpdateRequest modifyRequest = PostUpdateRequest.builder()
                 .title("title_modify")
@@ -210,9 +210,9 @@ public class PostControllerTest {
 
 
     @Test
-    @WithMockUser   // 인증된 상태
+    @WithMockUser
     @DisplayName("포스트 삭제 성공")
-    void delete_success() throws Exception {
+    void 삭제성공() throws Exception {
 
         mockMvc.perform(delete("/api/v1/posts/1")
                 .with(csrf())
@@ -224,9 +224,9 @@ public class PostControllerTest {
     }
 
     @Test
-    @WithAnonymousUser // 인증 된지 않은 상태
-    @DisplayName("포스트 삭제 실패(1) : 인증 실패")
-    void delete_fail1() throws Exception {
+    @WithAnonymousUser
+    @DisplayName("포스트 삭제 실패 : 인증 실패")
+    void 삭제실패() throws Exception {
 
         when(postService.deletePost(any(), any()))
                 .thenThrow(new PostException(ErrorCode.INVALID_PERMISSION, ""));
@@ -242,8 +242,8 @@ public class PostControllerTest {
 
     @Test
     @WithMockUser   // 인증된 상태
-    @DisplayName("포스트 삭제 실패(3) : 작성자 불일치")
-    void delete_fail3() throws Exception {
+    @DisplayName("포스트 삭제 실패 : 작성자 불일치")
+    void 삭제실패_작성자불일치() throws Exception {
 
         when(postService.deletePost(any(), any()))
                 .thenThrow(new PostException(ErrorCode.INVALID_PERMISSION, ""));
