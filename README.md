@@ -2,6 +2,15 @@
 <p align="center"><img width="750" alt="jenkins-docker-springboot-cicd" src="https://user-images.githubusercontent.com/104709432/209429451-36eac449-39d0-40a0-ac41-194c979c021d.png">
 </p>
 
+## 구현 완료
+- [x] Swagger
+- [x] Spring Security 인증 / 인가 필터 구현
+- [x] 회원가입 / 로그인 구현
+- [x] 포스트 작성, 수정, 삭제, 리스트 
+- [x] AWS EC2에 Docker 배포
+- [x] Gitlab CI & Crontab CD
+- [x] 화면 UI 개발 (회원가입, 로그인, 글쓰기, 조회)
+- [x] ADMIN 회원으로 등급업하는 기능
 ## Running Docker on AWS EC2(Hospital Project🔽)
 ### http://ec2-3-35-209-220.ap-northeast-2.compute.amazonaws.com:8080
 #### MY VIEW 
@@ -40,8 +49,6 @@
 <img width="550" alt="캡처7" src="https://user-images.githubusercontent.com/104709432/204981292-1375306f-966a-4b19-8f80-c15d5b97d5a0.PNG"><br>
 - **2.비밀번호 틀릴 시 로그인 실패->HttpStatus.BAD_REQUEST(400), message = "Not correct password errorCode"처리**
 <img width="550" alt="캡처6" src="https://user-images.githubusercontent.com/104709432/204980562-6777a266-6046-480a-bed1-be44673ac462.PNG"><br>
-### @GetMapping("/api/v1/users/{userId}") : 회원 단건 조회
-### @GettMapping("/api/v1/users") : 회원 전체 조회
 ***
 
 ## Post RestApi(게시글)
@@ -52,7 +59,8 @@
 ### @GetMapping("/api/v1/posts") : 게시글 전체 조회(제네릭타입을 응답 타입으로 사용하여 회원 count 기능 추가)
 ### @PostMapping("/{postId}/likes") : 해당 게시글 좋아요 누르기 기능 -> 회원이 이미 좋아요를 눌렀다면 Exception(LikeException) 발생 => 상태코드 <CONFLICT 409>
 ### @GetMapping("/{postId}/likes") : 해당 게시글 좋아요 COUNT 반환 
-<br><br>
 ***
 ## Admin RestApi(관리자)
-### @PostMapping("/api/v1/admins/{id}") : Id에 해당하는 회원의 UserRole(USER,ADMIN) 전환 API
+### @PostMapping("/api/v1/users/{id}/role/change}") : Id에 해당하는 회원의 UserRole(USER,ADMIN) 전환 API
+### @GetMapping("/api/v1/users/{userId}") : 회원 단건 조회
+### @GettMapping("/api/v1/users") : 회원 전체 조회
