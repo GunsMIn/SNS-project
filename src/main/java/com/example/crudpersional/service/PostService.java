@@ -100,9 +100,8 @@ public class PostService {
         if (userId != findPost.getUser().getId()) {
             throw new PostException(ErrorCode.INVALID_PERMISSION, "해당 회원은 수정할 권한이 없습니다");
         }
-        //변경감지 수정
-        findPost.setTitle(postUpdateRequest.getTitle());
-        findPost.setBody(postUpdateRequest.getBody());
+        //변경감지 수정 메서드
+        findPost.update(postUpdateRequest.getTitle(),postUpdateRequest.getBody());
 
         PostUpdateResponse postUpdateResponse = new PostUpdateResponse("포스트 수정 완료", findPost.getId());
         return postUpdateResponse;
