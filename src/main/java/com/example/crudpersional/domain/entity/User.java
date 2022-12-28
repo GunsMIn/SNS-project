@@ -15,10 +15,11 @@ import static javax.persistence.EnumType.*;
 @Getter
 @Entity
 @ToString
-@NoArgsConstructor @Setter
+@NoArgsConstructor
 /*@Where(clause = "deleted_at IS NULL")
 @SQLDelete(sql = "UPDATE user SET deleted_at = CURRENT_TIMESTAMP where id = ?")*/
 public class User extends BaseEntity{
+
 
     @Id
     @GeneratedValue
@@ -54,11 +55,20 @@ public class User extends BaseEntity{
         this.password = password;
     }
 
+    public User(UserRole role) {
+        this.role = role;
+    }
+
     public static User of(String userName, String encodedPwd) {
-        User entity = new User();
-        entity.setUserName(userName);
-        entity.setPassword(encodedPwd);
-        return entity;
+        return  User
+                .builder()
+                .userName(userName)
+                .password(encodedPwd)
+                .build();
+    }
+
+    public void changeRole(UserRole role) {
+        this.role = role;
     }
 
 }

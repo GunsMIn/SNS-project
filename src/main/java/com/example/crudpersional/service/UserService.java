@@ -77,6 +77,7 @@ public class UserService {
     }
 
     //회원 조회
+    @Transactional(readOnly = true)
     public UserSelectResponse getUser(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(
@@ -90,6 +91,7 @@ public class UserService {
     }
 
     //회원 전체 조회
+    @Transactional(readOnly = true)
     public List<UserListResponse> getUsers() {
         List<User> users = userRepository.findAll();
         List<UserListResponse> userListResponses = users.stream().map(u -> new UserListResponse(u.getId(), u.getUserName()))
@@ -101,7 +103,7 @@ public class UserService {
     public UserAdminResponse changeRole(String name, Long id, UserRoleDto userRoleDto) {
         log.info("name : {}",name);
         log.info("userRoleDto : {}",userRoleDto);
-        //회원 검즘 + UserRole 검증 메서드
+        //회원 검증 + UserRole 검증 메서드
         User user = checkUserRole(name, id, userRoleDto);
         UserAdminResponse userAdminResponse = UserAdminResponse.transferResponse(user);
         return userAdminResponse;
@@ -130,7 +132,9 @@ public class UserService {
         //반복 돌면서 UserRole에 해당하는 값을 User엔티티의 role필드에 setter로 넣어줌
         for (UserRole role : roles) {
             if (role.name().equals(userRoleDto.getRole())) {
-                user.setRole(role);
+                log.info("바꿔야될 role 값 :{}",role);
+                user.changeRole(role);
+                log.info("바꿔야될 user 값 :{}",user);
             }
         }
         return user;

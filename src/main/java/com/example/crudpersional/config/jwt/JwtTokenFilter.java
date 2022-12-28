@@ -58,13 +58,13 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
         // Token에서 Claim에서 UserName꺼내기
         String userName = JwtTokenUtil.getUserName(token, secretKey);
-        log.info("userName:{}", userName);
+        log.info("userName:{}",userName);
 
-// UserDetail가져오기
+        // UserDetail가져오기
         User user = userService.getUserByUserName(userName);
         log.info("userRole:{}", user.getRole());
 
-//문 열어주기, Role 바인딩
+        //문 열어주기, Role 바인딩
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userName, null, List.of(new SimpleGrantedAuthority(user.getRole().name()))    );
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authenticationToken); // 권한 부여

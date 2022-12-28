@@ -41,10 +41,12 @@ public class PostService {
     public PostSelectResponse getPost(Long postId) {
         Optional<Post> postOptional = postRepository.findById(postId);
         Post post = postOptional.orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND,"해당 글 없습니다"));
+
         PostSelectResponse postSelectResponse =
                 new PostSelectResponse(post.getId(), post.getTitle(),
                         post.getBody(), post.getUser().getUserName(),
                         post.getRegisteredAt(), post.getUpdatedAt());
+
         return postSelectResponse;
     }
 
@@ -94,7 +96,6 @@ public class PostService {
         User user = userRepository.findOptionalByUserName(userName)
                 .orElseThrow(() -> new UserException(ErrorCode.USERNAME_NOT_FOUND, String.format("%s not founded", userName)));
         Long userId = user.getId();
-
         // 수정 권한 확인
         if (userId != findPost.getUser().getId()) {
             throw new PostException(ErrorCode.INVALID_PERMISSION, "해당 회원은 수정할 권한이 없습니다");
@@ -134,7 +135,7 @@ public class PostService {
                 .orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND, "해당 글은 존재하지 않습니다"));
         //해당 유저 찾음
         User user = userRepository.findOptionalByUserName(userName)
-                .orElseThrow(() -> new UserException(ErrorCode.USERNAME_NOT_FOUND, String.format("%s님은 좋아요 권한이 없습니다.", userName)));
+                .orElseThrow(() -> new UserException(ErrorCode.USERNAME_NOT_FOUND, String.format("%s님은 존재하지 않습니다.", userName)));
 
         //글(post) 회원(user) 찾음으로 like 눌렀는지 확인
         //ifPresent() 메소드 = 값을 가지고 있는지 확인 후 예외처리 / 값이 존재한다면 예외처리 진행

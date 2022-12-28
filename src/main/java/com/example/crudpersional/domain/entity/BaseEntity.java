@@ -33,19 +33,5 @@ public abstract class BaseEntity {
     public void onPreUpdate(){
         this.updatedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"));
     }
- /*
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
-    @Column(nullable = false, updatable = false)
-    @CreatedDate
-    private LocalDateTime registeredAt;
-
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
-    @LastModifiedDate
-    private LocalDateTime updatedAt;*/
-
-    //https://thalals.tistory.com/302
-    //삭제 시점
-   /* private LocalDateTime deletedAt;*/
 }
