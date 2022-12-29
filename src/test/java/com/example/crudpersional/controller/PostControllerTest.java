@@ -1,33 +1,15 @@
 package com.example.crudpersional.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import com.example.crudpersional.config.encrypt.EncrypterConfig;
-import com.example.crudpersional.domain.dto.post.*;
-import com.example.crudpersional.domain.entity.Post;
-import com.example.crudpersional.exceptionManager.ErrorCode;
-import com.example.crudpersional.exceptionManager.PostException;
-import com.example.crudpersional.service.PostService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.aspectj.lang.annotation.Before;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.*;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-
-import java.time.LocalDateTime;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -35,6 +17,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import com.example.crudpersional.config.encrypt.EncrypterConfig;
+import com.example.crudpersional.domain.dto.post.*;
+import com.example.crudpersional.domain.entity.Post;
+import com.example.crudpersional.exceptionManager.ErrorCode;
+import com.example.crudpersional.exceptionManager.PostException;
+import com.example.crudpersional.service.PostService;
+import org.springframework.web.context.WebApplicationContext;
+
+import java.time.LocalDateTime;
 
 @WebMvcTest(PostController.class)
 public class PostControllerTest {
@@ -53,36 +44,36 @@ public class PostControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
-    @BeforeEach
-    public void setup() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-    }
-
     @Test
     @WithMockUser   // 인증된 상태
     @DisplayName("post 단건 조회 성공")
     void post_단건_조회_성공() throws Exception {
-
+        //조회 시 응답
         PostSelectResponse postEntity = PostSelectResponse.builder()
                 .id(1L)
                 .title("테스트 제목")
                 .body("테스트 내용")
                 .userName("김건우")
+                .createdAt(String.valueOf(LocalDateTime.now()))
+                .lastModifiedAt(String.valueOf(LocalDateTime.now()))
                 .build();
 
+        //Service의 조회 메서드 사용시 post entity 반환
         when(postService.getPost(any()))
                 .thenReturn(postEntity);
 
-        mockMvc.perform(get("/api/v1/posts/1")
-                .with(csrf())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(postEntity)))
+        String url = "/api/v1/posts/1";
+        mockMvc.perform(get(url)
+                .with(csrf()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.result.id").value(1L))
                 .andExpect(jsonPath("$.result.title").exists())
-                .andExpect(jsonPath("$.result.userName").exists())
-                .andExpect(jsonPath("$.result.body").exists());
+                .andExpect(jsonPath("$.result.title").value("테스트 제목"))
+                .andExpect(jsonPath("$.result.body").value("테스트 내용"))
+                .andExpect(jsonPath("$.result.userName").value("김건우"))
+                .andExpect(jsonPath("$.result.createdAt").exists())
+                .andExpect(jsonPath("$.result.lastModifiedAt").exists());
     }
 
 
