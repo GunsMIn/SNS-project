@@ -21,7 +21,7 @@ public class HelloController {
 
     @GetMapping("/{num}")
     public Integer divide(Integer num) {
-        return algorithmService.sum(num);
+        return algorithmService.solution(num);
     }
 
 }
