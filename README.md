@@ -326,27 +326,12 @@
 
 <br>
 
-## Error Info
-
-
 
 <br>
 
-에러 발생 시, 예시
-
-```json
-{
-  "resultCode": "ERROR",
-  "result": {
-    "errorCode": "POST_NOT_FOUND",
-    "message": "Post not founded"
-  }
-}
-```
-
-<br>
+## MY VIEW 
+![Screenshot 2022-12-27 at 17 08 36](https://user-images.githubusercontent.com/104709432/209633961-f3a94bb2-09c7-4e34-ba06-0b31e89068a3.JPG)
 
 
----
 
 <br>
