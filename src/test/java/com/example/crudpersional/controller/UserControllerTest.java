@@ -1,5 +1,6 @@
 package com.example.crudpersional.controller;
 
+import com.example.crudpersional.config.jwt.JwtTokenUtil;
 import com.example.crudpersional.domain.dto.user.UserJoinRequest;
 import com.example.crudpersional.domain.dto.user.UserLoginRequest;
 import com.example.crudpersional.domain.entity.User;
@@ -7,10 +8,10 @@ import com.example.crudpersional.exceptionManager.ErrorCode;
 import com.example.crudpersional.exceptionManager.UserException;
 import com.example.crudpersional.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
@@ -54,6 +55,17 @@ class UserControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
+    @Value("${jwt.secret}")
+    private String secretKey;
+
+    private String token;
+
+    @BeforeEach()
+    public void getToken() {
+        long expireTimeMs = 1000 * 60 * 60;
+        token = JwtTokenUtil.generateToken("gunwoo", secretKey, System.currentTimeMillis() + expireTimeMs);
+    }
+
     @Test
     @DisplayName("회원가입 성공 테스트")
     @WithMockUser
@@ -76,12 +88,18 @@ class UserControllerTest {
         when(userService.join(any()))
                 .thenReturn(userEntity);
 
-        mockMvc.perform(post("/api/v1/users/join")
-                .with(csrf())
+        String url = "/api/v1/users/join";
+        mockMvc.perform(post(url).with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(request)))
-                .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resultCode").exists())
+                .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
+                .andExpect(jsonPath("$.result.userId").exists())
+                .andExpect(jsonPath("$.result.userId").value(100l))
+                .andExpect(jsonPath("$.result.userName").exists())
+                .andExpect(jsonPath("$.result.userName").value("1234"))
+                .andDo(print());
 
     }
 

@@ -20,10 +20,11 @@ import java.util.List;
 import static javax.persistence.CascadeType.*;
 import static javax.persistence.EnumType.*;
 
-@Getter
 @Entity
+@Getter
+@Builder
 @ToString
-@NoArgsConstructor
+@NoArgsConstructor @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class User implements UserDetails {
 
@@ -43,8 +44,6 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private UserRole role;
 
-    @OneToMany(mappedBy = "user", cascade = ALL)
-    private List<Post> posts = new ArrayList<>();
 
     @Column(nullable = false, updatable = false)
     @CreatedDate
@@ -64,13 +63,8 @@ public class User implements UserDetails {
         this.updatedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"));
     }
 
-    @Builder
-    public User(Long id, String userName, String password, UserRole role) {
-        this.id = id;
-        this.userName = userName;
-        this.password = password;
-        this.role = role;
-    }
+
+
 
     public User(String userName, String password) {
         this.userName = userName;
