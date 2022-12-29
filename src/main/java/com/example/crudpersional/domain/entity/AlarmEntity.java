@@ -1,3 +1,4 @@
+/*
 package com.example.crudpersional.domain.entity;
 
 
@@ -42,3 +43,4 @@ public class AlarmEntity extends BaseEntity{
         return entity;
     }
 }
+*/
