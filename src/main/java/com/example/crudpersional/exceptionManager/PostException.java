@@ -10,6 +10,12 @@ public class PostException extends RuntimeException {
     ErrorCode errorCode;
     private String message;
 
+
+    public PostException(ErrorCode errorCode) {
+        this.errorCode = errorCode;
+        this.message = null;
+    }
+
     @Override
     public String toString() {
         if(message == null) {

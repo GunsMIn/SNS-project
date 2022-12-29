@@ -40,7 +40,7 @@ public class PostService {
     /**글 단건 조회**/
     public PostSelectResponse getPost(Long postId) {
         Optional<Post> postOptional = postRepository.findById(postId);
-        Post post = postOptional.orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND,"해당 글 없습니다"));
+        Post post = postOptional.orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND));
 
         PostSelectResponse postSelectResponse =
                 new PostSelectResponse(post.getId(), post.getTitle(),
