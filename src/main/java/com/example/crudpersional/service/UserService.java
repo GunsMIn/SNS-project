@@ -11,6 +11,9 @@ import com.example.crudpersional.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +27,7 @@ import static java.util.stream.Collectors.*;
 
 @Service
 @RequiredArgsConstructor @Slf4j
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder encoder;
@@ -85,7 +88,7 @@ public class UserService {
 
 
         UserSelectResponse userSelectResponse
-                = new UserSelectResponse(user.getId(), user.getUserName(), user.getRole());
+                = new UserSelectResponse(user.getId(), user.getUsername(), user.getRole());
 
         return userSelectResponse;
     }
@@ -94,7 +97,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public List<UserListResponse> getUsers() {
         List<User> users = userRepository.findAll();
-        List<UserListResponse> userListResponses = users.stream().map(u -> new UserListResponse(u.getId(), u.getUserName()))
+        List<UserListResponse> userListResponses = users.stream().map(u -> new UserListResponse(u.getId(), u.getUsername()))
                 .collect(toList());
         return userListResponses;
     }
@@ -138,5 +141,10 @@ public class UserService {
             }
         }
         return user;
+    }
+
+    @Override
+    public User loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findOptionalByUserName(username).orElseThrow(()-> new UserException(ErrorCode.USER_NOT_FOUND,""));
     }
 }

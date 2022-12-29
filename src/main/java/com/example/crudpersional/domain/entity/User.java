@@ -3,10 +3,18 @@ package com.example.crudpersional.domain.entity;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static javax.persistence.CascadeType.*;
@@ -16,9 +24,8 @@ import static javax.persistence.EnumType.*;
 @Entity
 @ToString
 @NoArgsConstructor
-/*@Where(clause = "deleted_at IS NULL")
-@SQLDelete(sql = "UPDATE user SET deleted_at = CURRENT_TIMESTAMP where id = ?")*/
-public class User extends BaseEntity{
+@EntityListeners(AuditingEntityListener.class)
+public class User implements UserDetails {
 
 
     @Id
@@ -26,15 +33,36 @@ public class User extends BaseEntity{
     @Column(name = "user_id")
     private Long id;
 
+    @Column(nullable = false)
     private String userName;
 
+    @Column(nullable = false)
     private String password;
 
     @Enumerated(STRING)
+    @Column(nullable = false)
     private UserRole role;
 
     @OneToMany(mappedBy = "user", cascade = ALL)
     private List<Post> posts = new ArrayList<>();
+
+    @Column(nullable = false, updatable = false)
+    @CreatedDate
+    private String registeredAt;
+
+    @LastModifiedDate
+    private String updatedAt;
+
+    @PrePersist
+    public void onPrePersist(){
+        this.registeredAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"));
+        this.updatedAt = this.registeredAt;
+    }
+
+    @PreUpdate
+    public void onPreUpdate(){
+        this.updatedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"));
+    }
 
     @Builder
     public User(Long id, String userName, String password, UserRole role) {
@@ -71,4 +99,38 @@ public class User extends BaseEntity{
         this.role = role;
     }
 
+    /**userDetails*/
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return userName;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
+    }
 }
