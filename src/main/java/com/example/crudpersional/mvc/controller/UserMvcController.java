@@ -39,7 +39,7 @@ public class UserMvcController {
 
     @GetMapping("/members/joinUser")
     public String joinUser(@ModelAttribute MemberForm memberForm){
-        return "/members/join";
+        return "members/join";
     }
 
     @PostMapping("/members/doJoinForm")

@@ -113,6 +113,7 @@ class UserControllerTest {
                 .password("1234")
                 .build();
 
+        //join을 할 시 중복네임
         when(userService.join(any()))
                 .thenThrow(new UserException(ErrorCode.DUPLICATED_USER_NAME,"에러 메세지"));
 
@@ -129,6 +130,7 @@ class UserControllerTest {
     @DisplayName("로그인 성공")
     @WithMockUser
     void 로그인_성공() throws Exception {
+        //
         UserLoginRequest userLoginRequest = UserLoginRequest.builder()
                 .userName("김건우")
                 .password("1234")
@@ -143,7 +145,7 @@ class UserControllerTest {
                 .content(objectMapper.writeValueAsBytes(userLoginRequest)))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.resultCode").exists())
+                .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
                 .andExpect(jsonPath("$.result.jwt").exists())
         ;
     }
@@ -153,13 +155,15 @@ class UserControllerTest {
     @DisplayName("로그인 실패 - username 없음")
     @WithMockUser
     void 로그인실패_username_없음() throws Exception {
+        //userService의 login메서드
         UserLoginRequest userLoginRequest = UserLoginRequest.builder()
                 .userName("김건우")
                 .password("1234")
                 .build();
 
+        //login 메서드를 사용하면 UserName_Not_Found 에러를 일으킬 것
         when(userService.login(any(), any()))
-                .thenThrow(new UserException(ErrorCode.USERNAME_NOT_FOUND, ""));
+                .thenThrow(new UserException(ErrorCode.USERNAME_NOT_FOUND));
 
         mockMvc.perform(post("/api/v1/users/login")
                 .with(csrf())
@@ -179,8 +183,9 @@ class UserControllerTest {
                 .password("1234")
                 .build();
 
+        //login 메서드를 사용하면 INVALID_PASSWORD 에러를 일으킬 것
         when(userService.login(any(), any()))
-                .thenThrow(new UserException(ErrorCode.INVALID_PASSWORD, ""));
+                .thenThrow(new UserException(ErrorCode.INVALID_PASSWORD));
 
         mockMvc.perform(post("/api/v1/users/login")
                 .with(csrf())
