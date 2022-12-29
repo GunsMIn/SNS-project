@@ -27,7 +27,7 @@ public class UserController {
         log.info("userJoinRequest :{} ", userJoinRequest);
         User user = userService.join(userJoinRequest);
         log.info("user :{} ", user);
-        UserJoinResponse userJoinResponse = new UserJoinResponse(user.getId(),user.getUserName());
+        UserJoinResponse userJoinResponse = new UserJoinResponse(user.getId(),user.getUsername());
         return Response.success(userJoinResponse);
     }
 

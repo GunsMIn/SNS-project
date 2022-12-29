@@ -32,7 +32,7 @@ public class PostSelectResponse {
         this.id = post.getId();
         this.title = post.getTitle();
         this.body = post.getBody();
-        this.userName = post.getUser().getUserName();
+        this.userName = post.getUser().getUsername();
         this.createdAt = post.getRegisteredAt();
         this.lastModifiedAt = post.getUpdatedAt();
     }

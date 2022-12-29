@@ -53,6 +53,8 @@ public class PostController {
     public Response<PostAddResponse> add(@RequestBody PostAddRequest postAddRequest, Authentication authentication) {
         log.info("postAddRequest : {}", postAddRequest);
         log.info("authentication.getName() : {}", authentication.getName());
+        log.info("authentication.getCredentials() : {}", authentication.getCredentials());
+        log.info("authentication.getPrinipal : {}", authentication.getPrincipal());
         //여기 아래에서 jwt토큰을 사용한 userName을 가져와서 service단에서 처리
         PostAddResponse postAddResponse = postService.addPost(postAddRequest,authentication.getName());
         return Response.success(postAddResponse);

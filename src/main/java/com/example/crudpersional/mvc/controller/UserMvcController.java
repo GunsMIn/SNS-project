@@ -7,6 +7,7 @@ import com.example.crudpersional.mvc.dto.LoginForm;
 import com.example.crudpersional.mvc.dto.MemberForm;
 import com.example.crudpersional.mvc.dto.SessionConst;
 import com.example.crudpersional.mvc.service.UserMvcService;
+import com.example.crudpersional.repository.UserRepository;
 import com.example.crudpersional.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -25,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.PrintWriter;
 import java.net.http.HttpRequest;
+import java.security.Principal;
 
 @Controller
 @Slf4j
@@ -32,6 +34,7 @@ import java.net.http.HttpRequest;
 public class UserMvcController {
 
     private final UserMvcService userService;
+    private final UserRepository userRepository;
 
 
     @GetMapping("/members/joinUser")

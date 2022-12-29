@@ -20,7 +20,7 @@ public class UserAdminResponse {
     public static UserAdminResponse transferResponse(User user) {
         return UserAdminResponse.builder()
                 .userId(user.getId())
-                .userName(user.getUserName())
+                .userName(user.getUsername())
                 .role(user.getRole())
                 .build();
     }

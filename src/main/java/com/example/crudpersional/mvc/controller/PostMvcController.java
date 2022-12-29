@@ -49,7 +49,7 @@ public class PostMvcController {
         //아래의 코드는 로그인을 하지 않았다면 alert를 띄우고 로그인 안내
         if (loginMember != null) {
             //세션에 저장된 user의 정보
-            String userName = loginMember.getUserName();
+            String userName = loginMember.getUsername();
             postForm.setUserName(userName);
             url = "writePost";
         }else{// -> 로그인 안되어 있을 시 알림창 후 메인화면으로
@@ -74,9 +74,6 @@ public class PostMvcController {
         //if문안에 조건은 제목 또는 내용이 없을 시 경고창을 띄우고 /members/loginIndex로 리다이렉트 전송
         if (postForm.getTitle()!=null && postForm.getBody()!=null) {
             postService.addMvcPost(postForm, userName);
-            //model.addAttribute("post", post);
-            //url = "/posts/list";
-            //url = "/post/getOne/"+post.getId();
             response.setContentType("text/html; charset=UTF-8");
             PrintWriter out = response.getWriter();
             out.println("<script>alert('글 작성이 완료되었습니다.🤗'); window.location.href = '/posts/list';</script>");
@@ -136,7 +133,7 @@ public class PostMvcController {
         }
 
         PostSelectResponse post = postService.getPost(id);
-        if (!loginMember.getUserName().equals(post.getUserName())) {
+        if (!loginMember.getUsername().equals(post.getUserName())) {
             throw new UserException(ErrorCode.INVALID_PERMISSION, "해당 글을 작성한 회원만 수정 할 권한이 있습니다");
         }
 

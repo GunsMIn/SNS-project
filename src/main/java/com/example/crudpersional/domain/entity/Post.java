@@ -45,7 +45,7 @@ public class Post extends BaseEntity{
         entity.setUser(user);
         return entity;
     }
-    
+
     public void update(String title, String body) {
         this.title = title;
         this.body = body;

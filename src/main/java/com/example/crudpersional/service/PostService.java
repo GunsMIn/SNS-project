@@ -44,7 +44,7 @@ public class PostService {
 
         PostSelectResponse postSelectResponse =
                 new PostSelectResponse(post.getId(), post.getTitle(),
-                        post.getBody(), post.getUser().getUserName(),
+                        post.getBody(), post.getUser().getUsername(),
                         post.getRegisteredAt(), post.getUpdatedAt());
 
         return postSelectResponse;
