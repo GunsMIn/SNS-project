@@ -83,10 +83,10 @@ class PostServiceTest {
     public static class UserTestEntity {
         public static User get(String userName, String password) {
             User entity = new User();
-            entity.setId(1L);
+         /*   entity.setId(1L);
             entity.setUserName(userName);
             entity.setPassword(password);
-            entity.setRole(UserRole.USER);
+            entity.setRole(UserRole.USER);*/
             return entity;
         }
     }
@@ -99,8 +99,8 @@ class PostServiceTest {
         PostAndUser dto = postAndUser.getDto();
 
         User userEntity = new User();
-        userEntity.setUserName(dto.getUserName());
-        userEntity.setPassword(dto.getPassword());
+      /*  userEntity.setUserName(dto.getUserName());
+        userEntity.setPassword(dto.getPassword());*/
 
         Post postEntity = Post.builder()
                 .id(100L)
@@ -170,7 +170,7 @@ class PostServiceTest {
 
         //when(postRepository.findById(fixture.getPostId())).thenReturn(Optional.of(mockPostEntity));
         when(postRepository.findById(postAndUserDto.getPostId())).thenReturn(Optional.of(Post.of("title","body",user1)));
-        when(userRepository.findOptionalByUserName(user1.getUserName())).thenReturn(Optional.of(User.of(user2.getUserName(), user2.getPassword())));
+        //when(userRepository.findOptionalByUserName(user1.getUserName())).thenReturn(Optional.of(User.of(user2.getUserName(), user2.getPassword())));
 
         PostUpdateRequest postUpdateRequest = new PostUpdateRequest(postAndUserDto.getTitle(), postAndUserDto.getBody());
 
