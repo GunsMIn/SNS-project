@@ -5,8 +5,8 @@ import com.example.crudpersional.domain.entity.UserRole;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-
-public class UserEntityFixture {
+//user in test
+public class  UserEntityFixture {
 
     public static User get(String userName,String password) {
       return  User.builder()

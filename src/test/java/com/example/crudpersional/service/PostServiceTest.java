@@ -78,7 +78,7 @@ class PostServiceTest {
             return postEntity;
         }
     }
-
+////
     @Data
     public static class UserTestEntity {
         public static User get(String userName, String password) {
