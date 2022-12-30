@@ -5,6 +5,7 @@ import com.example.crudpersional.domain.dto.user.UserDeleteRequest;
 import com.example.crudpersional.domain.entity.LikeEntity;
 import com.example.crudpersional.domain.entity.Post;
 import com.example.crudpersional.domain.entity.User;
+import com.example.crudpersional.domain.entity.UserRole;
 import com.example.crudpersional.exceptionManager.ErrorCode;
 import com.example.crudpersional.exceptionManager.LikeException;
 import com.example.crudpersional.exceptionManager.PostException;
@@ -38,28 +39,29 @@ public class PostService {
     //private final CommentRepository commentRepository;
 
     /**글 단건 조회**/
+    @Transactional(readOnly = true)
     public PostSelectResponse getPost(Long postId) {
         Optional<Post> postOptional = postRepository.findById(postId);
-        Post post = postOptional.orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND));
+        //해당 포스트를 찾지 못했을 때
+        Post post = postOptional
+                .orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND, postId+"번의 글을 찾을 수 없습니다."));
 
-        PostSelectResponse postSelectResponse =
-                new PostSelectResponse(post.getId(), post.getTitle(),
-                        post.getBody(), post.getUser().getUsername(),
-                        post.getRegisteredAt(), post.getUpdatedAt());
-
+        PostSelectResponse postSelectResponse = new PostSelectResponse(post);
         return postSelectResponse;
     }
 
     /**글 전체 조회**/
+    @Transactional(readOnly = true)
     public List<PostSelectResponse> getPosts(Pageable pageable) {
         Page<Post> posts = postRepository.findAll(pageable);
+        //stream을 이용해서 엔티티를 응답객체로 변경
         List<PostSelectResponse> postSelectResponseList =
                 posts.stream().map(p -> new PostSelectResponse(p)).collect(Collectors.toList());
-
         return postSelectResponseList;
     }
 
     /**글 제목으로 조회**/
+    @Transactional(readOnly = true)
     public List<PostSelectResponse> getPostsByTitle (Pageable pageable,String title) {
         Page<Post> posts = postRepository.findByTitleContaining(pageable, title);
         List<PostSelectResponse> postSelectResponseList =
@@ -69,7 +71,6 @@ public class PostService {
 
     /**글 등록**/                                                 //인증으로 들어온 userName
     public PostAddResponse addPost(PostAddRequest postAddRequest, String userName) {
-        log.info("서비스 userName:{}",userName);
         //userName으로 해당 User엔티티 찾아옴
         User user = userRepository.findOptionalByUserName(userName)
                 .orElseThrow(() -> new UserException(ErrorCode.USERNAME_NOT_FOUND, "회원가입 후 작성해주세요"));
@@ -78,28 +79,28 @@ public class PostService {
         //save를 할때는 JpaRepository<Article,Long>를 사용해야 하기때문에
         //articleRequestDto -> 를 Article 타입으로 바꿔줘야한다.
         Post savedPost = postRepository.save(post);
-        if (savedPost.getId() == null) {
-            throw new RuntimeException("해당 파일은 존재하지 않습니다");
-        }
         PostAddResponse postAddResponse = new PostAddResponse("포스트 등록 완료",savedPost.getId());
         return postAddResponse;
     }
 
+    /**글 수정과 삭제에서 사용 될 권한 체트 메서드**/
+    /**관리자와 해당 포스트 작성회원만 삭제 수정 가능**/
+    private void check(Post post, User user) {
+        if (user.getRole() == UserRole.USER && user.getId() != post.getUser().getId()) {
+            throw new UserException(ErrorCode.INVALID_PERMISSION, user.getUsername()+ "님은"
+                    + post.getId()+"글을 수정.삭제 할 수 있는 권한이없습니다");
+        }
+    }
+
     /**글 수정**/
     public PostUpdateResponse updatePost(Long postId, PostUpdateRequest postUpdateRequest,String userName) {
-        log.info("수정 요청 dto :{}", postUpdateRequest);
+
         Post findPost =
                 postRepository.findById(postId).orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND,"해당 글 없습니다"));
-
-        log.info("userName:{}",userName);
-
         User user = userRepository.findOptionalByUserName(userName)
                 .orElseThrow(() -> new UserException(ErrorCode.USERNAME_NOT_FOUND, String.format("%s not founded", userName)));
-        Long userId = user.getId();
         // 수정 권한 확인
-        if (userId != findPost.getUser().getId()) {
-            throw new PostException(ErrorCode.INVALID_PERMISSION, "해당 회원은 수정할 권한이 없습니다");
-        }
+        check(findPost, user);
         //변경감지 수정 메서드
         findPost.update(postUpdateRequest.getTitle(),postUpdateRequest.getBody());
 
@@ -114,14 +115,11 @@ public class PostService {
                 optionalPost.orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND, "해당 글은 존재하지 않아서 삭제할 수 없습니다."));
 
         User user = userRepository.findOptionalByUserName(userName)
-                .orElseThrow(()
-                        -> new UserException(ErrorCode.USERNAME_NOT_FOUND, String.format("%s not founded", userName)));
+                .orElseThrow(() -> new UserException(ErrorCode.USERNAME_NOT_FOUND, String.format("%s not founded", userName)));
 
-        //글을 쓴 유저가 아닌 다른 사람이 해당 글을 지우려고 할 때 예외
-        if (user.getId() != post.getUser().getId()) {
-            throw new UserException(ErrorCode.INVALID_PERMISSION, "당신을 글을 지울 수 있는 권한이없습니다");
-        }
-
+        //글을 쓴 유저가 아닌 다른 사람이 해당 글을 지우려고 할 때 예외 + admin은 허용
+        check(post, user);
+        //위의 check 메서드 통과 시 글 삭제
         postRepository.delete(post);
         PostDeleteResponse deleteResponse = new PostDeleteResponse("포스트 삭제 완료", post.getId());
         return deleteResponse;
