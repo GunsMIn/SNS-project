@@ -190,23 +190,84 @@ class PostServiceTest {
         }
 
 
-       /* @Test
+        @Test
         @WithMockUser
         @DisplayName("포스트 수정 성공")
         void postUpdateSuccess() {
-
             PostAndUser postAndUser = PostAndUser.getDto();
             PostUpdateRequest postUpdateRequest = new PostUpdateRequest("수정될 제목", "수정될 내용");
+            User user = UserEntityFixture.get(postAndUser.getUserName(), postAndUser.getPassword());
 
             //수정 성공 로직
-            when(userRepository.findOptionalByUserName(any())).thenReturn(Optional.of(mock(User.class)));
-            when(postRepository.findById(any())).thenReturn(Optional.of(mock(Post.class)));
+            when(userRepository.findOptionalByUserName(user.getUsername())).thenReturn(Optional.of(user));
+            when(postRepository.findById(any())).thenReturn(Optional.of(PostEntityFixture.get(user)));
 
             PostUpdateResponse postUpdateResponse
                     = postService.updatePost(postAndUser.getPostId(), postUpdateRequest, postAndUser.getUserName());
 
             Assertions.assertEquals(postUpdateResponse.getMessage(),"포스트 수정 완료");
 
-        }*/
+        }
+    }
+
+    @Nested
+    @DisplayName("포스트 삭제")
+    class PostDelete{
+
+        @Test
+        @WithMockUser
+        @DisplayName("포스트 삭제 성공")
+        void 포스트_삭제_성공() {
+            PostAndUser postAndUser = PostAndUser.getDto();
+            User user = UserEntityFixture.get(postAndUser.getUserName(), postAndUser.getPassword());
+
+            //수정 성공 로직
+            when(userRepository.findOptionalByUserName(user.getUsername())).thenReturn(Optional.of(user));
+            when(postRepository.findById(any())).thenReturn(Optional.of(PostEntityFixture.get(user)));
+
+            PostDeleteResponse postDeleteResponse
+                    = postService.deletePost(postAndUser.getPostId(), postAndUser.getUserName());
+
+            Assertions.assertEquals(postDeleteResponse.getMessage(),"포스트 삭제 완료");
+            Assertions.assertEquals(postDeleteResponse.getPostId(),1L);
+
+        }
+
+
+        @Test
+        @DisplayName("포스트 삭제 작성자 불일치")
+        void 삭제_실패_작성자_불일치() throws Exception {
+
+            PostAndUser dto = PostAndUser.getDto();
+            //유저1 (글 작성한 회원)
+            User 유저1 = UserEntityFixture.get("유저1", "1234");
+            //유저2 (글 삭제 시도 회원)
+            User 유저2 = new User(2l, "유저2", "1234");
+
+            when(postRepository.findById(any())).thenReturn(Optional.of(PostEntityFixture.get(유저1)));
+            when(userRepository.findOptionalByUserName(any())).thenReturn(Optional.of(유저2));
+
+            UserException userException =
+                    assertThrows(UserException.class, () -> postService.deletePost(dto.getPostId(), dto.getUserName()));
+            //에러 코드 확인
+            Assertions.assertEquals(userException.getErrorCode(),ErrorCode.INVALID_PERMISSION);
+        }
+
+        @Test
+        @WithMockUser
+        @DisplayName("삭제 실패 : 포스트 존재 하지 않음")
+        void 삭제_실패_포스트_존재x() throws Exception {
+            PostAndUser dto = PostAndUser.getDto();
+            //포스트 존재하지 않는 상황 가정
+            when(postRepository.findById(any())).thenReturn(Optional.empty());
+
+            PostException postException =
+                    assertThrows(PostException.class, () -> postService.deletePost(dto.getPostId(), dto.getUserName()));
+
+            Assertions.assertEquals(postException.getErrorCode(),ErrorCode.POST_NOT_FOUND);
+            Assertions.assertEquals(postException.getMessage(),"해당 글은 존재하지 않아서 삭제할 수 없습니다.");
+        }
+
+
     }
     }
