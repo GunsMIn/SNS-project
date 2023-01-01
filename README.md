@@ -38,7 +38,7 @@
 
 ## 🔽 RestAPI EndPoint
 
-| METHOD | URI                                | 기능               | RequestBody                                      |  권한             |
+| METHOD | URI                                | 기능               | RequestBody                                      |인증필요             |
 | ------ | ---------------------------------- |---------------------------| ------------------------------------- |----------- |
 | POST   | /api/v1/users/join                 | 회원가입                      | {"username": "string","password":"string"} |  | 
 | POST   | /api/v1/users/login                | 로그인                       | {"username": "string","password":"string"} | | 
