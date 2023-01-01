@@ -1,4 +1,4 @@
-/*
+
 package com.example.crudpersional.domain.entity.alarm;
 
 import lombok.Getter;
@@ -12,4 +12,4 @@ public enum AlarmType {
     ;
 
     private final String alarmText;
-}*/
+}

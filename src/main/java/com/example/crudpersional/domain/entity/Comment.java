@@ -4,9 +4,9 @@ package com.example.crudpersional.domain.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Builder
-@Setter
 @Getter
 @Entity
 @NoArgsConstructor
@@ -28,12 +28,16 @@ public class Comment extends BaseEntity{
     @Column(name = "comment")
     private String comment;
 
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
     //dto - > entity로 바꾸는 메서드
     public static Comment of(User user, Post post, String comment) {
-        Comment entity = new Comment();
-        entity.setUser(user);
-        entity.setPost(post);
-        entity.setComment(comment);
+        Comment entity = Comment.builder()
+                .user(user)
+                .post(post)
+                .comment(comment)
+                .build();
         return entity;
     }
 }

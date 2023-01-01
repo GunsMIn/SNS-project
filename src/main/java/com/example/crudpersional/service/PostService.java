@@ -2,10 +2,7 @@ package com.example.crudpersional.service;
 
 import com.example.crudpersional.domain.dto.post.*;
 import com.example.crudpersional.domain.dto.user.UserDeleteRequest;
-import com.example.crudpersional.domain.entity.LikeEntity;
-import com.example.crudpersional.domain.entity.Post;
-import com.example.crudpersional.domain.entity.User;
-import com.example.crudpersional.domain.entity.UserRole;
+import com.example.crudpersional.domain.entity.*;
 import com.example.crudpersional.exceptionManager.ErrorCode;
 import com.example.crudpersional.exceptionManager.LikeException;
 import com.example.crudpersional.exceptionManager.PostException;
@@ -36,7 +33,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final LikeRepository likeEntityRepository;
-    //private final CommentRepository commentRepository;
+    private final CommentRepository commentRepository;
 
     /**글 단건 조회**/
     @Transactional(readOnly = true)
@@ -86,7 +83,7 @@ public class PostService {
     /**글 수정과 삭제에서 사용 될 권한 체트 메서드**/
     /**관리자와 해당 포스트 작성회원만 삭제 수정 가능**/
     private void check(Post post, User user) {
-        if (user.getRole() == UserRole.USER && user.getId() != post.getUser().getId()) {
+        if (user.getRole() != UserRole.ADMIN && user.getId() != post.getUser().getId()) {
             throw new UserException(ErrorCode.INVALID_PERMISSION, user.getUsername()+ "님은"
                     + post.getId()+"글을 수정.삭제 할 수 있는 권한이없습니다");
         }
@@ -155,6 +152,22 @@ public class PostService {
         return postLikeCount;
     }
 
+
+    /**
+     * comment 쓰기
+     **/
+    public Comment writeComment(Long postId, String userName, String commentBody) {
+        /*해당 post 찾기*/
+        Post post =
+                postRepository.findById(postId).orElseThrow(() -> new PostException(
+                        ErrorCode.POST_NOT_FOUND, postId + " 번의 게시글은 존재하지 않습니다."));
+        /*user권한 확인하기*/
+        User user = userRepository.findOptionalByUserName(userName).orElseThrow(() -> new UserException(ErrorCode.USERNAME_NOT_FOUND, "회원을 찾을 수 없습니다"));
+        //comment 엔티티 생성
+        Comment commentEntity = Comment.of(user, post, commentBody);
+        Comment savedComment = commentRepository.save(commentEntity);
+        return savedComment;
+    }
 
 
 

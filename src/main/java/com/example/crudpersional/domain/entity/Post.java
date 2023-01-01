@@ -6,9 +6,12 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static javax.persistence.FetchType.*;
 
-@Builder
+
 @Setter
 @Getter
 @Entity
@@ -30,7 +33,23 @@ public class Post extends BaseEntity{
     @JoinColumn(name = "user_id") // 연관관계의 주인
     private User user;
 
+    @OneToMany(mappedBy = "post")
+    private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post")
+    private List<LikeEntity> likes = new ArrayList<>();
+
+
     @Builder
+    public Post(Long id, String title, String body, User user, List<Comment> comments, List<LikeEntity> likes) {
+        this.id = id;
+        this.title = title;
+        this.body = body;
+        this.user = user;
+        this.comments = comments;
+        this.likes = likes;
+    }
+
     public Post(Long id, String title, String body, User user) {
         this.id = id;
         this.title = title;

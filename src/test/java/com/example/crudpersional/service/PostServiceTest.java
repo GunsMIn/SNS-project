@@ -267,7 +267,5 @@ class PostServiceTest {
             Assertions.assertEquals(postException.getErrorCode(),ErrorCode.POST_NOT_FOUND);
             Assertions.assertEquals(postException.getMessage(),"해당 글은 존재하지 않아서 삭제할 수 없습니다.");
         }
-
-
     }
     }

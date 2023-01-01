@@ -17,7 +17,7 @@ public class UserAdminResponse {
     private String userName;
     private UserRole role;
 
-    public static UserAdminResponse transferResponse(User user) {
+    public static UserAdminResponse of(User user) {
         return UserAdminResponse.builder()
                 .userId(user.getId())
                 .userName(user.getUsername())

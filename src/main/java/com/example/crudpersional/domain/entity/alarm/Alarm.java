@@ -1,4 +1,4 @@
-/*
+
 
 package com.example.crudpersional.domain.entity;
 
@@ -36,4 +36,4 @@ public class Alarm {
 
 }
 
-*/
+

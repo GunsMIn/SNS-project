@@ -1,4 +1,4 @@
-/*
+
 package com.example.crudpersional.domain.entity.alarm;
 
 public class AlarmArgs {
@@ -7,4 +7,4 @@ public class AlarmArgs {
     // 알림이 발생된 주체 post
     private Integer targetId;
 }
-*/
+
