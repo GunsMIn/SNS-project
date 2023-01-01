@@ -38,7 +38,7 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
     public Docket api() {
         return new Docket(DocumentationType.OAS_30)
                 .apiInfo(new ApiInfoBuilder()
-                        .title("Like lion Personal Project SNS 스웨거")
+                        .title("SNS Personal Project 스웨거")
                         .description("게시글 CRUD, 댓글, 좋아요, 권한, 알림 설정 기능")
                         .version("1.0.0")
                         .build())

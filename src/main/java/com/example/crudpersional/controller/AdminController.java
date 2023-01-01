@@ -55,7 +55,7 @@ public class AdminController {
                             , defaultValue = "None")
             })
     @PostMapping("/{id}/role/change")
-    public Response<UserAdminResponse> updateUserRole(@PathVariable Long id, @RequestBody UserRoleDto userRoleDto,Authentication authentication) {
+    public Response<UserAdminResponse> updateUserRole(@PathVariable Long id, @RequestBody UserRoleDto userRoleDto,@ApiIgnore Authentication authentication) {
         log.info("유저 권한 변경 userId:{}", id);
 
         UserAdminResponse changeRoleResponse = userService.changeRole(authentication.getName(), id, userRoleDto);

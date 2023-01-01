@@ -156,7 +156,7 @@ public class PostService {
     /**
      * comment 쓰기
      **/
-    public Comment writeComment(Long postId, String userName, String commentBody) {
+    public Comment writeComment(Long postId, String commentBody, String userName) {
         /*해당 post 찾기*/
         Post post =
                 postRepository.findById(postId).orElseThrow(() -> new PostException(
