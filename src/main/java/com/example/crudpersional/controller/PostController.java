@@ -75,8 +75,8 @@ public class PostController {
         return Response.success(deletePost);
     }
 
-    @ApiOperation(value = "해당 글 좋아요", notes = "정상적인 JWT토큰 발급 받은 사용자만 해당 글 좋아요 가능")
-    @PostMapping("/{postId}/likes")
+/*    @ApiOperation(value = "해당 글 좋아요", notes = "정상적인 JWT토큰 발급 받은 사용자만 해당 글 좋아요 가능")
+    @PostMapping("/api/v1/{postId}/likes")
     public Response<Void> like(@PathVariable Long postId,@ApiIgnore Authentication authentication) {
         String authenticationName = authentication.getName();
         postService.like(postId,authenticationName);
@@ -84,19 +84,12 @@ public class PostController {
     }
 
     @ApiOperation(value = "해당 글 좋아요 갯수", notes = "해당 postId에 해당하는 글의 좋아요 count 구하는 API")
-    @GetMapping("/{postId}/likes")
+    @GetMapping("/api/v1/{postId}/likes")
     public Response<String> getLikeCount(@PathVariable Long postId) {
         Integer likeCount = postService.getLikeCount(postId);
         return Response.successToMessage(String.format("%s번 게시글의 좋아요 개수 : %d", postId, likeCount));
-    }
+    }*/
 
-    @ApiOperation(value = "해당 포스트 답글 달기 ", notes = "postId로 들어온 Post글 답변 달기 API")
-    @PostMapping("/{id}/comments")
-    public Response<CommentResponse> commentFromPost(@PathVariable Long id, @RequestBody PostCommentRequest postCommentRequest,@ApiIgnore Authentication authentication) {
-        Comment comment = postService.writeComment(id, postCommentRequest.getComment(), authentication.getName());
-        CommentResponse commentResponse = CommentResponse.of(comment);
-        return Response.success(commentResponse);
-    }
 
    /* @GetMapping("/{id}/comments")
     public Response<Page<CommentResponse>> comment(@PathVariable Integer id, @PageableDefault(size = 10)

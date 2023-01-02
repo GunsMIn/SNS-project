@@ -1,5 +1,6 @@
 package com.example.crudpersional.service;
 
+import com.example.crudpersional.domain.dto.comment.CommentUpdateResponse;
 import com.example.crudpersional.domain.dto.post.*;
 import com.example.crudpersional.domain.dto.user.UserDeleteRequest;
 import com.example.crudpersional.domain.entity.*;
@@ -134,7 +135,9 @@ public class PostService {
         //글(post) 회원(user) 찾음으로 like 눌렀는지 확인
         //ifPresent() 메소드 = 값을 가지고 있는지 확인 후 예외처리 / 값이 존재한다면 예외처리 진행
         likeEntityRepository.findByUserAndPost(user,post)
-                .ifPresent(item -> new LikeException(ErrorCode.ALREADY_LIKED, String.format("이미 %d번 글의 좋아요를 눌렀습니다",postId)));
+                .ifPresent(entity -> {
+                    throw new LikeException(ErrorCode.ALREADY_LIKED, ErrorCode.ALREADY_LIKED.getMessage());
+                });
 
         LikeEntity like = LikeEntity.of(user, post);
         likeEntityRepository.save(like);
@@ -170,9 +173,49 @@ public class PostService {
     }
 
 
+    /**comment 수정하기**/
+    public CommentUpdateResponse modifyComment(Long id, String updateComment, String name) {
+        String responseMessage = null;
+        Comment comment = commentRepository.findById(id).orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND, id + " 번의 답변을 존재하지 않습니다"));
+        User user = userRepository.findOptionalByUserName(name).orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND, "회원을 찾을 수 없습니다"));
 
+        //답글을 쓴 사람만이 수정 가능
+        if (comment.getUser().getId() != user.getId()) {
+            responseMessage = "답글의 수정 권한이 없습니다";
+            throw new UserException(ErrorCode.INVALID_PERMISSION,responseMessage);
+        }
+        //변경감지 수정 메서드 (수정)
+        comment.change(updateComment);
+        responseMessage = "답글 수정 완료";
+        return new CommentUpdateResponse(responseMessage, comment.getId());
+    }
 
+    /**comment 리스트 조회**/
+    public Page<Comment> getComments(Long postId, Pageable pageable) {
+        //해당 post 유무 조회
+        Post post = postRepository.findById(postId).
+                orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND, postId + " 번의 글은 존재하지 않습니다"));
+        //comment List
+        Page<Comment> comments = commentRepository.findAllByPost(post, pageable);
+        //해당 post에 답글이 없는 경우
+        if (comments.isEmpty()) {
+            throw new PostException(ErrorCode.COMMENT_NOT_FOUND, postId+"번의 포스트 : "+ErrorCode.COMMENT_NOT_FOUND.getMessage());
+        }
+        return comments;
+    }
 
+    /**comment 삭제하기**/
+    public void deleteComment(Long commentId,String userName) {
+        Comment comment = commentRepository.findById(commentId).
+                orElseThrow(() -> new PostException(ErrorCode.COMMENT_NOT_FOUND, commentId + " 번 답글은 존재하지 않습니다"));
+        User user =
+                userRepository.findOptionalByUserName(userName).orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND, "해당 유저는 존재하지 않습니다"));
+
+        if (comment.getUser().getId() != user.getId()) {
+            throw new UserException(ErrorCode.INVALID_PERMISSION, userName + "님은 답글을 삭제할 권한이 없습니다.");
+        }
+        commentRepository.deleteById(comment.getId());
+    }
 
 
 
@@ -209,5 +252,7 @@ public class PostService {
     public Page<Post> searchByTitle(Pageable pageable,String title) {
         return postRepository.findByTitleContaining(pageable,title);
     }
+
+
 
 }

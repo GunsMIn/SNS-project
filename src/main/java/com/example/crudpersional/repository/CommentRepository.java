@@ -14,6 +14,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     //해당 post의 comment를 paging
     Page<Comment> findAllByPost(Post post, Pageable pageable);
 
+
     @Modifying(clearAutomatically= true)
     @Query("UPDATE Comment entity SET deleted_at = NOW() where entity.post = :post")
     void deleteAllByPost(@Param("post") Post postEntity);
