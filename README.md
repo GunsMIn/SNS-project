@@ -40,18 +40,21 @@
 
 | METHOD | URI                                | 기능               | RequestBody                                      |인증필요             |
 | ------ | ---------------------------------- |---------------------------| ------------------------------------- |----------- |
-| POST   | /api/v1/users/join                 | 회원가입                      | {"username": "string","password":"string"} |  | 
-| POST   | /api/v1/users/login                | 로그인                       | {"username": "string","password":"string"} | | 
-| POST   | /api/v1/users/{userId}/role/change | 회원 등급 변경(ADMIN 등급만 가능)    | { "role": "string" }                       |✔ | 
-| GET    | /api/v1/users/{id}                      |회원 단건 조회(ADMIN 등급만 가능)  |                                           | ✔| 
-| GET    | /api/v1/users/                      |회원 전체 조회(ADMIN 등급만 가능)  |                                           | ✔| 
-| GET    | /api/v1/posts                      | 게시글 조회(최신 글 20개 페이징 처리)   |                                           | | 
-| GET    | /api/v1/posts/{postId}             | 특정 게시글 상세 조회              |                                           | | 
-| POST   | /api/v1/posts                      | 게시글 작성 (jwt 토큰 인증 필요) | { "title": "string" , "body": "string"}    |✔ | 
-| PUT    | /api/v1/posts/{postId}             | 게시글 수정 (jwt 토큰 인증 필요) | { "title": "string" , "body": "string"}    |✔ | 
-| DELETE | /api/v1/posts/{postId}             | 게시글 삭제 (jwt 토큰 인증 필요) |                                           | ✔| 
-| POST | /api/v1/posts/{postId}/likes        | 게시글 좋아요 기능 (jwt 토큰 인증 필요) |                                           |✔ | 
-| GET | /api/v1/posts/{postId}/likes            | 해당 게시글 좋아요 갯수 |                                           |✔ | 
+| POST   | /api/v1/**users**/join                 | 회원가입                      | {"username": "string","password":"string"} |  | 
+| POST   | /api/v1/**users**/login                | 로그인                       | {"username": "string","password":"string"} | | 
+| POST   | /api/v1/**users**/{userId}/role/change | 회원 등급 변경(ADMIN 등급만 가능)    | { "role": "string" }                       |✔ | 
+| GET    | /api/v1/**users**/{id}                      |회원 단건 조회(ADMIN 등급만 가능)  |                                           | ✔| 
+| GET    | /api/v1/**users**/                      |회원 전체 조회(ADMIN 등급만 가능)  |                                           | ✔| 
+| GET    | /api/v1/**posts**                      | 게시글 조회(최신 글 20개 페이징 처리)   |                                           | | 
+| GET    | /api/v1/**posts**/{postId}             | 특정 게시글 상세 조회              |                                           | | 
+| POST   | /api/v1/**posts**                      | 게시글 작성 (jwt 토큰 인증 필요) | { "title": "string" , "body": "string"}    |✔ | 
+| PUT    | /api/v1/**posts**/{postId}             | 게시글 수정 (jwt 토큰 인증 필요) | { "title": "string" , "body": "string"}    |✔ | 
+| DELETE | /api/v1/**posts**/{postId}             | 게시글 삭제 (jwt 토큰 인증 필요) |                                           | ✔| 
+| POST | /api/v1/**posts**/{postId}/likes        | 게시글 좋아요 기능 (jwt 토큰 인증 필요) |                                           |✔ | 
+| POST | /api/v1/{id}/**comments**            | 해당 게시글 댓글 달기 |  { "comment": "string" }                                          |✔ | 
+| PUT | /api/v1/{id}/**comments**             | 해당 게시글 댓글 수정 |           { "comment": "string" }                                 |✔ | 
+| DELETE | /api/v1/{id}/**comments**             | 해당 게시글 댓글 삭제 |                                           |✔ | 
+| GET | /api/v1/{id}/**comments**            | 해당 게시글 댓글 조회(페이징,최신순) |                                           | | 
 
 ## RestAPI Endpoint
 
