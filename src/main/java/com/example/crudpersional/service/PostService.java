@@ -114,7 +114,7 @@ public class PostService {
     public PostDeleteResponse deletePost(Long postId, String userName) {
         Optional<Post> optionalPost = postRepository.findById(postId);
         Post post =
-                optionalPost.orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND, "해당 글은 존재하지 않아서 삭제할 수 없습니다."));
+                optionalPost.orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND, postId + "번 글은 존재하지 않아서 삭제할 수 없습니다."));
 
         User user = userRepository.findOptionalByUserName(userName)
                 .orElseThrow(() -> new UserException(ErrorCode.USERNAME_NOT_FOUND, String.format("%s not founded", userName)));

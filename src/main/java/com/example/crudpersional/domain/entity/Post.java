@@ -17,8 +17,8 @@ import static javax.persistence.FetchType.*;
 @Getter
 @Entity
 @NoArgsConstructor
-/*@Where(clause = "deleted_at IS NULL")
-@SQLDelete(sql = "UPDATE user SET deleted_at = CURRENT_TIMESTAMP where id = ?")*/
+@Where(clause = "deleted = false")
+@SQLDelete(sql = "UPDATE Post SET deleted = true WHERE post_id = ?")
 public class Post extends BaseEntity{
 
     @Id
@@ -40,6 +40,15 @@ public class Post extends BaseEntity{
     @OneToMany(mappedBy = "post",cascade = REMOVE, orphanRemoval = true)
     private List<LikeEntity> likes = new ArrayList<>();
 
+    /**SoftDeleteColumn**/
+    @Column(name = "deleted")
+    private boolean deleted = Boolean.FALSE;
+
+
+    /**SoftDelete**/
+    public void delete() {
+        this.deleted = true;
+    }
 
     @Builder
     public Post(Long id, String title, String body, User user, List<Comment> comments, List<LikeEntity> likes) {

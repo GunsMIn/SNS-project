@@ -34,10 +34,11 @@ public class AlarmEntity extends BaseEntity{
 
     private String text;
     //                           알림수신자 ,         알림 타입 ,     알림발신자 id ,  알림 주체 포스트 id
-    public static AlarmEntity of(User user, AlarmType alarmType, Long fromUserId, Long targetId) {
+    public static AlarmEntity of(User user, AlarmType alarmType,Long fromUserId, Long targetId) {
         AlarmEntity entity = AlarmEntity.builder()
                 .user(user)
                 .alarmType(alarmType)
+                .text(alarmType.getAlarmText())
                 .fromUserId(fromUserId)
                 .targetId(targetId)
                 .build();
