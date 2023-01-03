@@ -30,14 +30,16 @@ public class PostMineDto {
 
         /* Page<Entity> -> Page<Dto> 변환처리 */
         public static Page<PostMineDto> toDtoList(Page<Post> post){
-            Page<PostMineDto> postDtoList = post.map(m -> PostMineDto.builder()
-                    .id(m.getId())
-                    .title(m.getTitle())
-                    .body(m.getBody())
-                    .userName(m.getUser().getUsername())
-                    .createdAt(m.getRegisteredAt())
-                    .build());
-            return postDtoList;
+            Page<PostMineDto> postDtoList =
+                    post.map(m -> PostMineDto.builder()
+                                                .id(m.getId())
+                                                .title(m.getTitle())
+                                                .body(m.getBody())
+                                                .userName(m.getUser().getUsername())
+                                                .createdAt(m.getRegisteredAt())
+                                                .build());
+
+                    return postDtoList;
         }
     }
 

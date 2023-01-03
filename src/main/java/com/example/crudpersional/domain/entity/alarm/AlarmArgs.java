@@ -1,3 +1,4 @@
+/*
 
 package com.example.crudpersional.domain.entity.alarm;
 
@@ -8,3 +9,4 @@ public class AlarmArgs {
     private Integer targetId;
 }
 
+*/

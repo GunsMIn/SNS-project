@@ -1,20 +1,19 @@
 package com.example.crudpersional.service;
 
+import com.example.crudpersional.domain.dto.alarm.AlarmResponse;
 import com.example.crudpersional.domain.dto.comment.CommentResponse;
 import com.example.crudpersional.domain.dto.comment.CommentUpdateResponse;
 import com.example.crudpersional.domain.dto.comment.PostMineDto;
 import com.example.crudpersional.domain.dto.post.*;
 import com.example.crudpersional.domain.dto.user.UserDeleteRequest;
 import com.example.crudpersional.domain.entity.*;
+import com.example.crudpersional.domain.entity.alarm.AlarmType;
 import com.example.crudpersional.exceptionManager.ErrorCode;
 import com.example.crudpersional.exceptionManager.LikeException;
 import com.example.crudpersional.exceptionManager.PostException;
 import com.example.crudpersional.exceptionManager.UserException;
 import com.example.crudpersional.mvc.dto.PostForm;
-import com.example.crudpersional.repository.CommentRepository;
-import com.example.crudpersional.repository.LikeRepository;
-import com.example.crudpersional.repository.PostRepository;
-import com.example.crudpersional.repository.UserRepository;
+import com.example.crudpersional.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -27,6 +26,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.example.crudpersional.domain.entity.alarm.AlarmType.*;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -37,6 +38,7 @@ public class PostService {
     private final UserRepository userRepository;
     private final LikeRepository likeEntityRepository;
     private final CommentRepository commentRepository;
+    private final AlarmRepository alarmRepository;
 
     /**글 단건 조회**/
     @Transactional(readOnly = true)
@@ -141,15 +143,20 @@ public class PostService {
         User user = userRepository.findOptionalByUserName(userName)
                 .orElseThrow(() -> new UserException(ErrorCode.USERNAME_NOT_FOUND, String.format("%s님은 존재하지 않습니다.", userName)));
 
-        //글(post) 회원(user) 찾음으로 like 눌렀는지 확인
+        //like 눌렀는지 확인 비지니스 로직🔽
         //ifPresent() 메소드 = 값을 가지고 있는지 확인 후 예외처리 / 값이 존재한다면 예외처리 진행
         likeEntityRepository.findByUserAndPost(user,post)
                 .ifPresent(entity -> {
                     throw new LikeException(ErrorCode.ALREADY_LIKED, ErrorCode.ALREADY_LIKED.getMessage());
                 });
+        ////like 눌렀는지 확인 비지니스 로직 끝
 
         LikeEntity like = LikeEntity.of(user, post);
         likeEntityRepository.save(like);
+        /*좋아요 눌렀을 때 알림 동작*/
+        // 알림수신자 ,알림 타입 ,발신자 id ,알림 주체 포스트 id
+        AlarmEntity entity = AlarmEntity.of(post.getUser(), NEW_LIKE_ON_POST, user.getId(), post.getId());
+        alarmRepository.save(entity); // 알림 저장
     }
 
     /**
@@ -165,6 +172,13 @@ public class PostService {
     }
 
 
+    /**알람 페이징 조회 20개 **/
+    public Page<AlarmResponse> getAlarms(Pageable pageable) {
+        Page<AlarmEntity> alarmEntities = alarmRepository.findAll(pageable);
+        Page<AlarmResponse> alarmResponses = AlarmResponse.toResponse(alarmEntities);
+        return alarmResponses;
+    }
+
     /**
      * comment 쓰기
      **/
@@ -179,6 +193,10 @@ public class PostService {
         Comment commentEntity = Comment.of(user, post, commentBody);
         Comment savedComment = commentRepository.save(commentEntity);
         CommentResponse commentResponse = CommentResponse.toResponse(savedComment);
+        /*댓글 작성 후 알림 동작🔽*/
+                                                // 수신자 ,           알림 타입 ,         발신자 id ,    알림 주체 포스트 id
+        AlarmEntity alarmEntity = AlarmEntity.of(post.getUser(), NEW_COMMENT_ON_POST, user.getId(), post.getId());
+        alarmRepository.save(alarmEntity);
         return commentResponse;
     }
 

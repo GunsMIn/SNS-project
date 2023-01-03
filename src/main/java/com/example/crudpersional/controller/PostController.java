@@ -1,6 +1,7 @@
 package com.example.crudpersional.controller;
 
 import com.example.crudpersional.domain.dto.Response;
+import com.example.crudpersional.domain.dto.alarm.AlarmResponse;
 import com.example.crudpersional.domain.dto.comment.*;
 import com.example.crudpersional.domain.dto.post.*;
 import com.example.crudpersional.domain.dto.user.UserDeleteRequest;
@@ -78,11 +79,19 @@ public class PostController {
 
 
     @ApiOperation(value = "나의 글 보기", notes = "내가 쓴 포스트 보는 API")
-    @GetMapping("/my")
+    @GetMapping("/api/v1/posts/my")
     public Response<Page<PostMineDto>> my(@PageableDefault(size = 20, sort ="registeredAt",
             direction = Sort.Direction.DESC) Pageable pageable,@ApiIgnore Authentication authentication) {
         Page<PostMineDto> myPost = postService.getMyPost(authentication.getName(),pageable);
         return Response.success(myPost);
+    }
+
+    @ApiOperation(value = "알림 페이징 조회(최신순)", notes = "내가 쓴 포스트 보는 API")
+    @GetMapping("/api/v1/posts/alarms")
+    public Response<Page<AlarmResponse>> getAlarms(@PageableDefault(size = 20, sort ="registeredAt",
+            direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<AlarmResponse> alarmResponses = postService.getAlarms(pageable);
+        return Response.success(alarmResponses);
     }
 
     /*@ApiOperation(value = "해당 글 좋아요", notes = "정상적인 JWT토큰 발급 받은 사용자만 해당 글 좋아요 가능")

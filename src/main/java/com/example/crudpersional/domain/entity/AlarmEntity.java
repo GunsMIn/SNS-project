@@ -20,7 +20,7 @@ public class AlarmEntity extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 알람을 받은 사람
+    // 알람을 받은 사람 (수신자)
     @ManyToOne(fetch = FetchType.LAZY )
     @JoinColumn(name = "user_id")
     private User user;
@@ -28,13 +28,15 @@ public class AlarmEntity extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private AlarmType alarmType;
 
-    private Long fromUserId; //어떤 회원에게 알람이 왔는지 발신자 id
-    private Long targetId; // 내가 쓴 글의 postId(알림주체)
-    private String text;
+    private Long fromUserId; //발신자 user id
 
-    public static AlarmEntity of(User userEntity, AlarmType alarmType, Long fromUserId, Long targetId) {
+    private Long targetId; // 내가 쓴 글의 postId(알림주체)
+
+    private String text;
+    //                           알림수신자 ,         알림 타입 ,     알림발신자 id ,  알림 주체 포스트 id
+    public static AlarmEntity of(User user, AlarmType alarmType, Long fromUserId, Long targetId) {
         AlarmEntity entity = AlarmEntity.builder()
-                .user(userEntity)
+                .user(user)
                 .alarmType(alarmType)
                 .fromUserId(fromUserId)
                 .targetId(targetId)
