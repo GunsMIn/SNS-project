@@ -33,7 +33,7 @@
 
 # ERD 다이어그램
 <p align="center">
-<img width="360" alt="erd7" src="https://user-images.githubusercontent.com/104709432/209429249-e094ff1d-f979-4604-88fa-b60e72de62d1.PNG">
+<img width="530" alt="erd8" src="https://user-images.githubusercontent.com/104709432/210302879-a6acb17d-16cf-4732-aa2d-22f2de150070.PNG">
 </p></br>
 
 
