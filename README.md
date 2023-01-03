@@ -29,7 +29,7 @@
 **포스트 좋아요 (Like) / 해당 postId 좋아요 Count** | :heavy_check_mark: |  
 **좋아요 취소** |  |  
 **댓글 작성/수정/삭제/리스트 조회(최신순,20개)** | :heavy_check_mark: |  
-
+**포스트 / 댓글 Soft Delete 적용** | :heavy_check_mark: |  
 
 # ERD 다이어그램
 <p align="center">
@@ -50,13 +50,13 @@
 | GET    | /api/v1/**posts**/{postId}             | 특정 게시글 상세 조회              |                                           | | 
 | POST   | /api/v1/**posts**                      | 게시글 작성 (jwt 토큰 인증 필요) | { "title": "string" , "body": "string"}    |✔ | 
 | PUT    | /api/v1/**posts**/{postId}             | 게시글 수정 (jwt 토큰 인증 필요) | { "title": "string" , "body": "string"}    |✔ | 
-| DELETE | /api/v1/**posts**/{postId}             | 게시글 삭제 (jwt 토큰 인증 필요) |                                           | ✔| 
+| DELETE | /api/v1/**posts**/{postId}             | 게시글 삭제 (Soft Delete 적용) |                                           | ✔| 
 | GET | /api/v1/**posts**/my           | 내가 쓴 포스트 보기(최신순,20개) |                                           |✔ | 
 | GET | /api/v1/posts/**alarms**          | 알림 보기(최신순,20개) |                                           | | 
 | POST | /api/v1/**posts**/{postId}/likes        | 게시글 좋아요 기능 (jwt 토큰 인증 필요) |                                           |✔ | 
 | POST | /api/v1/{id}/**comments**            | 해당 게시글 댓글 달기 |  { "comment": "string" }                                          |✔ | 
 | PUT | /api/v1/{id}/**comments**             | 해당 게시글 댓글 수정 |           { "comment": "string" }                                 |✔ | 
-| DELETE | /api/v1/{id}/**comments**             | 해당 게시글 댓글 삭제 |                                           |✔ | 
+| DELETE | /api/v1/{id}/**comments**             | 해당 게시글 댓글 삭제 (Soft Delete 적용) |                                           |✔ | 
 | GET | /api/v1/{id}/**comments**            | 해당 게시글 댓글 조회(페이징,최신순) |                                           | | 
 
 
