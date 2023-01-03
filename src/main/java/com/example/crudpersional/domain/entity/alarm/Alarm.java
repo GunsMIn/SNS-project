@@ -17,10 +17,11 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 public class Alarm {
-    private Integer id;
+
+    private Long id;
     private AlarmType alarmType;
-    private Integer fromUserId;
-    private Integer targetId;
+    private Long fromUserId;
+    private Long targetId;
     private String createdAt;
 
 
