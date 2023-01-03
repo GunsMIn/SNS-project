@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static javax.persistence.CascadeType.*;
 import static javax.persistence.FetchType.*;
 
 
@@ -33,10 +34,10 @@ public class Post extends BaseEntity{
     @JoinColumn(name = "user_id") // 연관관계의 주인
     private User user;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post",cascade = REMOVE, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post",cascade = REMOVE, orphanRemoval = true)
     private List<LikeEntity> likes = new ArrayList<>();
 
 

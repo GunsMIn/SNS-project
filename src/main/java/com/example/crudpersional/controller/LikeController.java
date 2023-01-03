@@ -23,7 +23,7 @@ public class LikeController {
     public Response<Void> like(@PathVariable Long postId, @ApiIgnore Authentication authentication) {
         String authenticationName = authentication.getName();
         postService.like(postId,authenticationName);
-        return Response.success(String.format("%s번의 글 좋아요(Like) 성공",postId));
+        return Response.success(String.format("%s번의 글 좋아요(Like)를 눌렀습니다.",postId));
     }
 
     @ApiOperation(value = "해당 글 좋아요 갯수", notes = "해당 postId에 해당하는 글의 좋아요 count 구하는 API")

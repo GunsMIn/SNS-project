@@ -104,7 +104,7 @@ public class PostControllerTest {
             assertThat(pageable.getPageNumber()).isEqualTo(0);
             assertThat(pageable.getPageSize()).isEqualTo(5);
             assertThat(pageable.getSort()).isEqualTo(Sort.by("registeredAt").descending());
-            verify(postService, atLeastOnce()).getPost(any());
+            verify(postService, atLeastOnce()).getPosts(any());
         }
 
     }
