@@ -1,6 +1,8 @@
 package com.example.crudpersional.service;
 
+import com.example.crudpersional.domain.dto.comment.CommentResponse;
 import com.example.crudpersional.domain.dto.comment.CommentUpdateResponse;
+import com.example.crudpersional.domain.dto.comment.PostMineDto;
 import com.example.crudpersional.domain.dto.post.*;
 import com.example.crudpersional.domain.dto.user.UserDeleteRequest;
 import com.example.crudpersional.domain.entity.*;
@@ -123,6 +125,13 @@ public class PostService {
         return deleteResponse;
     }
 
+    /**내가 쓴 post 보기**/
+    public Page<PostMineDto> getMyPost(String userName, Pageable pageable) {
+        User user = userRepository.findOptionalByUserName(userName).orElseThrow(() ->
+                new UserException(ErrorCode.USERNAME_NOT_FOUND,String.format("%s not founded",userName)));
+        return postRepository.findPostsByUser(user,pageable).map(PostMineDto::fromEntity);
+    }
+
     /**like**/
     public void like(Long postId,String userName) {
         //해당 글 찾음
@@ -159,7 +168,7 @@ public class PostService {
     /**
      * comment 쓰기
      **/
-    public Comment writeComment(Long postId, String commentBody, String userName) {
+    public CommentResponse writeComment(Long postId, String commentBody, String userName) {
         /*해당 post 찾기*/
         Post post =
                 postRepository.findById(postId).orElseThrow(() -> new PostException(
@@ -169,7 +178,8 @@ public class PostService {
         //comment 엔티티 생성
         Comment commentEntity = Comment.of(user, post, commentBody);
         Comment savedComment = commentRepository.save(commentEntity);
-        return savedComment;
+        CommentResponse commentResponse = CommentResponse.toResponse(savedComment);
+        return commentResponse;
     }
 
 
@@ -185,13 +195,12 @@ public class PostService {
             throw new UserException(ErrorCode.INVALID_PERMISSION,responseMessage);
         }
         //변경감지 수정 메서드 (수정)
-        comment.change(updateComment);
-        responseMessage = "답글 수정 완료";
-        return new CommentUpdateResponse(responseMessage, comment.getId());
+        Comment changedComment = comment.change(updateComment);
+        return CommentUpdateResponse.of(changedComment);
     }
 
     /**comment 리스트 조회**/
-    public Page<Comment> getComments(Long postId, Pageable pageable) {
+    public Page<CommentResponse> getComments(Long postId, Pageable pageable) {
         //해당 post 유무 조회
         Post post = postRepository.findById(postId).
                 orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND, postId + " 번의 글은 존재하지 않습니다"));
@@ -201,7 +210,7 @@ public class PostService {
         if (comments.isEmpty()) {
             throw new PostException(ErrorCode.COMMENT_NOT_FOUND, postId+"번의 포스트 : "+ErrorCode.COMMENT_NOT_FOUND.getMessage());
         }
-        return comments;
+        return comments.map(CommentResponse::toResponse);
     }
 
     /**comment 삭제하기**/
