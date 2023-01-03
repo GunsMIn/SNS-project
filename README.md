@@ -28,6 +28,7 @@
 **ADMIN 회원만이 일반 회원을 ADMIN으로 승격시키는 기능(일반회원 등급업 기능 불가)** | :heavy_check_mark: |  
 **포스트 좋아요 (Like) / 해당 postId 좋아요 Count** | :heavy_check_mark: |  
 **좋아요 취소** |  |  
+**댓글 작성/수정/삭제/리스트 조회(최신순,20개)** | :heavy_check_mark: |  
 
 
 # ERD 다이어그램
