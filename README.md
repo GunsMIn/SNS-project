@@ -328,6 +328,118 @@
   }
 }
 ```
+### 11. 마이 피드 보기 (GET) : /api/v1/posts/my
+#### 성공 JSON 응답✔
+```json
+{
+  "resultCode": "SUCCESS",
+  "result":{
+    "content":[
+			{
+			"id": 4,
+			"title": "test",
+			"body": "body",
+			"userName": "test",
+			"createdAt": "2022-12-16T16:50:37.515952"
+			}
+		],
+	"pageable":{
+			"sort":{"empty": true, "sorted": false, "unsorted": true }, "offset": 0,…},
+			"last": true,
+			"totalPages": 1,
+			"totalElements": 1,
+			"size": 20,
+			"number": 0,
+			"sort":{
+			"empty": true,
+			"sorted": false,
+			"unsorted": true
+			},
+			"numberOfElements": 1,
+	"first": true,
+	"empty": false
+}
+```
+### 12. 댓글 조회 (GET) : /api/v1/posts/{id}/comments
+#### 성공 JSON 응답✔
+```json
+{
+	"resultCode": "SUCCESS",
+	"result":{
+	"content":[
+		{
+		"id": 3,
+		"comment": "comment test3",
+		"userName": "test",
+		"postId": 2,
+		"createdAt": "2022-12-20T16:07:25.699346"
+		},
+		{
+		"id": 2,
+		"comment": "comment test2",
+		"userName": "test",
+		"postId": 2,
+		"createdAt": "2022-12-20T16:03:30.670768"
+		}
+	],
+	"pageable":{"sort":{"empty": false, "sorted": true, "unsorted": false }, 
+	"offset": 0,…},
+	"last": true,
+	"totalPages": 1,
+	"totalElements": 2,
+	"size": 10,
+	"number": 0,
+	"sort":{
+	"empty": false,
+	"sorted": true,
+	"unsorted": false
+	},
+	"numberOfElements": 2,
+	"first": true,
+	"empty": false
+	}
+}
+```
+
+### 13. 댓글 작성 (POST) : /api/v1/posts/{id}/comments
+#### 성공 JSON 응답✔
+```json
+{
+	"resultCode": "SUCCESS",
+	"result":{
+		"id": 4,
+		"comment": "comment test4",
+		"userName": "test",
+		"postId": 2,
+		"createdAt": "2022-12-20T16:15:04.270741"
+	}
+}
+```
+### 14. 댓글 수정 (PUT) : /api/v1/posts/{id}/comments
+#### 성공 JSON 응답✔
+```json
+{
+	"resultCode": "SUCCESS",
+	"result":{
+		"id": 4,
+		"comment": "modify comment",
+		"userName": "test",
+		"postId": 2,
+		"createdAt": "2022-12-20T16:15:04.270741"
+		}
+}
+```
+### 15. 댓글 삭제 (DELETE) : /api/v1/posts/{id}/comments
+#### 성공 JSON 응답✔
+```json
+{
+	"resultCode": "SUCCESS",
+	"result":{
+		"message": "댓글 삭제 완료",
+		"id": 4
+		}
+}
+```
 <br>
 
 
