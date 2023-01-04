@@ -27,33 +27,16 @@ public class AdminController {
 
     private final UserService userService;
 
-    //회원 조회
-    @ApiOperation(value = "회원 단건 조회(admin)", notes = "userId로 회원 단건 조회")
-    @GetMapping("/{userId}")
-    public Response<UserSelectResponse> getOne(@PathVariable Long userId) {
-
-        UserSelectResponse userSelectResponse = userService.getUser(userId);
-        return Response.success(userSelectResponse);
-
-    }
-    //회원 전체 조회
-    @ApiOperation(value = "회원 전체 조회(admin)", notes = "회원 전체 조회")
-    @GetMapping
-    public Result<List<UserListResponse>> getOne() {
-        List<UserListResponse> responseList = userService.getUsers();
-        return new Result(responseList.size(),responseList);
-    }
-
-    @ApiOperation(value = "회원 UserRole(ADMIN,USER) 전환", notes = "ADMIN 회원만이 일반 회원을 ADMIN으로 승격시키는 API(일반회원 등급업 기능 불가) ")
+    @ApiOperation(value = "회원 UserRole(USER -> ADMIN, ADMIN -> USER) 전환", notes = "ADMIN 회원만이 일반 회원을 ADMIN으로 승격시키는 API(일반회원 등급업 기능 불가) ")
     @ApiImplicitParams({
-                    @ApiImplicitParam(
-                            name = "id"
-                            , value = "회원 ID"
-                            , required = true
-                            , dataType = "Long"
-                            , paramType = "path"
-                            , defaultValue = "None")
-            })
+            @ApiImplicitParam(
+                    name = "id"
+                    , value = "회원 ID"
+                    , required = true
+                    , dataType = "Long"
+                    , paramType = "path"
+                    , defaultValue = "None")
+    })
     @PostMapping("/{id}/role/change")
     public Response<UserAdminResponse> updateUserRole(@PathVariable Long id, @RequestBody UserRoleDto userRoleDto,@ApiIgnore Authentication authentication) {
         log.info("유저 권한 변경 userId:{}", id);
@@ -61,6 +44,26 @@ public class AdminController {
         UserAdminResponse changeRoleResponse = userService.changeRole(authentication.getName(), id, userRoleDto);
         return Response.success(changeRoleResponse);
     }
+
+
+
+    //회원 조회
+    @ApiOperation(value = "회원 단건 조회(ADMIN 전용 , 인가 필요)", notes = "userId로 회원 단건 조회")
+    @GetMapping("/{userId}")
+    public Response<UserSelectResponse> getOne(@PathVariable Long userId,Authentication authentication) {
+
+        UserSelectResponse userSelectResponse = userService.getUser(userId,authentication.getName());
+        return Response.success(userSelectResponse);
+
+    }
+    //회원 전체 조회
+    @ApiOperation(value = "회원 전체 조회(ADMIN 전용 , 인가 필요)", notes = "회원 전체 조회")
+    @GetMapping
+    public Result<List<UserListResponse>> getOne(Authentication authentication) {
+        List<UserListResponse> responseList = userService.getUsers(authentication.getName());
+        return new Result(responseList.size(),responseList);
+    }
+
 
 
 
