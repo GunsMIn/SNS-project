@@ -4,15 +4,14 @@ package com.example.crudpersional.mvc.controller;
 import com.example.crudpersional.domain.dto.comment.CommentResponse;
 import com.example.crudpersional.domain.dto.post.PostAddRequest;
 import com.example.crudpersional.domain.dto.post.PostSelectResponse;
+import com.example.crudpersional.domain.entity.Comment;
 import com.example.crudpersional.domain.entity.Post;
 import com.example.crudpersional.domain.entity.User;
 import com.example.crudpersional.exceptionManager.ErrorCode;
 import com.example.crudpersional.exceptionManager.PostException;
 import com.example.crudpersional.exceptionManager.UserException;
-import com.example.crudpersional.mvc.dto.CommentForm;
-import com.example.crudpersional.mvc.dto.PostForm;
-import com.example.crudpersional.mvc.dto.PostMvcResponse;
-import com.example.crudpersional.mvc.dto.SessionConst;
+import com.example.crudpersional.mvc.dto.*;
+import com.example.crudpersional.repository.CommentRepository;
 import com.example.crudpersional.repository.PostRepository;
 import com.example.crudpersional.repository.UserRepository;
 import com.example.crudpersional.service.PostService;
@@ -48,6 +47,7 @@ public class PostMvcController {
     private final PostService postService;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
 
 
     @GetMapping("/posts/form")
@@ -121,23 +121,44 @@ public class PostMvcController {
 
 
     //포스트 상세보기
-    @GetMapping("/post/getOne/{id}")
-    public String getPost(@PathVariable Long id, Model model, CommentForm commentForm,
+   /* @GetMapping("/post/getOne/{id}")
+    public String getPost(@PathVariable Long id, Model model, CommentForm commentForm,Long postId,
                           @PageableDefault(size = 10,
                                   sort = "registeredAt",
                                   direction = Sort.Direction.DESC) Pageable pageable,@SessionAttribute(name = "loginMember", required = false) User loginMember) {
 
-        log.info("id :{}" ,id);
+        log.info("id :{}" ,postId);
         log.info("상세보기 들어온다다다다" );
         PostSelectResponse postdto = postService.getPost(id);
         PostMvcResponse post = new PostMvcResponse(postdto);
         Page<CommentResponse> comments = postService.getComments(id, pageable);
         model.addAttribute("post", post);
+        model.addAttribute("postId", post.getPostId());
         model.addAttribute("comments", comments);
         model.addAttribute("member", loginMember);
         return "post/postDetail";
-    }
+    }*/
 
+
+
+    @GetMapping("/post/getOne/{id}")
+    public String getPost(@PathVariable Long id, Model model, CommentForm commentForm, MessagesRequest req,
+                          @PageableDefault(size = 10,
+                                  sort = "registeredAt",
+                                  direction = Sort.Direction.DESC) Pageable pageable, @SessionAttribute(name = "loginMember", required = false) User loginMember) {
+       log.info("req:{}{}",req.getPostId(),req.getFromId());
+        PostSelectResponse postdto = postService.getPost(id);
+        PostMvcResponse post = new PostMvcResponse(postdto);
+        Post postentity = postRepository.findById(id).get();
+        List<Comment> comments = commentRepository.findAllByPost(postentity);
+        //* 댓글 관련 *//*
+        if (comments != null && !comments.isEmpty()) {
+            model.addAttribute("comments", comments);
+        }
+        model.addAttribute("post", post);
+        model.addAttribute("member", loginMember);
+        return "post/postDetail";
+    }
 
     @GetMapping("/post/{id}/edit")
     public String updatePost(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) User loginMember, @PathVariable Long id,Model model,HttpServletResponse response) throws Exception{

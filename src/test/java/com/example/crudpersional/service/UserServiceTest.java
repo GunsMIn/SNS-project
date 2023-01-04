@@ -1,4 +1,4 @@
-/*
+
 package com.example.crudpersional.service;
 
 import com.example.crudpersional.domain.entity.Post;
@@ -10,57 +10,28 @@ import com.example.crudpersional.repository.UserRepository;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import static org.junit.jupiter.api.Assertions.*;
-@RequiredArgsConstructor
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class UserServiceTest {
 
+    @InjectMocks
     UserService userService;
-    private final BCryptPasswordEncoder encoder;
 
-    UserRepository userRepository = Mockito.mock(UserRepository.class);
-
-
-
-
-    @BeforeEach
-    void setUp() {
-        userService = new UserService(userRepository,encoder);
-    }
-
-    @Data
-    public static class UserTest{
-        private Long userId;
-        private String userName;
-        private String password;
-
-
-        public PostServiceTest.PostAndUser getDto() {
-            PostServiceTest.PostAndUser p = new PostServiceTest.PostAndUser();
-            p.setPostId(1L);
-            p.setUserId(1L);
-            p.setUserName("test");
-            p.setPassword("1234");
-            p.setTitle("테스트 제목");
-            p.setBody("테스트 내용");
-            return p;
-        }
-    }
+    @Mock
+    UserRepository userRepository ;
+    @Mock
+    BCryptPasswordEncoder encoder;
 
 
 
-    @Data
-    public static class UserTestEntity {
-        public static User get(String userName, String password) {
-            User entity = new User();
-            entity.setId(1L);
-            entity.setUserName(userName);
-            entity.setPassword(password);
-            entity.setRole(UserRole.USER);
-            return entity;
-        }
-    }
 
-}*/
+}

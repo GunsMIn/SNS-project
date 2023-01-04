@@ -2,6 +2,7 @@ package com.example.crudpersional.mvc.controller;
 
 import com.example.crudpersional.domain.dto.comment.CommentResponse;
 import com.example.crudpersional.domain.entity.Comment;
+import com.example.crudpersional.domain.entity.Post;
 import com.example.crudpersional.domain.entity.User;
 import com.example.crudpersional.exceptionManager.ErrorCode;
 import com.example.crudpersional.exceptionManager.UserException;
@@ -25,6 +26,8 @@ public class CommentMvcController {
     private final PostService postService;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
+    private final PostRepository postRepository;
+
 
     @PostMapping("/comments/write")
     @ResponseBody
@@ -42,12 +45,14 @@ public class CommentMvcController {
     }
 
     /**내용을 가져옴**/
-    @GetMapping("/messages")
     @ResponseBody
+    @GetMapping("/chat/messages")
     public RsData<MessagesResponse> messages(MessagesRequest req) {
+        Long postId = req.getPostId();
+        Post post = postRepository.findById(postId).get();
         //메세지 리스트
-        log.debug("req:{}",req);
-        List<Comment> chatMessages = commentRepository.findAll();
+        log.debug("들어오자 !!! req:{}",req);
+        List<Comment> chatMessages = commentRepository.findAllByPost(post);
         //subList될 저장소
         List<Comment> messages = chatMessages;
 
@@ -75,4 +80,9 @@ public class CommentMvcController {
         );
     }
 
+
+    @GetMapping("/toDoList")
+    public String goTodoList() {
+        return "toDoList";
+    }
 }

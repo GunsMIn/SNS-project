@@ -7,4 +7,5 @@ import lombok.Getter;
 @Getter
 public class MessagesRequest {
     private Long fromId;
+    private Long postId;
 }
