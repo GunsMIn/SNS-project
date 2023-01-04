@@ -45,10 +45,7 @@ public class Post extends BaseEntity{
     private boolean deleted = Boolean.FALSE;
 
 
-    /**SoftDelete**/
-    public void delete() {
-        this.deleted = true;
-    }
+
 
     @Builder
     public Post(Long id, String title, String body, User user, List<Comment> comments, List<LikeEntity> likes) {

@@ -133,7 +133,36 @@ public class PostService {
     }
 
     /**like**/
-    public void like(Long postId,String userName) {
+    public LikeResponse like(Long postId,String userName) {
+        //해당 글 찾음
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND, "해당 글은 존재하지 않습니다"));
+        //해당 유저 찾음
+        User user = userRepository.findOptionalByUserName(userName)
+                .orElseThrow(() -> new UserException(ErrorCode.USERNAME_NOT_FOUND, String.format("%s님은 존재하지 않습니다.", userName)));
+
+        //like 눌렀는지 확인 비지니스 로직🔽
+        //ifPresent() 메소드 = 값을 가지고 있는지 확인 후 예외처리 / 값이 존재한다면 예외처리 진행
+        likeEntityRepository.findByUserAndPost(user,post)
+                .ifPresent(entity -> {
+                    throw new LikeException(ErrorCode.ALREADY_LIKED, ErrorCode.ALREADY_LIKED.getMessage());
+                });
+        ////like 눌렀는지 확인 비지니스 로직 끝
+
+        LikeEntity like = LikeEntity.of(user, post);
+        LikeEntity savedLike = likeEntityRepository.save(like);
+        LikeResponse likeResponse = LikeResponse.of(savedLike);
+
+        /*좋아요 눌렀을 때 알림 동작*/
+        // 알림수신자 ,알림 타입 ,발신자 id ,알림 주체 포스트 id
+        AlarmEntity entity = AlarmEntity.of(post.getUser(), NEW_LIKE_ON_POST, user.getId(), post.getId());
+        alarmRepository.save(entity); // 알림 저장
+
+        return likeResponse;
+    }
+
+   /* *//**like**//*
+    public boolean like(Long postId,String userName) {
         //해당 글 찾음
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND, "해당 글은 존재하지 않습니다"));
@@ -151,12 +180,13 @@ public class PostService {
 
         LikeEntity like = LikeEntity.of(user, post);
         likeEntityRepository.save(like);
-        /*좋아요 눌렀을 때 알림 동작*/
+        *//*좋아요 눌렀을 때 알림 동작*//*
         // 알림수신자 ,알림 타입 ,발신자 id ,알림 주체 포스트 id
         AlarmEntity entity = AlarmEntity.of(post.getUser(), NEW_LIKE_ON_POST, user.getId(), post.getId());
         alarmRepository.save(entity); // 알림 저장
-    }
 
+        return true;
+    }*/
     /**
      * 해당 글 좋아요 개수
      * @PathVarable로 들어오는 postId로 post entity조회 후 좋아요 count 계산 후 반환
