@@ -451,6 +451,14 @@
 
 <br>
 
+## ✔컨트롤러 / 서비스 TDD 결과✔ </BR>
+###  ✅컨트롤러 테스트 결과
+<img width="630" alt="테스트 1" src="https://user-images.githubusercontent.com/104709432/210554589-65f433ef-b40f-42da-ac1e-1057056436d8.PNG"></BR>
+
+###  ✅서비스 테스트 결과
+<img width="630" alt="XP4" src="https://user-images.githubusercontent.com/104709432/210555591-d2d8458a-650f-4375-9535-69ad0e573ea6.PNG">
+
+
 ## MY VIEW 
 ![Screenshot 2022-12-27 at 17 08 36](https://user-images.githubusercontent.com/104709432/209633961-f3a94bb2-09c7-4e34-ba06-0b31e89068a3.JPG)
 
