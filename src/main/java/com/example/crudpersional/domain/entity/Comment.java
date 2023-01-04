@@ -15,6 +15,7 @@ import static javax.persistence.FetchType.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+//@Table(name = "\"comment\"")
 @Where(clause = "deleted = false")
 @SQLDelete(sql = "UPDATE Comment SET deleted = true WHERE id = ?")
 public class Comment extends BaseEntity{

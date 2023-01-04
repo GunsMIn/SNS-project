@@ -2,10 +2,11 @@ package com.example.crudpersional.domain.dto.comment;
 
 import com.example.crudpersional.domain.entity.Comment;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
-@AllArgsConstructor
+@AllArgsConstructor @Builder
 public class CommentUpdateResponse {
     private Long id;
     private String comment;

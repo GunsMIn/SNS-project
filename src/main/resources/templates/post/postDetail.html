@@ -45,7 +45,7 @@
         <div class="bg-white rounded shadow-sm">
             <div class="board_title" th:text="|제목 : ${post.title}|" ></div>
             <div class="board_info_box">
-                <span class="board_author" >글 번호 : </span><span class="board_date" th:text="${post.id}"></span>
+                <span class="board_author" >글 번호 : </span><span class="board_date" th:text="${post.postId}"></span>
             </div>
             <div class="board_info_box">
                 <span class="board_author" >작성인 : </span><span class="board_date" th:text="${post.userName}"></span>
@@ -59,10 +59,10 @@
         </div>
 
         <div style="margin-top : 20px">
-            <form th:action="@{/post/{id}/edit (id=${post.id})}" method="get" style="float: left">
+            <form th:action="@{/post/{id}/edit (id=${post.postId})}" method="get" style="float: left">
                 <button class="btn-hover color-8"><span>edit</span></button>
             </form>
-            <form th:action="@{/post/{id}/delete (id=${post.id})}" method="post" style="float: left">
+            <form th:action="@{/post/{id}/delete (id=${post.postId})}" method="post" style="float: left">
                 <button class="btn-hover color-8"><span>delete</span></button>
             </form>
             <form th:action="@{/posts/list}" method="get" >
@@ -72,7 +72,64 @@
     </div>
 
 </article>
+<div class="alert alert-secondary" role="alert"th:if="${session.loginMember == null}">
+    로그인 하시면 해당 글에 답글을 쓸 수 있어요! 회원가입 후 로그인 해보세요!!
+    <button type="button" class="btn btn-lg btn-danger" data-bs-toggle="popover" data-bs-title="Popover title" data-bs-content="And here's some amazing content. It's very engaging. Right?">회원가입하기</button>
+</div>
 
+<div th:if="${session.loginMember != null}">
+<div  class="card-body"><!--th:action="@{/comments/{id}/write (id=${post.id})}" method="post"-->
+    <form class="chat__write-message form-horizontal" onsubmit="Chat__writeMessage(this); return false;">
+        <div class="row">
+            <div class="form-group col-sm-8">
+                <input class="form-control input-sm" th:field="${commentForm.content}" name="content" type="text" placeholder="댓글 입력...">
+            </div>
+            <div class="form-group col-sm-2">
+                <input class="form-control input-sm"  th:field="${member.id}" name="id"  placeholder="작성자">
+            </div>
+            <div class="form-group col-sm-2">
+                <input class="form-control input-sm"  th:field="${post.postId}" name="postId" placeholder="작성자">
+            </div>
+            <div class="form-group col-sm-2">
+                <button type="submit" class="btn btn-primary btn-sm btn-block replyAddBtn">
+                    <i class="fa fa-save"></i> 저장
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+<div  class="card card-primary card-outline">
+   <!-- <span>이게 지금은 안보여야해</span>-->
+    <!--댓글 유무 / 댓글 갯수 / 댓글 펼치기, 접기-->
+    <div class="card-header">
+        <a href="" class="link-black text-lg"><i class="fas fa-comments margin-r-5 replyCount"></i></a>
+        <div class="card-tools">
+            <button type="button" class="btn primary"  data-widget="collapse">
+                <i class="fa fa-plus"></i>
+            </button>
+        </div>
+    </div>
+    <!--댓글 목록-->
+   <!-- <div class="chat__message-box card-body repliesDiv">
+        <ul class="chat__message-ul">
+            &lt;!&ndash;댓긇이 들어갈 공간&ndash;&gt;
+        </ul>
+    </div>-->
+    <div class="chat__message-box">
+        <ul class="chat__message-ul">
+            <!--댓긇이 들어갈 공간-->
+        </ul>
+    </div>
+    <!--댓글 페이징-->
+    <div class="card-footer">
+        <nav aria-label="Contacts Page Navigation">
+            <ul class="pagination pagination-sm no-margin justify-content-center m-0">
+
+            </ul>
+        </nav>
+    </div>
+</div>
+    </div>
 <!-- Footer-->
 <footer class="border-top">
     <div class="container px-4 px-lg-5">
@@ -11456,5 +11513,104 @@
         }
     }
 </style>
+<script>
+    /*POST*/
+    function fetchPost(url, data) {
+        return fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify(data),
+        })
+            .then(response => response.json())
+    }
 
+    /*GET*/
+    function fetchGet(url, data) {
+        let query = Object.keys(data)
+            .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(data[k]))
+            .join('&');
+
+        return fetch(url + "?" + query, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        })
+            .then(response => response.json())
+    }
+</script>
+<script th:inline="javascript">
+    var id = [[${post.postId}]];
+
+    console.log(id);
+    // 채팅 메세지 작성 시작
+    function Chat__writeMessage(form) {
+
+
+        //보내기
+        fetchPost("/comments/write", {
+            postId: form.postId.value,
+            id: form.id.value,
+            content: form.content.value
+        })
+            .then(console.log);
+        form.content.value = '';
+        form.id.focus();
+    }
+
+    // 채팅 메세지 작성 끝
+
+    // 채팅 메세지들 읽기 시작
+    // 현재 클라이언트가 받은 메세지 번호를 입력해야 합니다.
+    // 그래야 메세지 요청시에 필요한 부분만 가져오게 됩니다.
+    let Chat__lastLoadedId = 0;
+
+    function Chat__loadMore() {
+        fetchGet("/messages", {
+            fromId: Chat__lastLoadedId // 0
+        })
+            .then(body => {
+                Chat__drawMessages(body.data.messages);
+            });
+    }
+
+    const Chat__elMessageUl = document.querySelector('.chat__message-ul');
+
+    function Chat__drawMessages(messages) {
+        if (messages.length > 0) {
+            // 메세지를 그리기 전에 Chat__lastLoadedUuid 변수를 갱신합니다.
+            Chat__lastLoadedId = messages[messages.length - 1].id;
+        }
+
+        messages.forEach((message) => {
+            Chat__elMessageUl
+                .insertAdjacentHTML(
+                    "afterBegin",
+                    `<li> : ${message.content}</li>`
+                );
+        });
+        /*폴링 방식 때 사용*/
+
+        setTimeout(Chat__loadMore, 500); //0.5초 후에 실행
+    }
+
+    //무조건 한번 실행
+    Chat__loadMore();
+
+    // SSE 연결 (자동으로 추가)
+    // SSE는 단방향 무전기
+    // 방향 : 서버 -> 클라이언트
+    const sse = new EventSource("/sse/connect"); // <- sse 접속
+
+    // 서버로부터 "chat__messageAdded" 라는 명령이 내려오면 Chat__loadMore 함수를 실행
+    sse.addEventListener('chat__messageAdded', e => {
+        Chat__loadMore();
+    });
+    // 채팅 메시지들 읽기 끝
+
+</script>
 </html>

@@ -5,9 +5,7 @@ import com.example.crudpersional.domain.dto.comment.CommentResponse;
 import com.example.crudpersional.domain.dto.comment.CommentUpdateResponse;
 import com.example.crudpersional.domain.dto.comment.PostMineDto;
 import com.example.crudpersional.domain.dto.post.*;
-import com.example.crudpersional.domain.dto.user.UserDeleteRequest;
 import com.example.crudpersional.domain.entity.*;
-import com.example.crudpersional.domain.entity.alarm.AlarmType;
 import com.example.crudpersional.exceptionManager.ErrorCode;
 import com.example.crudpersional.exceptionManager.LikeException;
 import com.example.crudpersional.exceptionManager.PostException;
@@ -18,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -128,6 +125,7 @@ public class PostService {
     }
 
     /**내가 쓴 post 보기**/
+    @Transactional(readOnly = true)
     public Page<PostMineDto> getMyPost(String userName, Pageable pageable) {
         User user = userRepository.findOptionalByUserName(userName).orElseThrow(() ->
                 new UserException(ErrorCode.USERNAME_NOT_FOUND,String.format("%s not founded",userName)));
@@ -165,7 +163,7 @@ public class PostService {
      * */
     public Integer getLikeCount(Long postId) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND, "해당 글은 존재하지 않습니다."));
+                .orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND,ErrorCode.POST_NOT_FOUND.getMessage()));
 
         Integer postLikeCount = likeEntityRepository.countByPost(post);
         return postLikeCount;
@@ -173,6 +171,7 @@ public class PostService {
 
 
     /**알람 페이징 조회 20개 **/
+    @Transactional(readOnly = true)
     public Page<AlarmResponse> getAlarms(Pageable pageable) {
         Page<AlarmEntity> alarmEntities = alarmRepository.findAll(pageable);
         Page<AlarmResponse> alarmResponses = AlarmResponse.toResponse(alarmEntities);
@@ -203,14 +202,13 @@ public class PostService {
 
     /**comment 수정하기**/
     public CommentUpdateResponse modifyComment(Long id, String updateComment, String name) {
-        String responseMessage = null;
+
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND, id + " 번의 답변을 존재하지 않습니다"));
         User user = userRepository.findOptionalByUserName(name).orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND, "회원을 찾을 수 없습니다"));
 
         //답글을 쓴 사람만이 수정 가능
         if (comment.getUser().getId() != user.getId()) {
-            responseMessage = "답글의 수정 권한이 없습니다";
-            throw new UserException(ErrorCode.INVALID_PERMISSION,responseMessage);
+            throw new UserException(ErrorCode.INVALID_PERMISSION);
         }
         //변경감지 수정 메서드 (수정)
         Comment changedComment = comment.change(updateComment);
@@ -218,16 +216,13 @@ public class PostService {
     }
 
     /**comment 리스트 조회**/
+    @Transactional(readOnly = true)
     public Page<CommentResponse> getComments(Long postId, Pageable pageable) {
         //해당 post 유무 조회
         Post post = postRepository.findById(postId).
                 orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND, postId + " 번의 글은 존재하지 않습니다"));
         //comment List
         Page<Comment> comments = commentRepository.findAllByPost(post, pageable);
-        //해당 post에 답글이 없는 경우
-        if (comments.isEmpty()) {
-            throw new PostException(ErrorCode.COMMENT_NOT_FOUND, postId+"번의 포스트 : "+ErrorCode.COMMENT_NOT_FOUND.getMessage());
-        }
         return comments.map(CommentResponse::toResponse);
     }
 

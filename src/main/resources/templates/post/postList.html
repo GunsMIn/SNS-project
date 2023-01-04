@@ -11459,16 +11459,6 @@
     </button>
 </div>
 </form>
-<!--<form th:action="@{/posts/list}" method="GET">
-    <div class="mx-quto input-group mt-5">
-        <mx-auto>
-            <input name="title" th:value="${title}" type="text" class="form-control" placeholder="제목으로 검색" aria-label="search" aria-describedby="button-addon2">
-        </mx-auto>
-        <button class=" btn-success" type="submit" id="button-addon2">검색</button>
-    </div>
-</form>-->
-
-
 
 <div style="margin-left: 30px;">
     <table class="table table-hover">
@@ -11508,20 +11498,9 @@
             <a class="page-item" th:if="${page != nowPage}" th:href="@{/posts/list(page=${page-1},title=${param.title})}" th:text ="${page}" style="font-size:25px"></a>
             <strong th:if="${page==nowPage}" th:text ="${page}" style="color:lightskyblue; font-size:25px"></strong>
         </th:block>
-   <!-- <th:block th:if="${not #strings.isEmpty(title)}" th:each="page:${#numbers.sequence(startPage,endPage)}">
-        <a class="page-item" th:if="${page != nowPage}" th:href="@{/posts/list(page=${page-1})}" th:text ="${page}" style="font-size:25px"></a>
-        <strong th:if="${page==nowPage}" th:text ="${page}" style="color:lightskyblue; font-size:25px"></strong>
-    </th:block>
-        <th:block th:if="${#strings.isEmpty(title)}" th:each="page:${#numbers.sequence(startPage,endPage)}">
-            <a class="page-item" th:if="${page != nowPage}" th:href="@{/posts/list(page=${page-1},title=${title})}" th:text ="${page}" style="font-size:25px"></a>
-            <strong th:if="${page==nowPage}" th:text ="${page}" style="color:lightskyblue; font-size:25px"></strong>
-        </th:block>-->
     </div>
 
-    <!--    <ul class="pagination justify-content-center">
-            <li class="page-item"><a class="page-link" href="?page={{previous}}">Previous</a></li>
-            <li class="page-item"><a class="page-link" href="?page={{next}}">Next</a></li>
-        </ul>-->
+
 
 </div>
 <div class="mb-5 container-fluid"> <hr>

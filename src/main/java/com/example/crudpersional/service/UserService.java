@@ -77,20 +77,33 @@ public class UserService implements UserDetailsService {
 
     /**회원 조회**/
     @Transactional(readOnly = true)
-    public UserSelectResponse getUser(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(ErrorCode.USERNAME_NOT_FOUND, String.format("%d번의 회원을 찾을 수 없습니다.", userId)));
-        //엔티티 응답 객체로 변환
-        UserSelectResponse userSelectResponse = new UserSelectResponse(user.getId(), user.getUsername(), user.getRole());
+    public UserSelectResponse getUser(Long userId,String checkName) {
+        UserSelectResponse userSelectResponse = null;
+        User userOrAdmin = userRepository.findOptionalByUserName(checkName).orElseThrow(() -> new UserException(ErrorCode.INVALID_PERMISSION));
+        //ADMIN만 회원 단건 조회 가능
+        if (userOrAdmin.getRole().name() == UserRole.ADMIN.name()) {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new UserException(ErrorCode.USERNAME_NOT_FOUND, String.format("%d번의 회원을 찾을 수 없습니다.", userId)));
+            //엔티티 응답 객체로 변환
+            userSelectResponse = new UserSelectResponse(user.getId(), user.getUsername(), user.getRole());
+        }else{
+            throw new UserException(ErrorCode.INVALID_PERMISSION,ErrorCode.INVALID_PERMISSION.getMessage());
+        }
         return userSelectResponse;
     }
 
     /**회원 전체 조회**/
     @Transactional(readOnly = true)
-    public List<UserListResponse> getUsers() {
+    public List<UserListResponse> getUsers(String checkName) {
+
+        User checkedUser = userRepository.findOptionalByUserName(checkName).orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND, ErrorCode.USER_NOT_FOUND.getMessage()));
+        //일반 유저(USER)는 회원 전체 조회 접근 불가
+        if (checkedUser.getRole().name() == UserRole.USER.name()) {
+            throw new UserException(ErrorCode.INVALID_PERMISSION, ErrorCode.INVALID_PERMISSION.getMessage());
+        }
         List<User> users = userRepository.findAll();
         List<UserListResponse> userListResponses = users.stream()
-                .map(u -> new UserListResponse(u.getId(), u.getUsername()))
+                .map(u -> new UserListResponse(u.getId(), u.getUsername(),u.getRole()))
                 .collect(toList());
         return userListResponses;
     }

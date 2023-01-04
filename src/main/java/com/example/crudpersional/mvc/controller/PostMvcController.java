@@ -1,6 +1,7 @@
 
 package com.example.crudpersional.mvc.controller;
 
+import com.example.crudpersional.domain.dto.comment.CommentResponse;
 import com.example.crudpersional.domain.dto.post.PostAddRequest;
 import com.example.crudpersional.domain.dto.post.PostSelectResponse;
 import com.example.crudpersional.domain.entity.Post;
@@ -8,7 +9,9 @@ import com.example.crudpersional.domain.entity.User;
 import com.example.crudpersional.exceptionManager.ErrorCode;
 import com.example.crudpersional.exceptionManager.PostException;
 import com.example.crudpersional.exceptionManager.UserException;
+import com.example.crudpersional.mvc.dto.CommentForm;
 import com.example.crudpersional.mvc.dto.PostForm;
+import com.example.crudpersional.mvc.dto.PostMvcResponse;
 import com.example.crudpersional.mvc.dto.SessionConst;
 import com.example.crudpersional.repository.PostRepository;
 import com.example.crudpersional.repository.UserRepository;
@@ -16,6 +19,8 @@ import com.example.crudpersional.service.PostService;
 import com.sun.xml.bind.v2.model.core.ID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -36,6 +41,8 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 @Slf4j
+@Where(clause = "deleted = false")
+@SQLDelete(sql = "UPDATE Post SET deleted = true WHERE post_id = ?")
 public class PostMvcController {
 
     private final PostService postService;
@@ -96,7 +103,6 @@ public class PostMvcController {
         }else{
             posts = postService.searchByTitle(pageable, title);
         }
-
         //new PostSelectResponse();
         //페이지블럭 처리
         //1을 더해주는 이유는 pageable은 0부터라 1을 처리하려면 1을 더해서 시작해주어야 한다.
@@ -116,10 +122,19 @@ public class PostMvcController {
 
     //포스트 상세보기
     @GetMapping("/post/getOne/{id}")
-    public String getPost(@PathVariable Long id,Model model) {
+    public String getPost(@PathVariable Long id, Model model, CommentForm commentForm,
+                          @PageableDefault(size = 10,
+                                  sort = "registeredAt",
+                                  direction = Sort.Direction.DESC) Pageable pageable,@SessionAttribute(name = "loginMember", required = false) User loginMember) {
+
         log.info("id :{}" ,id);
-        PostSelectResponse post = postService.getPost(id);
+        log.info("상세보기 들어온다다다다" );
+        PostSelectResponse postdto = postService.getPost(id);
+        PostMvcResponse post = new PostMvcResponse(postdto);
+        Page<CommentResponse> comments = postService.getComments(id, pageable);
         model.addAttribute("post", post);
+        model.addAttribute("comments", comments);
+        model.addAttribute("member", loginMember);
         return "post/postDetail";
     }
 

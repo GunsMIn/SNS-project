@@ -10,6 +10,7 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+//@Table(name = "\"like\"")
 public class LikeEntity extends BaseEntity{
 
     @Id

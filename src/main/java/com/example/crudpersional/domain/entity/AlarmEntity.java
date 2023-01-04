@@ -15,6 +15,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @Getter
+//@Table(name = "\"alarm\"")
 public class AlarmEntity extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
