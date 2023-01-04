@@ -1,6 +1,7 @@
 package com.example.crudpersional.service;
 import com.example.crudpersional.domain.dto.comment.CommentResponse;
 import com.example.crudpersional.domain.dto.comment.CommentUpdateResponse;
+import com.example.crudpersional.domain.dto.comment.PostMineDto;
 import com.example.crudpersional.domain.entity.AlarmEntity;
 import com.example.crudpersional.domain.entity.Comment;
 import com.example.crudpersional.domain.entity.Post;
@@ -13,10 +14,13 @@ import com.example.crudpersional.fixture.*;
 import com.example.crudpersional.repository.LikeRepository;
 import com.example.crudpersional.repository.PostRepository;
 import com.example.crudpersional.repository.UserRepository;
+import org.hibernate.mapping.Any;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import java.util.Optional;
@@ -350,5 +354,46 @@ public class CommentServiceTest {
             assertEquals(postException.getErrorCode().getStatus(), ErrorCode.POST_NOT_FOUND.getStatus());
             assertEquals(postException.getErrorCode().getMessage(), ErrorCode.POST_NOT_FOUND.getMessage());
         }
+    }
+
+    @Nested
+    @DisplayName("마이피드 보기 성공/실패")
+    class MyPeed{
+    @Test
+    @DisplayName("마이피드 보기 성공")
+    void 마이피드_성공() throws Exception {
+
+        AllFixture all = AllFixture.getDto();
+        User user = UserEntityFixture.get(all.getUserName(), all.getPassword());
+        Post post = PostEntityFixture.get(user);
+        PageRequest request = PageRequest.of(0, 10, Sort.Direction.DESC, "registeredAt");
+
+        when(userRepository.findOptionalByUserName(any())).thenReturn(Optional.of(user));
+        when(postRepository.findPostsByUser(any(), any())).thenReturn(Page.empty());
+
+        Page<PostMineDto> myPeed = postService.getMyPeed(user.getUsername(), request);
+
+        assertThat(myPeed.getTotalPages()).isEqualTo(1);
+        assertDoesNotThrow(() -> myPeed);
+    }
+
+    @Test
+    @DisplayName("마이피드 보기 실패 : 회원 존재 하지 않음")
+    void 마이피드_실패() throws Exception {
+        AllFixture all = AllFixture.getDto();
+        User user = UserEntityFixture.get(all.getUserName(), all.getPassword());
+        Post post = PostEntityFixture.get(user);
+        PageRequest request = PageRequest.of(0, 10, Sort.Direction.DESC, "registeredAt");
+
+        when(userRepository.findOptionalByUserName(any())).thenReturn(Optional.empty());
+        when(postRepository.findPostsByUser(any(), any())).thenReturn(Page.empty());
+
+        UserException userException = assertThrows(UserException.class,
+                () -> postService.getMyPeed(user.getUsername(), request));
+
+        assertThat(userException.getErrorCode()).isEqualTo(ErrorCode.USERNAME_NOT_FOUND);
+        assertThat(userException.getErrorCode().getMessage()).isEqualTo(ErrorCode.USERNAME_NOT_FOUND.getMessage());
+        assertThat(userException.getErrorCode().getStatus()).isEqualTo(ErrorCode.USERNAME_NOT_FOUND.getStatus());
+    }
     }
  }

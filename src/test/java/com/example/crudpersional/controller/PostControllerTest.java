@@ -440,7 +440,7 @@ public class PostControllerTest {
         assertThat(request.getPageNumber()).isEqualTo(0);
         assertThat(request.getPageSize()).isEqualTo(20);
         assertThat(request.getSort()).isEqualTo(Sort.by("registeredAt").descending());
-        verify(postService, times(1)).getAlarms(any());
+        verify(postService, times(1)).getAlarms(any(),any());
     }
 
 
@@ -459,7 +459,7 @@ public class PostControllerTest {
                     .param("direction", "Sort.Direction.DESC"))
                     .andExpect(status().isUnauthorized());
 
-            verify(postService, never()).getAlarms(any());
+            verify(postService, never()).getAlarms(any(),any());
         }
 
     }
