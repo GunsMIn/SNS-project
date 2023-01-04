@@ -41,8 +41,6 @@ class CommentControllerTest {
     ObjectMapper objectMapper;
 
 
-
-
     @Nested
     @DisplayName("댓글 작성")
     class CommentWrite{
@@ -297,9 +295,6 @@ class CommentControllerTest {
         @WithMockUser
         @DisplayName("댓글 삭제 성공")
         void 댓글_삭제_성공() throws Exception {
-
-            doNothing().when(postService).deleteComment(anyLong(),anyString());
-
             String url = "/api/v1/posts/1/comments";
             mockMvc.perform(delete(url)
                     .with(csrf())
@@ -318,8 +313,6 @@ class CommentControllerTest {
         @WithAnonymousUser
         @DisplayName("댓글 삭제 실패 : 인증 실패")
         void 댓글_삭제_실패1() throws Exception {
-
-            doNothing().when(postService).deleteComment(anyLong(),anyString());
 
             String url = "/api/v1/posts/1/comments";
             mockMvc.perform(delete(url)

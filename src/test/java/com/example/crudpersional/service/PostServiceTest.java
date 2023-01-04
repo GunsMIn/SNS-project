@@ -2,22 +2,20 @@ package com.example.crudpersional.service;
 import com.example.crudpersional.domain.dto.post.*;
 import com.example.crudpersional.domain.entity.Post;
 import com.example.crudpersional.domain.entity.User;
-import com.example.crudpersional.domain.entity.UserRole;
 import com.example.crudpersional.exceptionManager.ErrorCode;
 import com.example.crudpersional.exceptionManager.PostException;
 import com.example.crudpersional.exceptionManager.UserException;
-import com.example.crudpersional.fixture.PostAndUser;
+import com.example.crudpersional.fixture.AllFixture;
 import com.example.crudpersional.fixture.PostEntityFixture;
 import com.example.crudpersional.fixture.UserEntityFixture;
 import com.example.crudpersional.repository.LikeRepository;
 import com.example.crudpersional.repository.PostRepository;
 import com.example.crudpersional.repository.UserRepository;
-import lombok.Data;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import java.util.Optional;
@@ -28,14 +26,7 @@ import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import org.springframework.expression.spel.ast.OpInc;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.util.Assert;
-
-import javax.swing.text.html.Option;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -56,8 +47,8 @@ class PostServiceTest {
     @DisplayName("조회 성공")
     void 글_조회_단건() {
         //postAndUser의 객체
-        PostAndUser postAndUser = new PostAndUser();
-        PostAndUser dto = postAndUser.getDto();
+        AllFixture allFixture = new AllFixture();
+        AllFixture dto = allFixture.getDto();
 
         //User 픽스처로 생성된 user엔티티(매개변수는 postAndUser픽스처의 값)
         User user = UserEntityFixture.get(dto.getUserName(), dto.getPassword());
@@ -79,7 +70,7 @@ class PostServiceTest {
         @DisplayName("글 등록 성공 테스트")
         void 등록성공() {
 
-            PostAndUser dto = PostAndUser.getDto();
+            AllFixture dto = AllFixture.getDto();
             //User 픽스처로 생성된 user엔티티(매개변수는 postAndUser픽스처의 값)
             User user = UserEntityFixture.get(dto.getUserName(), dto.getPassword());
             //Post 픽스처로 생성된 user엔티티(매개변수는 User픽스처의 값)
@@ -104,7 +95,7 @@ class PostServiceTest {
         @WithMockUser
         @DisplayName("등록 실패 : 유저 존재 하지 않음")
         void 등록_실패() {
-            PostAndUser dto = PostAndUser.getDto();
+            AllFixture dto = AllFixture.getDto();
             User user = UserEntityFixture.get(dto.getUserName(), dto.getPassword());
             Post post = PostEntityFixture.get(user);
             // 유저 존재 하지 않은 상황 가정
@@ -129,7 +120,7 @@ class PostServiceTest {
     @DisplayName("수정 실패 : 작성자!=유저")
     void 수정_실패_작성자_불일치() {
 
-        PostAndUser dto = PostAndUser.getDto();
+        AllFixture dto = AllFixture.getDto();
         User user1 = UserEntityFixture.get("박지성", "password");
         User user2 = UserEntityFixture.get("손흥민", "password2");
         //user2가 작성한 post
@@ -156,7 +147,7 @@ class PostServiceTest {
     @DisplayName("수정 실패 : 포스트 존재하지 않음")
     @WithMockUser
     void 수정_실패_포스트_존재하지않음() {
-        PostAndUser postAndUser = PostAndUser.getDto();
+        AllFixture allFixture = AllFixture.getDto();
         //수정 request
         PostUpdateRequest postUpdateRequest = new PostUpdateRequest("수정될 제목", "수정될 내용");
         //해당 post존재하지 않음 Optional.of(mock(Post.class)) <- 이것을 넣으면 에러가 발생하면 안됨
@@ -165,7 +156,7 @@ class PostServiceTest {
 
         PostException postException =
                 assertThrows(PostException.class,
-                        () -> postService.updatePost(postAndUser.getPostId(), postUpdateRequest, postAndUser.getUserName()));
+                        () -> postService.updatePost(allFixture.getPostId(), postUpdateRequest, allFixture.getUserName()));
 
         Assertions.assertEquals(postException.getErrorCode(),ErrorCode.POST_NOT_FOUND);
     }
@@ -174,7 +165,7 @@ class PostServiceTest {
         @DisplayName("수정 실패 : 회원 존재하지 않음")
         @WithMockUser
         void 수정_실패_회원_존재하지않음() {
-            PostAndUser postAndUser = PostAndUser.getDto();
+            AllFixture allFixture = AllFixture.getDto();
             //수정 request
             PostUpdateRequest postUpdateRequest = new PostUpdateRequest("수정될 제목", "수정될 내용");
 
@@ -184,7 +175,7 @@ class PostServiceTest {
 
             UserException userException =
                     assertThrows(UserException.class,
-                            () -> postService.updatePost(postAndUser.getPostId(), postUpdateRequest, postAndUser.getUserName()));
+                            () -> postService.updatePost(allFixture.getPostId(), postUpdateRequest, allFixture.getUserName()));
 
             Assertions.assertEquals(userException.getErrorCode(),ErrorCode.USERNAME_NOT_FOUND);
         }
@@ -194,16 +185,16 @@ class PostServiceTest {
         @WithMockUser
         @DisplayName("포스트 수정 성공")
         void postUpdateSuccess() {
-            PostAndUser postAndUser = PostAndUser.getDto();
+            AllFixture allFixture = AllFixture.getDto();
             PostUpdateRequest postUpdateRequest = new PostUpdateRequest("수정될 제목", "수정될 내용");
-            User user = UserEntityFixture.get(postAndUser.getUserName(), postAndUser.getPassword());
+            User user = UserEntityFixture.get(allFixture.getUserName(), allFixture.getPassword());
 
             //수정 성공 로직
             when(userRepository.findOptionalByUserName(user.getUsername())).thenReturn(Optional.of(user));
             when(postRepository.findById(any())).thenReturn(Optional.of(PostEntityFixture.get(user)));
 
             PostUpdateResponse postUpdateResponse
-                    = postService.updatePost(postAndUser.getPostId(), postUpdateRequest, postAndUser.getUserName());
+                    = postService.updatePost(allFixture.getPostId(), postUpdateRequest, allFixture.getUserName());
 
             Assertions.assertEquals(postUpdateResponse.getMessage(),"포스트 수정 완료");
 
@@ -218,15 +209,15 @@ class PostServiceTest {
         @WithMockUser
         @DisplayName("포스트 삭제 성공")
         void 포스트_삭제_성공() {
-            PostAndUser postAndUser = PostAndUser.getDto();
-            User user = UserEntityFixture.get(postAndUser.getUserName(), postAndUser.getPassword());
+            AllFixture allFixture = AllFixture.getDto();
+            User user = UserEntityFixture.get(allFixture.getUserName(), allFixture.getPassword());
 
             //수정 성공 로직
             when(userRepository.findOptionalByUserName(user.getUsername())).thenReturn(Optional.of(user));
             when(postRepository.findById(any())).thenReturn(Optional.of(PostEntityFixture.get(user)));
 
             PostDeleteResponse postDeleteResponse
-                    = postService.deletePost(postAndUser.getPostId(), postAndUser.getUserName());
+                    = postService.deletePost(allFixture.getPostId(), allFixture.getUserName());
 
             Assertions.assertEquals(postDeleteResponse.getMessage(),"포스트 삭제 완료");
             Assertions.assertEquals(postDeleteResponse.getPostId(),1L);
@@ -238,7 +229,7 @@ class PostServiceTest {
         @DisplayName("포스트 삭제 작성자 불일치")
         void 삭제_실패_작성자_불일치() throws Exception {
 
-            PostAndUser dto = PostAndUser.getDto();
+            AllFixture dto = AllFixture.getDto();
             //유저1 (글 작성한 회원)
             User 유저1 = UserEntityFixture.get("유저1", "1234");
             //유저2 (글 삭제 시도 회원)
@@ -257,7 +248,7 @@ class PostServiceTest {
         @WithMockUser
         @DisplayName("삭제 실패 : 포스트 존재 하지 않음")
         void 삭제_실패_포스트_존재x() throws Exception {
-            PostAndUser dto = PostAndUser.getDto();
+            AllFixture dto = AllFixture.getDto();
             //포스트 존재하지 않는 상황 가정
             when(postRepository.findById(any())).thenReturn(Optional.empty());
 
@@ -265,7 +256,7 @@ class PostServiceTest {
                     assertThrows(PostException.class, () -> postService.deletePost(dto.getPostId(), dto.getUserName()));
 
             Assertions.assertEquals(postException.getErrorCode(),ErrorCode.POST_NOT_FOUND);
-            Assertions.assertEquals(postException.getMessage(),"해당 글은 존재하지 않아서 삭제할 수 없습니다.");
+            Assertions.assertEquals(postException.getErrorCode().getMessage(),"해당 포스트가 없습니다.");
         }
     }
     }
