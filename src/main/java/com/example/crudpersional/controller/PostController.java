@@ -82,15 +82,15 @@ public class PostController {
     @GetMapping("/api/v1/posts/my")
     public Response<Page<PostMineDto>> my(@PageableDefault(size = 20, sort ="registeredAt",
             direction = Sort.Direction.DESC) Pageable pageable,@ApiIgnore Authentication authentication) {
-        Page<PostMineDto> myPost = postService.getMyPost(authentication.getName(),pageable);
+        Page<PostMineDto> myPost = postService.getMyPeed(authentication.getName(),pageable);
         return Response.success(myPost);
     }
 
     @ApiOperation(value = "알림 페이징 조회(최신순)", notes = "내가 쓴 포스트 보는 API")
     @GetMapping("/api/v1/posts/alarms")
-    public Response<Page<AlarmResponse>> getAlarms(@PageableDefault(size = 20, sort ="registeredAt",
+    public Response<Page<AlarmResponse>> getAlarms(@ApiIgnore Authentication authentication,@PageableDefault(size = 20, sort ="registeredAt",
             direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<AlarmResponse> alarmResponses = postService.getAlarms(pageable);
+        Page<AlarmResponse> alarmResponses = postService.getAlarms(authentication.getName(),pageable);
         return Response.success(alarmResponses);
     }
 

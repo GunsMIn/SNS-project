@@ -394,7 +394,7 @@ public class PostControllerTest {
     @WithMockUser
     void 마이피드_성공 () throws Exception {
 
-        when(postService.getMyPost(any(), any())).thenReturn(Page.empty());
+        when(postService.getMyPeed(any(), any())).thenReturn(Page.empty());
         mockMvc.perform(get("/api/v1/posts/my")
                 .contentType(MediaType.APPLICATION_JSON)
         ).andDo(print())
@@ -402,11 +402,11 @@ public class PostControllerTest {
     }
 
         @Test
-        @DisplayName("마이피드 성공")
+        @DisplayName("마이피드 실패")
         @WithAnonymousUser
         void 마이피드_실패_로그인X () throws Exception {
 
-            when(postService.getMyPost(any(), any())).thenThrow(new UserException(ErrorCode.INVALID_PERMISSION));
+            when(postService.getMyPeed(any(), any())).thenThrow(new UserException(ErrorCode.INVALID_PERMISSION));
             mockMvc.perform(get("/api/v1/posts/my")
                     .contentType(MediaType.APPLICATION_JSON)
             ).andDo(print())
