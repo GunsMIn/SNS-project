@@ -1,5 +1,6 @@
 package com.example.crudpersional.controller;
 
+import com.example.crudpersional.exceptionManager.UserException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
@@ -308,23 +310,32 @@ public class PostControllerTest {
 
 
 
-    @Test
-    @WithMockUser
-    @DisplayName("포스트 삭제 성공")
-    void 삭제성공() throws Exception {
 
-        mockMvc.perform(delete("/api/v1/posts/1")
-                .with(csrf())
-                .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(jsonPath("$.result.message").exists())
-                .andExpect(jsonPath("$.result.postId").exists())
-                .andExpect(status().isOk());
-    }
     @Nested
     @DisplayName("삭제")
     class PostDelete{
-        
+
+        @Test
+        @WithMockUser
+        @DisplayName("포스트 삭제 성공")
+        void 삭제_성공() throws Exception {
+
+            PostDeleteResponse response = PostDeleteResponse.builder()
+                    .postId(1L)
+                    .message("삭제")
+                    .build();
+            when(postService.deletePost(anyLong(), anyString())).thenReturn(response);
+
+            mockMvc.perform(delete("/api/v1/posts/1")
+                    .with(csrf())
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andDo(print())
+                    .andExpect(jsonPath("$.result.message").exists())
+                    .andExpect(jsonPath("$.result.postId").exists())
+                    .andExpect(status().isOk());
+        }
+
+
     @Test
     @WithAnonymousUser
     @DisplayName("포스트 삭제 실패 : 인증 실패")
@@ -371,7 +382,85 @@ public class PostControllerTest {
                 .andDo(print())
                 .andExpect(status().is(ErrorCode.DATABASE_ERROR.getStatus().value()));
     }
+    }
 
+    @Nested
+    @DisplayName("마이피드 보기 성공/실패")
+    class MyPeed{
+
+
+    @Test
+    @DisplayName("마이피드 성공")
+    @WithMockUser
+    void 마이피드_성공 () throws Exception {
+
+        when(postService.getMyPost(any(), any())).thenReturn(Page.empty());
+        mockMvc.perform(get("/api/v1/posts/my")
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andDo(print())
+                .andExpect(status().isOk());
+    }
+
+        @Test
+        @DisplayName("마이피드 성공")
+        @WithAnonymousUser
+        void 마이피드_실패_로그인X () throws Exception {
+
+            when(postService.getMyPost(any(), any())).thenThrow(new UserException(ErrorCode.INVALID_PERMISSION));
+            mockMvc.perform(get("/api/v1/posts/my")
+                    .contentType(MediaType.APPLICATION_JSON)
+            ).andDo(print())
+                    .andExpect(status().isUnauthorized());
+        }
+
+
+    }
+
+
+    @Nested
+    @DisplayName("알림 조회 성공/실패")
+    class AlarmTest{
+
+
+    @Test
+    @WithMockUser
+    @DisplayName("알람 조회 페이징 리스트")
+    void 알람_페이징_조회_성공() throws Exception {
+
+        PageRequest request = PageRequest.of(0, 20, Sort.Direction.DESC, "registeredAt");
+        String url = "/api/v1/posts/alarms";
+
+        mockMvc.perform(get(url)
+                .param("size", "20")
+                .param("sort", "registeredAt")
+                .param("direction", "Sort.Direction.DESC"))
+                .andExpect(status().isOk());
+
+
+        assertThat(request.getPageNumber()).isEqualTo(0);
+        assertThat(request.getPageSize()).isEqualTo(20);
+        assertThat(request.getSort()).isEqualTo(Sort.by("registeredAt").descending());
+        verify(postService, times(1)).getAlarms(any());
+    }
+
+
+
+        @Test
+        @WithAnonymousUser
+        @DisplayName("인증 실패 - 알람 조회 페이징 리스트")
+        void 알람_페이징_조회_실패() throws Exception {
+
+            PageRequest request = PageRequest.of(0, 20, Sort.Direction.DESC, "registeredAt");
+            String url = "/api/v1/posts/alarms";
+
+            mockMvc.perform(get(url)
+                    .param("size", "20")
+                    .param("sort", "registeredAt")
+                    .param("direction", "Sort.Direction.DESC"))
+                    .andExpect(status().isUnauthorized());
+
+            verify(postService, never()).getAlarms(any());
+        }
 
     }
 }
