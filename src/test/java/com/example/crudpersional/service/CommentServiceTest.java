@@ -1,16 +1,15 @@
 package com.example.crudpersional.service;
 import com.example.crudpersional.domain.dto.comment.CommentResponse;
 import com.example.crudpersional.domain.dto.comment.CommentUpdateResponse;
+import com.example.crudpersional.domain.entity.AlarmEntity;
 import com.example.crudpersional.domain.entity.Comment;
 import com.example.crudpersional.domain.entity.Post;
 import com.example.crudpersional.domain.entity.User;
+import com.example.crudpersional.domain.entity.alarm.AlarmType;
 import com.example.crudpersional.exceptionManager.ErrorCode;
 import com.example.crudpersional.exceptionManager.PostException;
 import com.example.crudpersional.exceptionManager.UserException;
-import com.example.crudpersional.fixture.AllFixture;
-import com.example.crudpersional.fixture.CommentFixture;
-import com.example.crudpersional.fixture.PostEntityFixture;
-import com.example.crudpersional.fixture.UserEntityFixture;
+import com.example.crudpersional.fixture.*;
 import com.example.crudpersional.repository.LikeRepository;
 import com.example.crudpersional.repository.PostRepository;
 import com.example.crudpersional.repository.UserRepository;
@@ -40,13 +39,10 @@ public class CommentServiceTest {
 
     @InjectMocks
     PostService postService;
-
     @Mock
     PostRepository postRepository ;
     @Mock
     UserRepository userRepository ;
-    @Mock
-    LikeRepository likeRepository;
     @Mock
     CommentRepository commentRepository;
     @Mock
@@ -63,10 +59,13 @@ public class CommentServiceTest {
         User user = UserEntityFixture.get(all.getUserName(), all.getPassword());
         Post post = PostEntityFixture.get(user);
         Comment comment = CommentFixture.get(user, post);
+        //글 작성시 알림 발생
+        AlarmEntity alarm= AlarmFixture.get(post, user, AlarmType.NEW_COMMENT_ON_POST);
 
         when(postRepository.findById(anyLong())).thenReturn(Optional.of(post));
         when(userRepository.findOptionalByUserName(anyString())).thenReturn(Optional.of(user));
         when(commentRepository.save(any())).thenReturn(comment);
+        when(alarmRepository.save(any())).thenReturn(alarm);
 
         CommentResponse commentResponse = postService.writeComment(all.getPostId(), all.getComment(), all.getUserName());
 
@@ -74,6 +73,7 @@ public class CommentServiceTest {
         assertEquals(commentResponse.getUserName(),"test");
         assertEquals(commentResponse.getId(),1L);
         assertEquals(commentResponse.getPostId(),1L);
+
 
         assertDoesNotThrow(()->commentResponse);
     }
