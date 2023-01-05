@@ -1,5 +1,6 @@
 package com.example.crudpersional.mvc.dto;
 
+import com.example.crudpersional.domain.dto.comment.CommentResponse;
 import com.example.crudpersional.domain.entity.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +11,7 @@ import java.util.List;
 @Getter
 public class MessagesResponse {
 
-    private List<Comment> messages;
+    private List<CommentResponse> messages;
 
     private Integer count;
 }

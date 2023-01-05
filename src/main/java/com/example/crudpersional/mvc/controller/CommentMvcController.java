@@ -21,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Controller
@@ -51,21 +52,25 @@ public class CommentMvcController {
     /**내용을 가져옴**/
     @ResponseBody
     @GetMapping("/chat/messages")
-    public RsData<MessagesResponse> messages(MessagesRequest req) {
-        Long postId = req.getPostId();
+    public RsData<MessagesResponse> messages(Long fromId,Long postId) {
+
         Post post = postRepository.findById(postId).get();
         //메세지 리스트
-        log.debug("들어오자 !!! req:{}",req);
+        log.debug("들어오자 !!! req:{}",fromId);
         List<Comment> chatMessages = commentRepository.findAllByPost(post);
         //subList될 저장소
-        List<Comment> messages = chatMessages;
-
+        List<Comment> messagesEntity = chatMessages;
+        List<CommentResponse> messages = messagesEntity.stream().map(c -> new CommentResponse(c.getId(),
+                c.getComment(), c.getUser().getUsername(),
+                c.getPost().getId(), c.getRegisteredAt(),
+                c.getUpdatedAt())).collect(Collectors.toList());
+        log.info("메세지 리스트 : {}",messages);
         //req.getFromId 에서의 fromId값으로 !
-        if (req.getFromId() != null) {
+        if (fromId != null) {
             // 0 부터 messageList의 size만큼의 int 생성
             // 해당하는 인덱스를 찾고 안나오면 -1 반환
             int index = IntStream.range(0, messages.size()) // 0부터 messageList의 size만큼 반복
-                    .filter(i -> chatMessages.get(i).getId() == req.getFromId())
+                    .filter(i -> chatMessages.get(i).getId() == fromId)
                     .findFirst() // 찾으면 멈춘다.
                     .orElse(-1);
             //해당 인덱스를 찾았다면
@@ -76,7 +81,6 @@ public class CommentMvcController {
                 // 1 2 3 4 5
             }
         }
-
         return new RsData<>(
                 "S-1",
                 "성공",

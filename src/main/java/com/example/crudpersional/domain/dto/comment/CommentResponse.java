@@ -4,10 +4,11 @@ import com.example.crudpersional.domain.entity.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 @AllArgsConstructor
 @Getter
-@Builder
+@Builder @ToString
 public class CommentResponse {
     private Long id;
     private String comment;
@@ -48,4 +49,6 @@ public class CommentResponse {
         this.createdAt = createdAt;
         this.lastModifiedAt = lastModifiedAt;
     }
+
+
 }

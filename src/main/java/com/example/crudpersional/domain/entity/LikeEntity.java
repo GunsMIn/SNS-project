@@ -34,6 +34,10 @@ public class LikeEntity extends BaseEntity{
 
     private Integer count;
 
+    /**SoftDeleteColumn**/
+    @Column(name = "deleted")
+    private boolean deleted = Boolean.FALSE;
+
     //연관관계 편의 메서드
     //1. user
     //2. post의 값을 like 엔티티에 넣어준다.

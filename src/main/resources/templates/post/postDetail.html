@@ -12,113 +12,130 @@
     <title>board</title>
 
 </head>
-<body>
-<!-- Navigation-->
-<nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
-    <div class="container px-4 px-lg-5">
-        <a class="navbar-brand" href="/members/loginIndex">Like Lion 🦁</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-            Menu
-            <i class="fas fa-bars"></i>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-            <ul class="navbar-nav ms-auto py-4 py-lg-0">
-                <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/members/joinUser">Join</a></li>
-                <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/members/loginForm">Login</a></li>
-                <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/posts/form">Write Post</a></li>
-                <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/posts/list">Post List</a></li>
-            </ul>
+<div>
+    <!-- Navigation-->
+    <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
+        <div class="container px-4 px-lg-5">
+            <a class="navbar-brand" href="/members/loginIndex">Like Lion 🦁</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                Menu
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ms-auto py-4 py-lg-0">
+                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/members/joinUser">Join</a></li>
+                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/members/loginForm">Login</a></li>
+                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/posts/form">Write Post</a></li>
+                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/posts/list">Post List</a></li>
+                </ul>
+            </div>
         </div>
-    </div>
-</nav>
-<header class="masthead" style="background-image: url('https://images.pling.com/img/00/00/50/91/40/1304700/fbd1f1f39015f25f6de6b1d003ee7b518f15.png')">
-    <div class="container position-relative px-4 px-lg-5">
-        <div class="row gx-4 gx-lg-5 justify-content-center">
-            <div class="col-md-10 col-lg-8 col-xl-7">
-                <div class="page-heading">
-                    <h1>글 상세보기</h1>
-                    <span class="subheading">Have questions?</span>
+    </nav>
+    <header class="masthead" style="background-image: url('https://images.pling.com/img/00/00/50/91/40/1304700/fbd1f1f39015f25f6de6b1d003ee7b518f15.png')">
+        <div class="container position-relative px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <div class="page-heading">
+                        <h1>글 상세보기</h1>
+                        <span class="subheading">Have questions?</span>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</header>
-<!-- Main Content-->
-<article>
-    <div class="container" role="main">
-        <!--<h2>  해당 글 상세보기</h2>-->
-        <div class="bg-white rounded shadow-sm">
-            <div class="board_title" th:text="|제목 : ${post.title}|" ></div>
-            <div class="board_info_box">
-                <span class="board_author" >글 번호 : </span><span class="board_date" th:text="${post.postId}"></span>
+    </header>
+    <!-- Main Content-->
+    <article>
+        <div class="container" role="main">
+            <!--<h2>  해당 글 상세보기</h2>-->
+            <div class="bg-white rounded shadow-sm">
+                <div class="board_title" th:text="|제목 : ${post.title}|" ></div>
+                <div class="board_info_box">
+                    <span class="board_author" >글 번호 : </span><span class="board_date" th:text="${post.postId}"></span>
+                </div>
+                <div class="board_info_box">
+                    <span class="board_author" >작성인 : </span><span class="board_date" th:text="${post.userName}"></span>
+                </div>
+                <div class="board_info_box">
+                    <span class="board_author" >작성 날짜 : </span><span class="board_date" th:text="${post.createdAt}"></span>
+                </div>
+                <h5>&nbsp;&nbsp;글 내용 </h5>
+                <div class="board_content" th:text="${post.body}"></div>
+                <div class="board_tag"></div>
             </div>
-            <div class="board_info_box">
-                <span class="board_author" >작성인 : </span><span class="board_date" th:text="${post.userName}"></span>
+
+            <div style="margin-top : 20px">
+                <form th:action="@{/post/{id}/edit (id=${post.postId})}" method="get" style="float: left">
+                    <button class="btn-hover color-8"><span>edit</span></button>
+                </form>
+                <form th:action="@{/post/{id}/delete (id=${post.postId})}" method="post" style="float: left">
+                    <button class="btn-hover color-8"><span>delete</span></button>
+                </form>
+                <form th:action="@{/posts/list}" method="get" >
+                    <button class="btn-hover color-8"><span>postList</span></button>
+                </form>
             </div>
-            <div class="board_info_box">
-                <span class="board_author" >작성 날짜 : </span><span class="board_date" th:text="${post.createdAt}"></span>
-            </div>
-            <h5>&nbsp;&nbsp;글 내용 </h5>
-            <div class="board_content" th:text="${post.body}"></div>
-            <div class="board_tag"></div>
         </div>
 
-        <div style="margin-top : 20px">
-            <form th:action="@{/post/{id}/edit (id=${post.postId})}" method="get" style="float: left">
-                <button class="btn-hover color-8"><span>edit</span></button>
-            </form>
-            <form th:action="@{/post/{id}/delete (id=${post.postId})}" method="post" style="float: left">
-                <button class="btn-hover color-8"><span>delete</span></button>
-            </form>
-            <form th:action="@{/posts/list}" method="get" >
-                <button class="btn-hover color-8"><span>postList</span></button>
+    </article>
+    <div th:if="${session.loginMember != null}">
+        <div class="card">
+            <div class="card-header bi bi-chat-right-dots"> Write a Comment</div>
+            <!--   &lt;!&ndash;{{! 댓글작성 부분}}&ndash;&gt;-->
+            <form class="container">
+                <input type="hidden" id="input-postId" th:value="${post.postId}">
+                <input type="hidden" id="input-username" th:value="${member.username}">
+                <!--    &lt;!&ndash; {{#user}}&ndash;&gt;-->
+                <div class="card-body">
+                    <textarea id="input-write-comment" class="form-control" rows="4" placeholder="댓글을 입력하세요"></textarea>
+                </div>
+                <div class="card-footer">
+                    <button type="button" id="comment-write-btn" class="btn-hover color-8 btn btn-outline-primary bi bi-pencil-square"> 등록</button>
+                </div>
             </form>
         </div>
     </div>
-
-</article>
-<div class="alert alert-secondary" style="text-align: center;" role="alert"th:if="${session.loginMember == null}">
-    로그인 하시면 해당 글에 답글을 쓸 수 있어요! 회원가입 후 로그인 해보세요!!
-    <form th:action="@{/members/loginForm}" method="get" >
-        <button class="btn-hover color-8"><span>로그인 하기</span></button>
-    </form>
-</div>
-
-
-
-    <div class="card">
+    <div th:if="${session.loginMember == null }">
+    <div class="alert alert-secondary" style="text-align: center;" role="alert">
+        로그인 하시면 해당 글에 답글을 쓸 수 있어요! 회원가입 후 로그인 해보세요!!
+        <form th:action="@{/members/loginForm}" method="get" >
+            <button class="btn-hover color-8"><span>로그인 하기</span></button>
+        </form>
+    </div>
+    <div class="card" th:if="${!#lists.isEmpty(comments)}">
         <div class="card-header bi bi-chat-dots"th:text="'현재 댓글 개수 : '+${#lists.size(comments)}+'개'"> Comments</div>
-      <!--  &lt;!&ndash;{{! 댓글내용 부분 }}&ndash;&gt;-->
+        <!--  &lt;!&ndash;{{! 댓글내용 부분 }}&ndash;&gt;-->
         <ul class="list-group-flush" th:each="comment :${comments}" >
             <li class="list-group-item">
                 <span>
                     <span style="font-size: small" th:text="${comment.user.username}"></span>
                     <span style="font-size: xx-small"th:text="${comment.registeredAt}"></span>
-              <!--      <button class="badge bi bi-pencil-square"> 수정</button>
-                    <button class="badge bi bi-trash"> 삭제</button>-->
+                    <!--      <button class="badge bi bi-pencil-square"> 수정</button>
+                          <button class="badge bi bi-trash"> 삭제</button>-->
                 </span>
                 <div th:text="${comment.comment}">댓글 내용</div>
             </li>
         </ul>
-    </div>
-    <br/>
-<div th:if="${session.loginMember != null}">
-    <div class="card">
-        <div class="card-header bi bi-chat-right-dots"> Write a Comment</div>
-     <!--   &lt;!&ndash;{{! 댓글작성 부분}}&ndash;&gt;-->
-        <form class="container">
-            <input type="hidden" id="input-postId" th:value="${post.postId}">
-            <input type="hidden" id="input-username" th:value="${member.username}">
-            <!--    &lt;!&ndash; {{#user}}&ndash;&gt;-->
-            <div class="card-body">
-                <textarea id="input-write-comment" class="form-control" rows="4" placeholder="댓글을 입력하세요"></textarea>
-            </div>
-            <div class="card-footer">
-                <button type="button" id="comment-write-btn" class="btn-hover color-8 btn btn-outline-primary bi bi-pencil-square"> 등록</button>
-            </div>
-        </form>
+        <div class="chat__message-box">
+            <ul class="chat__message-ul">
+                <!--댓긇이 들어갈 공간-->
+            </ul>
+        </div>
     </div>
 </div>
+
+    <div th:if="${session.loginMember != null}">
+        <div class="card">
+            <div class="card-header bi bi-chat-dots" th:if="${!#lists.isEmpty(comments)}" th:text="'현재 댓글 개수 : '+${#lists.size(comments)}+'개'"> Comments</div>
+            <div class="chat__message-box">
+                <ul class="chat__message-ul">
+                    <!--댓긇이 들어갈 공간-->
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<br/>
+
 
 <!-- Footer-->
 <footer class="border-top">
@@ -156,6 +173,96 @@
         </div>
     </div>
 </footer>
+
+<script>
+    /*POST*/
+    function fetchPost(url, data) {
+        return fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify(data),
+        })
+            .then(response => response.json())
+    }
+
+    /*GET*/
+    function fetchGet(url, data) {
+        let query = Object.keys(data)
+            .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(data[k]))
+            .join('&');
+
+        return fetch(url + "?" + query, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        })
+            .then(response => response.json())
+    }
+</script>
+<script>
+    let Chat__lastLoadedId = 0;
+    let id = document.querySelector(`#input-postId`).value;
+
+    function Chat__loadMore() {
+        console.log("get도 실행되어야함")
+        fetchGet("/chat/messages", {
+            fromId: Chat__lastLoadedId, // 0
+            postId:id
+        })
+            .then(body => {
+                Chat__drawMessages(body.data.messages);
+            });
+    }
+
+    const Chat__elMessageUl = document.querySelector('.chat__message-ul');
+
+    function Chat__drawMessages(messages) {
+        if (messages.length > 0) {
+            // 메세지를 그리기 전에 Chat__lastLoadedUuid 변수를 갱신합니다.
+            Chat__lastLoadedId = messages[messages.length - 1].id;
+        }
+
+        messages.forEach((message) => {
+            Chat__elMessageUl
+                .insertAdjacentHTML(
+                    "afterBegin",
+
+                    ` <li class="list-group-item">
+                <span>
+                <span style="font-size: small" >${message.userName}</span>
+                <span style="font-size: xx-small" >${message.createdAt}</span>
+                <!--      <button class="badge bi bi-pencil-square"> 수정</button>
+                <button class="badge bi bi-trash"> 삭제</button>-->
+                </span>
+                <div > ${message.comment}</div>
+            </li>`
+                    /*  `
+  <li class="list-group-item">
+  <span>
+  <span>${message.createdAt}</span>
+  <span>${message.userName} : ${message.comment}</span>
+  </span>
+  </li>`*/
+
+
+
+                );
+        });
+        /*폴링 방식 때 사용*/
+        //Chat__loadMore();
+        setTimeout(Chat__loadMore, 850); //0.5초 후에 실행
+    }
+
+    //무조건 한번 실행
+    Chat__loadMore();
+
+    // 채팅 메시지들 읽기 끝
+</script>
 <script>
     let comment = {
 
@@ -176,7 +283,7 @@
 
             let data = {
                 comment: document.querySelector('#input-write-comment').value.trim(),
-                 name : document.querySelector(`#input-username`).value
+                name : document.querySelector(`#input-username`).value
             };
             console.log(data);
 
@@ -192,8 +299,9 @@
                     }
                 }
             ).then((response) => {
-                alert("댓글을 작성하셨습니다.");
-                window.location.href = '/post/getOne/' + id;
+                Chat__loadMore();
+                /* alert("댓글을 작성하셨습니다.");*/
+                /*window.location.href = '/post/getOne/' + id;*/
             });
         }
 
@@ -2809,42 +2917,4 @@
     .form-check-input[type=checkbox]:indeterminate {
         background-color: #0085A1;
         border-color: #0085A1;
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10h8'/%3e%3c/svg%3e");
-    }
-    .form-check-input:disabled {
-        pointer-events: none;
-        filter: none;
-        opacity: 0.5;
-    }
-    .form-check-input[disabled] ~ .form-check-label, .form-check-input:disabled ~ .form-check-label {
-        opacity: 0.5;
-    }
-
-    .form-switch {
-        padding-left: 2.5em;
-    }
-    .form-switch .form-check-input {
-        width: 2em;
-        margin-left: -2.5em;
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='rgba%280, 0, 0, 0.25%29'/%3e%3c/svg%3e");
-        background-position: left center;
-        transition: background-position 0.15s ease-in-out;
-    }
-    @media (prefers-reduced-motion: reduce) {
-        .form-switch .form-check-input {
-            transition: none;
-        }
-    }
-    .form-switch .form-check-input:focus {
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%2380c2d0'/%3e%3c/svg%3e");
-    }
-    .form-switch .form-check-input:checked {
-        background-position: right center;
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
-    }
-
-    .form-check-inline {
-        display: inline-block;
-        margin-right: 1rem;
-    }
-
+        background-image: url("data:image/svg+xml,%3csvg
