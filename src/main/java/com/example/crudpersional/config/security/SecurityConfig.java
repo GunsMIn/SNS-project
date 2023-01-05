@@ -33,15 +33,14 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/api/v1/users/join", "/api/v1/users/login","/swagger-ui","/api/v1/posts/mvc/**").permitAll() // join, login은 언제나 가능
                 .antMatchers(HttpMethod.GET,"/api/v1/**").permitAll()   // 모든 get 요청 허용
+                .antMatchers(HttpMethod.GET, "/api/v1/posts/my").authenticated()
+                .antMatchers(HttpMethod.GET, "/api/v1/posts/alarms").authenticated()
                 .antMatchers(HttpMethod.POST,"/api/v1/**").authenticated()  // 순서대로 적용이 되기 때문에 join, login 다음에 써주기
                 .antMatchers(HttpMethod.PUT, "/api/v1/**").authenticated()
                 .antMatchers(HttpMethod.DELETE, "/api/v1/**").authenticated()
-                //.antMatchers(HttpMethod.POST, "/posts/**").authenticated()
-                // 모든 post요청을 인증된사용자인지! 순서 중요! authenticated 🡪 인증된 사용자인지 확인한다
-                // .antMatchers("/api/**").authenticated() // 다른 api는 인증 필요
                 .and()
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // jwt사용하는 경우 씀
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .addFilterBefore(new JwtTokenFilter(userService, secretKey), UsernamePasswordAuthenticationFilter.class)
                 //UserNamePasswordAuthenticationFilter 적용하기 전에 JWTTokenFilter를 적용 하라는 뜻.

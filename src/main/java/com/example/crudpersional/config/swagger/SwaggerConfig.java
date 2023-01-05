@@ -38,8 +38,8 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
     public Docket api() {
         return new Docket(DocumentationType.OAS_30)
                 .apiInfo(new ApiInfoBuilder()
-                        .title("SNS Personal Project 스웨거")
-                        .description("게시글 CRUD, 댓글, 좋아요, 권한, 알림 설정 기능")
+                        .title("SNS Personal Project Swagger")
+                        .description("멋쟁이 SNS 홈페이지 🦁    [멋쟁이 SNS 홈페이지 주소](http://ec2-3-35-209-220.ap-northeast-2.compute.amazonaws.com:8080/)")
                         .version("1.0.0")
                         .build())
                 .securityContexts(Arrays.asList(securityContext()))
