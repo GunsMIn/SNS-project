@@ -1,102 +1,16 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 <head>
     <meta charset="UTF-8">
     <title>board</title>
-    <script>
-        /*POST*/
-        function fetchPost(url, data) {
-            return fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
-                },
-                body: JSON.stringify(data),
-            })
-                .then(response => response.json())
-        }
 
-        /*GET*/
-        function fetchGet(url, data) {
-            let query = Object.keys(data)
-                .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(data[k]))
-                .join('&');
-
-            return fetch(url + "?" + query, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
-                }
-            })
-                .then(response => response.json())
-        }
-    </script>
-    <script th:inline="javascript">
-        //무조건 한번 실행
-        Chat__loadMore();
-
-        let postId = [[${postId}]];
-
-        // 채팅 메세지 작성 시작
-        function Chat__writeMessage(form) {
-
-
-            //보내기
-            fetchPost("/comments/write", {
-                postId: form.postId.value,
-                id: form.id.value,
-                content: form.content.value
-            })
-                .then(console.log);
-            form.content.value = '';
-            form.id.focus();
-        }
-
-        // 채팅 메세지 작성 끝
-
-        // 채팅 메세지들 읽기 시작
-        // 현재 클라이언트가 받은 메세지 번호를 입력해야 합니다.
-        // 그래야 메세지 요청시에 필요한 부분만 가져오게 됩니다.
-        let Chat__lastLoadedId = 0;
-
-        function Chat__loadMore() {
-            console.log("실행은 되는건가?");
-            console.log("sss"+ [[${postId}]]);
-            fetchGet(`/post/getOne/[[${postId}]]`, {
-                fromId: Chat__lastLoadedId,// 0
-                postId : postId
-            })
-                .then(body => {
-                    Chat__drawMessages(body.data.messages);
-                });
-        }
-
-        const Chat__elMessageUl = document.querySelector('.chat__message-ul');
-
-        function Chat__drawMessages(messages) {
-            if (messages.length > 0) {
-                // 메세지를 그리기 전에 Chat__lastLoadedUuid 변수를 갱신합니다.
-                Chat__lastLoadedId = messages[messages.length - 1].id;
-            }
-
-            messages.forEach((message) => {
-                Chat__elMessageUl
-                    .insertAdjacentHTML(
-                        "afterBegin",
-                        `<li>${message.authorName} : ${message.content}</li>`
-                    );
-            });
-            /*폴링 방식 때 사용*/
-            //Chat__loadMore();
-            //setTimeout(Chat__loadMore, 500); //0.5초 후에 실행
-        }
-
-
-
-    </script>
 </head>
 <body>
 <!-- Navigation-->
@@ -163,64 +77,49 @@
     </div>
 
 </article>
-<div class="alert alert-secondary" role="alert"th:if="${session.loginMember == null}">
+<div class="alert alert-secondary" style="text-align: center;" role="alert"th:if="${session.loginMember == null}">
     로그인 하시면 해당 글에 답글을 쓸 수 있어요! 회원가입 후 로그인 해보세요!!
-    <button type="button" class="btn btn-lg btn-danger" data-bs-toggle="popover" data-bs-title="Popover title" data-bs-content="And here's some amazing content. It's very engaging. Right?">회원가입하기</button>
+    <form th:action="@{/members/loginForm}" method="get" >
+        <button class="btn-hover color-8"><span>로그인 하기</span></button>
+    </form>
 </div>
 
+
+
+    <div class="card">
+        <div class="card-header bi bi-chat-dots"th:text="'현재 댓글 개수 : '+${#lists.size(comments)}+'개'"> Comments</div>
+      <!--  &lt;!&ndash;{{! 댓글내용 부분 }}&ndash;&gt;-->
+        <ul class="list-group-flush" th:each="comment :${comments}" >
+            <li class="list-group-item">
+                <span>
+                    <span style="font-size: small" th:text="${comment.user.username}"></span>
+                    <span style="font-size: xx-small"th:text="${comment.registeredAt}"></span>
+              <!--      <button class="badge bi bi-pencil-square"> 수정</button>
+                    <button class="badge bi bi-trash"> 삭제</button>-->
+                </span>
+                <div th:text="${comment.comment}">댓글 내용</div>
+            </li>
+        </ul>
+    </div>
+    <br/>
 <div th:if="${session.loginMember != null}">
-    <div  class="card-body"><!--th:action="@{/comments/{id}/write (id=${post.id})}" method="post"-->
-        <form class="chat__write-message form-horizontal" onsubmit="Chat__writeMessage(this); return false;">
-            <div class="row">
-                <div class="form-group col-sm-8">
-                    <input class="form-control input-sm" th:field="${commentForm.content}" name="content" type="text" placeholder="댓글 입력...">
-                </div>
-                <div class="form-group col-sm-2">
-                    <input class="form-control input-sm"  th:field="${member.id}" name="id"  placeholder="작성자">
-                </div>
-                <div class="form-group col-sm-2">
-                    <input class="form-control input-sm"  th:field="${post.postId}" name="postId" placeholder="작성자">
-                </div>
-                <div class="form-group col-sm-2">
-                    <button type="submit" class="btn btn-primary btn-sm btn-block replyAddBtn">
-                        <i class="fa fa-save"></i> 저장
-                    </button>
-                </div>
+    <div class="card">
+        <div class="card-header bi bi-chat-right-dots"> Write a Comment</div>
+     <!--   &lt;!&ndash;{{! 댓글작성 부분}}&ndash;&gt;-->
+        <form class="container">
+            <input type="hidden" id="input-postId" th:value="${post.postId}">
+            <input type="hidden" id="input-username" th:value="${member.username}">
+            <!--    &lt;!&ndash; {{#user}}&ndash;&gt;-->
+            <div class="card-body">
+                <textarea id="input-write-comment" class="form-control" rows="4" placeholder="댓글을 입력하세요"></textarea>
+            </div>
+            <div class="card-footer">
+                <button type="button" id="comment-write-btn" class="btn-hover color-8 btn btn-outline-primary bi bi-pencil-square"> 등록</button>
             </div>
         </form>
     </div>
-    <div  class="card card-primary card-outline">
-        <!-- <span>이게 지금은 안보여야해</span>-->
-        <!--댓글 유무 / 댓글 갯수 / 댓글 펼치기, 접기-->
-        <div class="card-header">
-            <a href="" class="link-black text-lg"><i class="fas fa-comments margin-r-5 replyCount"></i></a>
-            <div class="card-tools">
-                <button type="button" class="btn primary"  data-widget="collapse">
-                    <i class="fa fa-plus"></i>
-                </button>
-            </div>
-        </div>
-        <!--댓글 목록-->
-        <!-- <div class="chat__message-box card-body repliesDiv">
-             <ul class="chat__message-ul">
-                 &lt;!&ndash;댓긇이 들어갈 공간&ndash;&gt;
-             </ul>
-         </div>-->
-        <div class="chat__message-box">
-            <ul class="chat__message-ul">
-                <!--댓긇이 들어갈 공간-->
-            </ul>
-        </div>
-        <!--댓글 페이징-->
-        <div class="card-footer">
-            <nav aria-label="Contacts Page Navigation">
-                <ul class="pagination pagination-sm no-margin justify-content-center m-0">
-
-                </ul>
-            </nav>
-        </div>
-    </div>
 </div>
+
 <!-- Footer-->
 <footer class="border-top">
     <div class="container px-4 px-lg-5">
@@ -257,7 +156,51 @@
         </div>
     </div>
 </footer>
+<script>
+    let comment = {
 
+        init: function () {
+
+            var _this = this;
+
+            const commentCreateBtn = document.querySelector('#comment-write-btn');
+
+            commentCreateBtn.addEventListener('click', _this.create);
+        },
+
+
+        create: function () {
+            console.log("시작은되는건가")
+            let id = document.querySelector(`#input-postId`).value;
+
+
+            let data = {
+                comment: document.querySelector('#input-write-comment').value.trim(),
+                 name : document.querySelector(`#input-username`).value
+            };
+            console.log(data);
+
+            if (data.comment == null || data.comment == "") {
+                alert('댓글 작성후 등록을 해주세요👀');
+                return;
+            }
+
+            axios.post("/api/v1/posts/mvc/" + id + "/comments",
+                JSON.stringify(data), {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                }
+            ).then((response) => {
+                alert("댓글을 작성하셨습니다.");
+                window.location.href = '/post/getOne/' + id;
+            });
+        }
+
+    };
+
+    comment.init();
+</script>
 </body>
 
 <style>

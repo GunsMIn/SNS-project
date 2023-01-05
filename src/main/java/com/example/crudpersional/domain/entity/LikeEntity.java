@@ -1,6 +1,8 @@
 package com.example.crudpersional.domain.entity;
 
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 
@@ -10,7 +12,11 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-//@Table(name = "\"like\"")
+//@Table(name = "\"likes\"")
+//@SQLDelete(sql = "UPDATE \"likes\" SET deleted_at = current_timestamp WHERE id = ?")
+//@Where(clause = "deleted_at is NULL")
+@Where(clause = "deleted = false")
+@SQLDelete(sql = "UPDATE LikeEntity SET deleted = true WHERE like_id = ?")
 public class LikeEntity extends BaseEntity{
 
     @Id

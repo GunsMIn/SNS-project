@@ -9,4 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PostCommentRequest {
     private String comment;
+    private String name;
 }

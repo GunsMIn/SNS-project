@@ -1,6 +1,8 @@
 package com.example.crudpersional.mvc.controller;
 
+import com.example.crudpersional.domain.dto.Response;
 import com.example.crudpersional.domain.dto.comment.CommentResponse;
+import com.example.crudpersional.domain.dto.comment.PostCommentRequest;
 import com.example.crudpersional.domain.entity.Comment;
 import com.example.crudpersional.domain.entity.Post;
 import com.example.crudpersional.domain.entity.User;
@@ -11,8 +13,10 @@ import com.example.crudpersional.repository.CommentRepository;
 import com.example.crudpersional.repository.PostRepository;
 import com.example.crudpersional.repository.UserRepository;
 import com.example.crudpersional.service.PostService;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -80,6 +84,15 @@ public class CommentMvcController {
         );
     }
 
+    /**댓글 달기**/
+    @ApiOperation(value = "해당 포스트 댓글 달기 ", notes = "postId로 들어온 Post글 댓글 달기 API")
+    @ResponseBody
+    @PostMapping("/api/v1/posts/mvc/{id}/comments")
+    public Response<CommentResponse> commentFromPost2(@PathVariable Long id, @RequestBody PostCommentRequest postCommentRequest) {
+        log.info("postCommentRequest:{}",postCommentRequest);
+        CommentResponse commentResponse = postService.writeComment(id, postCommentRequest.getComment(), postCommentRequest.getName());
+        return Response.success(commentResponse);
+    }
 
     @GetMapping("/toDoList")
     public String goTodoList() {
