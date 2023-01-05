@@ -470,7 +470,8 @@
 
 
 ## MY VIEW 
-![Screenshot 2022-12-27 at 17 08 36](https://user-images.githubusercontent.com/104709432/209633961-f3a94bb2-09c7-4e34-ba06-0b31e89068a3.JPG)
+![새 메인JPG](https://user-images.githubusercontent.com/104709432/210737678-e43cbcb6-8dd8-4b56-a45e-9b67f65f86e5.JPG)
+
 
 
 
