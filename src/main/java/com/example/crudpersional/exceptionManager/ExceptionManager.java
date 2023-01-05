@@ -6,6 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 @RestControllerAdvice
 public class ExceptionManager {
     /**UserException**/
@@ -32,5 +35,7 @@ public class ExceptionManager {
        return ResponseEntity.status(e.getErrorCode().getStatus())
                .body(Response.error("ERROR", errorResponse));
     }
+
+
 
 }

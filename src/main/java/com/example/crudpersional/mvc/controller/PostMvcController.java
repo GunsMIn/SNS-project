@@ -159,7 +159,25 @@ public class PostMvcController {
         model.addAttribute("member", loginMember);
         return "post/postDetail";
     }
-
+// 위의 코드 페이징 처리된 코드
+//    @GetMapping("/post/getOne/{id}")
+//    public String getPost(@PathVariable Long id, Model model, CommentForm commentForm, MessagesRequest req,
+//                          @PageableDefault(size = 10,
+//                                  sort = "registeredAt",
+//                                  direction = Sort.Direction.DESC) Pageable pageable, @SessionAttribute(name = "loginMember", required = false) User loginMember) {
+//        log.info("req:{}{}",req.getPostId(),req.getFromId());
+//        PostSelectResponse postdto = postService.getPost(id);
+//        PostMvcResponse post = new PostMvcResponse(postdto);
+//        Post postentity = postRepository.findById(id).get();
+//        Page<Comment> comments = commentRepository.findAllByPost(postentity,pageable);
+//        //* 댓글 관련 *//*
+//        if (comments != null && !comments.isEmpty()) {
+//            model.addAttribute("comments", comments);
+//        }
+//        model.addAttribute("post", post);
+//        model.addAttribute("member", loginMember);
+//        return "post/postDetail";
+//    }
     @GetMapping("/post/{id}/edit")
     public String updatePost(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) User loginMember, @PathVariable Long id,Model model,HttpServletResponse response) throws Exception{
         log.info("id :{}" ,id);
