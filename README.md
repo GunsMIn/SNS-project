@@ -1,11 +1,11 @@
-# 개인프로젝트 게시판  / JPA를 이용한 RestApi 구현 / Spring Security (JWT 토큰)
+# JPA를 이용한 RestApi 구현 / Spring Security (JWT 토큰 인증/인가) / CI-CD구축 / 비동기 댓글 처리
 <p align="center"><img width="750" alt="jenkins-docker-springboot-cicd" src="https://user-images.githubusercontent.com/104709432/209429451-36eac449-39d0-40a0-ac41-194c979c021d.png">
 </p>
 </br>
 
 ## RestApi Swagger 
 ### http://ec2-3-35-209-220.ap-northeast-2.compute.amazonaws.com:8080/swagger-ui/index.html</br>
-## Running Docker on AWS EC2(ec2 server🔽)
+## 화면 UI (AWS EC2 server🔽)
 ### http://ec2-3-35-209-220.ap-northeast-2.compute.amazonaws.com:8080
 ## Spring Security + JWT Token
 ### [Spring Security와 JWT Token 인증,인가 처리 (Velog 정리본)](https://velog.io/@guns95/Spring-Security%EC%99%80-JWT-%ED%86%A0%ED%81%B0%EC%9D%98-%EC%9D%B8%EC%A6%9D%EC%9D%B8%EA%B0%80-%EB%A1%9C%EA%B7%B8%EC%9D%B8)
