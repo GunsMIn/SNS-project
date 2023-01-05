@@ -29,13 +29,21 @@
 **포스트 좋아요 (Like) / 해당 postId 좋아요 Count** | :heavy_check_mark: |  
 **좋아요 취소** |:heavy_check_mark:  |  
 **댓글 작성/수정/삭제/리스트 조회(최신순,20개)** | :heavy_check_mark: |  
-**포스트 / 댓글 Soft Delete 적용** | :heavy_check_mark: |  
+**포스트 / 댓글 / 좋아요 Soft Delete 적용** | :heavy_check_mark: |  
 
 # ERD 다이어그램
 <p align="center">
 <img width="530" alt="erd8" src="https://user-images.githubusercontent.com/104709432/210302879-a6acb17d-16cf-4732-aa2d-22f2de150070.PNG">
 </p></br>
 
+<hr>
+
+### 테스트 전용 로그인 회원
+**User**
+> - ID : lion
+>
+> - PW : kk1234
+<hr>
 
 ## 🔽 RestAPI EndPoint
 
