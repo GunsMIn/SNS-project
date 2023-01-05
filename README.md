@@ -23,11 +23,11 @@
 **포스트 작성, 수정, 삭제, 리스트** | :heavy_check_mark: |  
 **AWS EC2에 Docker 배포** | :heavy_check_mark: |  
 **Gitlab CI & Crontab CD** | :heavy_check_mark: |  
-**화면 UI 개발 (회원가입, 로그인, 글쓰기, 조회, 검색기능 , Validation , Thymeleaf 사용)** | :heavy_check_mark: |  
-**ADMIN 회원으로 등급업하는 기능** | :heavy_check_mark: |  
+**화면 UI 개발 (회원가입, 로그인, 글쓰기, 조회, 검색기능 ,댓글, 좋아요, 알림 Validation , Thymeleaf 사용)** | :heavy_check_mark: |  
+**댓글 등록 비동기 처리 구현 (Ajax)** | :heavy_check_mark: |  
 **ADMIN 회원만이 일반 회원을 ADMIN으로 승격시키는 기능(일반회원 등급업 기능 불가)** | :heavy_check_mark: |  
 **포스트 좋아요 (Like) / 해당 postId 좋아요 Count** | :heavy_check_mark: |  
-**좋아요 취소** |  |  
+**좋아요 취소** |:heavy_check_mark:  |  
 **댓글 작성/수정/삭제/리스트 조회(최신순,20개)** | :heavy_check_mark: |  
 **포스트 / 댓글 Soft Delete 적용** | :heavy_check_mark: |  
 
