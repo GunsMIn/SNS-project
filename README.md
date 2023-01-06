@@ -4,9 +4,9 @@
 </br>
 
 ## RestApi Swagger 
-### http://http://ec2-52-79-151-163.ap-northeast-2.compute.amazonaws.com:8080/swagger-ui/index.html</br>
+### [http://ec2-52-79-151-163.ap-northeast-2.compute.amazonaws.com:8080/swagger-ui/index.html](http://ec2-52-79-151-163.ap-northeast-2.compute.amazonaws.com:8080/swagger-ui/index.html)</br>
 ## 화면 UI (AWS EC2 server🔽)
-### http:/http://ec2-52-79-151-163.ap-northeast-2.compute.amazonaws.com:8080
+### [http://ec2-52-79-151-163.ap-northeast-2.compute.amazonaws.com:8080/](http://ec2-52-79-151-163.ap-northeast-2.compute.amazonaws.com:8080/)
 ## Spring Security + JWT Token
 ### [Spring Security와 JWT Token 인증,인가 처리 (Velog 정리본)](https://velog.io/@guns95/Spring-Security%EC%99%80-JWT-%ED%86%A0%ED%81%B0%EC%9D%98-%EC%9D%B8%EC%A6%9D%EC%9D%B8%EA%B0%80-%EB%A1%9C%EA%B7%B8%EC%9D%B8)
 ## 해당 프로젝트 Test Code정리본
