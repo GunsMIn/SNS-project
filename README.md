@@ -30,6 +30,7 @@
 **좋아요 취소** |:heavy_check_mark:  |  
 **댓글 작성/수정/삭제/리스트 조회(최신순,20개)** | :heavy_check_mark: |  
 **포스트 / 댓글 / 좋아요 Soft Delete 적용** | :heavy_check_mark: |  
+**Axios를 이용한 비동기 처리** | :heavy_check_mark: |  
 
 # ERD 다이어그램
 <p align="center">
