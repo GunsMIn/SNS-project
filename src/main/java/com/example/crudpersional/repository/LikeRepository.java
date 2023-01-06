@@ -15,6 +15,8 @@ public interface LikeRepository extends JpaRepository<LikeEntity,Long> {
 
     Optional<LikeEntity> findByUserAndPost(User user, Post post);
 
+    Optional<LikeEntity> findLikeByUserAndPost(Long userId, Long postId);
+
     List<LikeEntity> findAllByPost(Post post);
 
     //해당 post의 like count를 수하는 쿼리메소드
