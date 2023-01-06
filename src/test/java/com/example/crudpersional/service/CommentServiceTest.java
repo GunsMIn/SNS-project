@@ -65,7 +65,7 @@ public class CommentServiceTest {
         Comment comment = CommentFixture.get(user, post);
         //글 작성시 알림 발생
         AlarmEntity alarm= AlarmFixture.get(post, user, AlarmType.NEW_COMMENT_ON_POST);
-
+        /**답변 등록 성공 가정**/
         when(postRepository.findById(anyLong())).thenReturn(Optional.of(post));
         when(userRepository.findOptionalByUserName(anyString())).thenReturn(Optional.of(user));
         when(commentRepository.save(any())).thenReturn(comment);
@@ -92,6 +92,7 @@ public class CommentServiceTest {
         Post post = PostEntityFixture.get(user);
         Comment comment = CommentFixture.get(user, post);
 
+        /**회원이 존재하지 않는 상황 가정**/
         when(userRepository.findOptionalByUserName(anyString())).thenReturn(Optional.empty());
         when(postRepository.findById(anyLong())).thenReturn(Optional.of(post));
         when(commentRepository.save(any())).thenReturn(comment);
@@ -113,6 +114,7 @@ public class CommentServiceTest {
         Post post = PostEntityFixture.get(user);
         Comment comment = CommentFixture.get(user, post);
 
+        /**post가 존재하지 않는 상황 가정**/
         when(userRepository.findOptionalByUserName(anyString())).thenReturn(Optional.of(user));
         when(postRepository.findById(anyLong())).thenReturn(Optional.empty());
         when(commentRepository.save(any())).thenReturn(comment);

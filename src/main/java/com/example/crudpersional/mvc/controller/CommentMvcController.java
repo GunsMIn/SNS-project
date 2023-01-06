@@ -9,6 +9,7 @@ import com.example.crudpersional.domain.entity.User;
 import com.example.crudpersional.exceptionManager.ErrorCode;
 import com.example.crudpersional.exceptionManager.UserException;
 import com.example.crudpersional.mvc.dto.*;
+import com.example.crudpersional.mvc.ssr.SseEmitters;
 import com.example.crudpersional.repository.CommentRepository;
 import com.example.crudpersional.repository.PostRepository;
 import com.example.crudpersional.repository.UserRepository;
@@ -34,12 +35,17 @@ public class CommentMvcController {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
 
+    private final SseEmitters sseEmitters;
+
 
     @PostMapping("/comments/write")
     @ResponseBody
     public RsData<Comment> write(@RequestBody CommentForm commentForm) {
         User user = userRepository.findById(commentForm.getId()).orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
         CommentResponse commentResponse = postService.writeComment(commentForm.getPostId(), commentForm.getContent(), user.getUsername());
+
+        /**서버 측 리스트 SSE 방식일 때 / 폴링일 때는 끄기 **/
+        sseEmitters.noti("chat__messageAdded");
         return new RsData(
                 "S-1",
                 "메세지가 작성되었습니다.",

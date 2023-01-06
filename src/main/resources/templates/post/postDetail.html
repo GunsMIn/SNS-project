@@ -126,7 +126,7 @@
 
     <div th:if="${session.loginMember != null}">
         <div class="card">
-            <div class="card-header bi bi-chat-dots" th:if="${!#lists.isEmpty(comments)}" th:text="'현재 댓글 개수 : '+${#lists.size(comments)}+'개'"> Comments</div>
+            <div class="card-header bi bi-chat-dots chat__count-ul" th:if="${!#lists.isEmpty(comments)}" th:text="'현재 댓글 개수 : '+${#lists.size(comments)}+'개'"> Comments</div>
             <div class="chat__message-box">
                 <ul class="chat__message-ul">
                     <!--댓긇이 들어갈 공간-->
@@ -216,17 +216,23 @@
             postId:id
         })
             .then(body => {
-                Chat__drawMessages(body.data.messages);
+                Chat__drawMessages(body.data.messages,body.data.count);
             });
     }
 
     const Chat__elMessageUl = document.querySelector('.chat__message-ul');
+    const Chat__countUl = document.querySelector('.chat__count-ul');
 
-    function Chat__drawMessages(messages) {
+    function Chat__drawMessages(messages,count) {
         if (messages.length > 0) {
             // 메세지를 그리기 전에 Chat__lastLoadedUuid 변수를 갱신합니다.
             Chat__lastLoadedId = messages[messages.length - 1].id;
         }
+
+
+/*
+        Chat__countUl.insertAdjacentHTML( "afterBegin",`<span style="font-size: small" >${count}</span>`)
+*/
 
         messages.forEach((message) => {
             Chat__elMessageUl
@@ -241,27 +247,23 @@
                 <button class="badge bi bi-trash"> 삭제</button>-->
                 </span>
                 <div > ${message.comment}</div>
-            </li>`
-                    /*  `
-  <li class="list-group-item">
-  <span>
-  <span>${message.createdAt}</span>
-  <span>${message.userName} : ${message.comment}</span>
-  </span>
-  </li>`*/
-
-
-
+                </li>`
                 );
         });
         /*폴링 방식 때 사용*/
         //Chat__loadMore();
-        setTimeout(Chat__loadMore, 850); //0.5초 후에 실행
+        //setTimeout(Chat__loadMore, 850); //0.5초 후에 실행
     }
 
     //무조건 한번 실행
     Chat__loadMore();
+    // SSE 연결 (자동으로 추가)
+    const sse = new EventSource("/sse/connect"); // <- sse 접속
 
+    // 서버로부터 "chat__messageAdded" 라는 명령이 내려오면 Chat__loadMore 함수를 실행
+    sse.addEventListener('chat__messageAdded', e => {
+        Chat__loadMore();
+    });
     // 채팅 메시지들 읽기 끝
 </script>
 <script>

@@ -19,6 +19,7 @@ public class CommentResponse {
     //댓글 작성 시 알람 유무 확인용 컬럼
     private boolean CheckAlarm;
 
+
     public static CommentResponse toResponse(Comment comment){
         return new CommentResponse(
                 comment.getId(),

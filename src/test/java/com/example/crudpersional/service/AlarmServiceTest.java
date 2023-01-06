@@ -74,6 +74,7 @@ public class AlarmServiceTest {
         Post post = PostEntityFixture.get(user);
         PageRequest request = PageRequest.of(0, 10, Sort.Direction.DESC, "registeredAt");
 
+        /**repositoty에 성공 로직 가정**/
         when(userRepository.findOptionalByUserName(any())).thenReturn(Optional.of(user));
         when(alarmRepository.findByUser(any(), any())).thenReturn(Page.empty());
 
@@ -90,6 +91,7 @@ public class AlarmServiceTest {
         Post post = PostEntityFixture.get(user);
         PageRequest request = PageRequest.of(0, 10, Sort.Direction.DESC, "registeredAt");
 
+        /**회원이 없는 상황 가정**/
         when(userRepository.findOptionalByUserName(any())).thenReturn(Optional.empty());
         when(alarmRepository.findByUser(any(), any())).thenReturn(Page.empty());
 
