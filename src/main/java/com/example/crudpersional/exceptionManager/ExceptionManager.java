@@ -32,8 +32,8 @@ public class ExceptionManager {
    @ExceptionHandler(LikeException.class)
     public ResponseEntity<?> likeExceptionHandler(LikeException e) {
        ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode(), e.getMessage());
-       return ResponseEntity.status(e.getErrorCode().getStatus())
-               .body(Response.error("ERROR", errorResponse));
+       return  ResponseEntity.status(e.getErrorCode().getStatus())
+               .body(Response.error(new ErrorDto(e)));
     }
 
 

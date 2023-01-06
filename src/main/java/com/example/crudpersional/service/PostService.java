@@ -148,6 +148,7 @@ public class PostService {
         //ifPresent() 메소드 = 값을 가지고 있는지 확인 후 예외처리 / 값이 존재한다면 예외처리 진행
         likeEntityRepository.findByUserAndPost(user,post)
                 .ifPresent(entity -> {
+                    log.info("에러 터져야함");
                     throw new LikeException(ErrorCode.ALREADY_LIKED, ErrorCode.ALREADY_LIKED.getMessage());
                 });
         ////like 눌렀는지 확인 비지니스 로직 끝
@@ -211,13 +212,13 @@ public class PostService {
     /**comment 수정하기**/
     public CommentUpdateResponse modifyComment(Long postId,Long commentId, String updateComment, String name) {
         // 해당하는 게시글이 없을 시, 예외 처리
-        postRepository.findById(postId)
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND));
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new PostException(ErrorCode.COMMENT_NOT_FOUND, commentId + " 번의 답변을 존재하지 않습니다"));
         User user = userRepository.findOptionalByUserName(name).orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND, "회원을 찾을 수 없습니다"));
 
-        //답글을 쓴 사람만이 수정 가능
-        if (comment.getUser().getId() != user.getId()) {
+        //답글을 쓴 사람만이 수정 가능 ADMIN도 수정 가능
+        if ( user.getRole().equals(UserRole.USER) && comment.getUser().getId() != user.getId()) {
             throw new UserException(ErrorCode.INVALID_PERMISSION);
         }
         //변경감지 수정 메서드 (수정)
@@ -237,10 +238,11 @@ public class PostService {
                 userRepository.findOptionalByUserName(userName).orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND, "해당 유저는 존재하지 않습니다"));
 
         // 해당하는 게시글이 없을 시, 예외 처리
-        postRepository.findById(postId)
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND));
 
-        if (comment.getUser().getId() != user.getId()) {
+        //답글을 쓴 사람만이 삭제하기 가능 ADMIN도 삭제하기 가능
+        if (user.getRole().equals(UserRole.USER) && comment.getUser().getId() != user.getId()) {
             throw new UserException(ErrorCode.INVALID_PERMISSION, userName + "님은 답글을 삭제할 권한이 없습니다.");
         }
         commentRepository.deleteById(comment.getId());

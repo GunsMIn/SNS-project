@@ -59,7 +59,8 @@
                 <div class="board_info_box">
                     <span class="board_author" >작성 날짜 : </span><span class="board_date" th:text="${post.createdAt}"></span>
                 </div>
-                <h5>&nbsp;&nbsp;글 내용 </h5>
+                <h5 >&nbsp;&nbsp;글 내용 </h5>
+
                 <div class="board_content" th:text="${post.body}"></div>
                 <div class="board_tag"></div>
             </div>
@@ -71,11 +72,40 @@
                 <form th:action="@{/post/{id}/delete (id=${post.postId})}" method="post" style="float: left">
                     <button class="btn-hover color-8"><span>delete</span></button>
                 </form>
-                <form th:action="@{/posts/list}" method="get" >
+                <form th:action="@{/posts/list}" method="get" style="float: left">
                     <button class="btn-hover color-8"><span>postList</span></button>
                 </form>
+
+                    <form class="container" onsubmit="Do_like(this); return false;" >
+                        <input type="hidden" placeholder="작성자" name="postId" th:value="${post.postId}">
+
+                        <button type="submit" class="btn-hover color-8 btn btn-outline-secondary btn-lg" id="like-btn"
+                                style="font-size: 20px">
+                            <div class="fill-one" th:text="'👍  ' + ${ likeCount}"></div>
+                        </button>
+                    </form>
+
             </div>
         </div>
+        <!--<div align="center">
+            <form class="container"  th:action="@{/api/v1/posts/mvc/{postId}/likes (postId=${post.postId})}" method="post">
+                <button type="submit" class="btn btn-outline-secondary btn-lg" id="like-btn"
+                       onclick="Do_like(this)"  style="width:60px;height:50px;font-size: 20px">
+                </button>
+                <button type="button" class="btn btn-secondary btn-lg"
+                        style="width:60px;height:50px;font-size: 20px">
+                </button>
+            </form>
+        </div>-->
+
+
+
+     <!--   <div class="container container-one">
+            <button>
+                Hover over me
+                <div class="fill-one"></div>
+            </button>
+        </div>-->
 
     </article>
     <div th:if="${session.loginMember != null}">
@@ -204,6 +234,39 @@
         })
             .then(response => response.json())
     }
+</script>
+<script>
+    function Do_like(form) {
+        console.log("postId" + form.postId.value);
+        console.log("postId" + window.sessionStorage.getItem('loginMember'));
+        form.postId.value= form.postId.value.trim();
+        fetchPost("/api/v1/posts/mvc/likes", {
+            postId: form.postId.value
+        }).catch(error => alert(error.message));
+
+           /* .catch((error) => {
+            console.log(error)
+            console.log("에러원인1: "+err.message);
+            console.log("에러원인2: "+error.message);
+
+            console.log(error.response.data.result);
+            console.log(error.response)
+            console.log(error)
+            console.log("에러가 터진건가");
+            if (error.response.data.result["errorCode"] == "ALREADY_LIKED") {
+                alert("좋아요는 한번만 입력할 수 있습니다.");
+            }
+        }).then((body) => {
+                console.log(body);
+               /!* alert("좋아요 성공")
+                window.location.href = '/post/getOne/'+form.postId.value;*!/
+            }
+        );
+
+*/
+
+    }
+
 </script>
 <script>
     let Chat__lastLoadedId = 0;

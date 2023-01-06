@@ -12,6 +12,7 @@ import com.example.crudpersional.exceptionManager.PostException;
 import com.example.crudpersional.exceptionManager.UserException;
 import com.example.crudpersional.mvc.dto.*;
 import com.example.crudpersional.repository.CommentRepository;
+import com.example.crudpersional.repository.LikeRepository;
 import com.example.crudpersional.repository.PostRepository;
 import com.example.crudpersional.repository.UserRepository;
 import com.example.crudpersional.service.PostService;
@@ -48,6 +49,7 @@ public class PostMvcController {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
+    private final LikeRepository likeRepository;
 
 
     @GetMapping("/posts/form")
@@ -151,12 +153,14 @@ public class PostMvcController {
         PostMvcResponse post = new PostMvcResponse(postdto);
         Post postentity = postRepository.findById(id).get();
         List<Comment> comments = commentRepository.findAllByPost(postentity);
+        Integer likeCount = likeRepository.countByPost(postentity);
         //* 댓글 관련 *//*
         if (comments != null && !comments.isEmpty()) {
             model.addAttribute("comments", comments);
         }
         model.addAttribute("post", post);
         model.addAttribute("member", loginMember);
+        model.addAttribute("likeCount", likeCount);
         return "post/postDetail";
     }
 // 위의 코드 페이징 처리된 코드
