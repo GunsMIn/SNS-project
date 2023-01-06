@@ -161,7 +161,7 @@ public class PostMvcController {
         model.addAttribute("post", post);
         model.addAttribute("member", loginMember);
         model.addAttribute("likeCount", likeCount);
-        return "post/postDetail";
+        return "post/post";
     }
 // 위의 코드 페이징 처리된 코드
 //    @GetMapping("/post/getOne/{id}")

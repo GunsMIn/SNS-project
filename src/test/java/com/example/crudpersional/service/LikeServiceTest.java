@@ -82,7 +82,7 @@ public class LikeServiceTest {
         when(likeRepository.findByUserAndPost(doLikeUser, post)).thenReturn(Optional.empty());
         when(likeRepository.save(any())).thenReturn(like);
 
-        LikeResponse response = postService.like(post.getId(), doLikeUser.getUsername());
+        LikeResponse response = postService.likes(post.getId(), doLikeUser.getUsername());
         //assertj
         assertThat(response.getLikeId()).isEqualTo(like.getId());
         //jupiter

@@ -135,8 +135,8 @@ public class PostService {
         return postsByUser.map(PostMineDto::fromEntity);
     }
 
-    /**like**/
-/*    public LikeResponse like(Long postId,String userName) {
+    /**like 엔티티 변환용**/
+    public LikeResponse likes(Long postId,String userName) {
         //해당 글 찾음
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND, "해당 글은 존재하지 않습니다"));
@@ -157,14 +157,15 @@ public class PostService {
         LikeEntity savedLike = likeEntityRepository.save(like);
         LikeResponse likeResponse = LikeResponse.of(savedLike);
 
-        *//*좋아요 눌렀을 때 알림 동작*//*
+        //*좋아요 눌렀을 때 알림 동작*//*
         // 알림수신자 ,알림 타입 ,발신자 id ,알림 주체 포스트 id
         AlarmEntity entity = AlarmEntity.of(post.getUser(), NEW_LIKE_ON_POST, user.getId(), post.getId());
         alarmRepository.save(entity); // 알림 저장
 
         return likeResponse;
-    }*/
+    }
 
+    /**like void**/
     public void like(Long postId,String userName) {
         //해당 글 찾음
         Post post = postRepository.findById(postId)

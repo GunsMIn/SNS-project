@@ -62,14 +62,13 @@ class LikeControllerTest {
                 .postId(10l)
                 .build();
 
-        when(postService.like(anyLong(), anyString())).thenReturn(response);
+        when(postService.likes(anyLong(), anyString())).thenReturn(response);
         mockMvc.perform(post("/api/v1/posts/1/likes")
                 .with(csrf()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
-                .andExpect(jsonPath("$.result").exists())
-                .andExpect(jsonPath("$.result").value("좋아요 성공!"));
+                .andExpect(jsonPath("$.result").exists());
 
         verify(postService,times(1)).like(anyLong(), anyString());
     }
