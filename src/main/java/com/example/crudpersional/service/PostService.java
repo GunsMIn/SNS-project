@@ -268,7 +268,7 @@ public class PostService {
                 userRepository.findOptionalByUserName(userName).orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND, "해당 유저는 존재하지 않습니다"));
 
         // 해당하는 게시글이 없을 시, 예외 처리
-        Post post = postRepository.findById(postId)
+         postRepository.findById(postId)
                 .orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND));
 
         //답글을 쓴 사람만이 삭제하기 가능 ADMIN도 삭제하기 가능
