@@ -209,9 +209,11 @@ public class PostService {
 
 
     /**comment 수정하기**/
-    public CommentUpdateResponse modifyComment(Long id, String updateComment, String name) {
-
-        Comment comment = commentRepository.findById(id).orElseThrow(() -> new PostException(ErrorCode.COMMENT_NOT_FOUND, id + " 번의 답변을 존재하지 않습니다"));
+    public CommentUpdateResponse modifyComment(Long postId,Long commentId, String updateComment, String name) {
+        // 해당하는 게시글이 없을 시, 예외 처리
+        postRepository.findById(postId)
+                .orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND));
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new PostException(ErrorCode.COMMENT_NOT_FOUND, commentId + " 번의 답변을 존재하지 않습니다"));
         User user = userRepository.findOptionalByUserName(name).orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND, "회원을 찾을 수 없습니다"));
 
         //답글을 쓴 사람만이 수정 가능
@@ -226,11 +228,17 @@ public class PostService {
 
     /**comment 삭제하기**/
     /**service test 하기 위해 void - > boolean으로 변경**/
-    public boolean deleteComment(Long commentId,String userName) {
+    public boolean deleteComment(Long postId,Long commentId, String userName) {
+
+
         Comment comment = commentRepository.findById(commentId).
                 orElseThrow(() -> new PostException(ErrorCode.COMMENT_NOT_FOUND, commentId + " 번 답글은 존재하지 않습니다"));
         User user =
                 userRepository.findOptionalByUserName(userName).orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND, "해당 유저는 존재하지 않습니다"));
+
+        // 해당하는 게시글이 없을 시, 예외 처리
+        postRepository.findById(postId)
+                .orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND));
 
         if (comment.getUser().getId() != user.getId()) {
             throw new UserException(ErrorCode.INVALID_PERMISSION, userName + "님은 답글을 삭제할 권한이 없습니다.");

@@ -230,9 +230,11 @@
         }
 
 
-/*
-        Chat__countUl.insertAdjacentHTML( "afterBegin",`<span style="font-size: small" >${count}</span>`)
-*/
+
+
+       /* Chat__countUl.insertAdjacentHTML( "beforebegin",`<span style="font-size: small" >${count}</span>`)*/
+
+
 
         messages.forEach((message) => {
             Chat__elMessageUl
@@ -250,9 +252,6 @@
                 </li>`
                 );
         });
-        /*폴링 방식 때 사용*/
-        //Chat__loadMore();
-        //setTimeout(Chat__loadMore, 850); //0.5초 후에 실행
     }
 
     //무조건 한번 실행
@@ -264,7 +263,6 @@
     sse.addEventListener('chat__messageAdded', e => {
         Chat__loadMore();
     });
-    // 채팅 메시지들 읽기 끝
 </script>
 <script>
     let comment = {

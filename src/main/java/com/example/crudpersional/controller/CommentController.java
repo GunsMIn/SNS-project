@@ -38,17 +38,17 @@ public class CommentController {
 
     /**댓글 수정**/
     @ApiOperation(value = "해당 포스트 댓글 수정하기 ", notes = "댓글 수정 하기 API")
-    @PutMapping("/{postId}/comments")
-    public Response<CommentUpdateResponse> updateComment(@PathVariable Long postId, @RequestBody CommentModifyRequest commentModifyRequest, @ApiIgnore Authentication authentication) {
-        CommentUpdateResponse response = postService.modifyComment(postId, commentModifyRequest.getComment(), authentication.getName());
+    @PutMapping("/{postId}/comments/{commentId}")
+    public Response<CommentUpdateResponse> updateComment(@PathVariable Long postId,@PathVariable Long commentId, @RequestBody CommentModifyRequest commentModifyRequest, @ApiIgnore Authentication authentication) {
+        CommentUpdateResponse response = postService.modifyComment(postId, commentId,commentModifyRequest.getComment(), authentication.getName());
         return Response.success(response);
     }
 
     /**댓글 삭제**/
     @ApiOperation(value = "해당 포스트 댓글 삭제하기 ", notes = "댓글 삭제 하기 API")
-    @DeleteMapping("/{postId}/comments")
-    public Response<CommentDeleteResponse> deleteComment(@PathVariable Long postId, @ApiIgnore Authentication authentication) {
-        postService.deleteComment(postId,authentication.getName());
+    @DeleteMapping("/{postId}/comments/{commentId}")
+    public Response<CommentDeleteResponse> deleteComment(@PathVariable Long postId,@PathVariable Long commentId ,@ApiIgnore Authentication authentication) {
+        postService.deleteComment(postId,commentId,authentication.getName());
         return Response.success(new CommentDeleteResponse("댓글 삭제 완료",postId));
     }
 
