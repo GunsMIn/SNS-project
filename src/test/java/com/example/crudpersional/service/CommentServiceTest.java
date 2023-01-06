@@ -254,7 +254,6 @@ public class CommentServiceTest {
         @Test
         @DisplayName("댓글 삭제 실패 : 답변작성자 != 답변 수정시도 유저")
         void 댓글_삭제_실패1() throws Exception {
-
             AllFixture all = AllFixture.getDto();
             User user = UserEntityFixture.get(all.getUserName(), all.getPassword());
             User anotherUser = User.builder().id(2l).userName("다른유저").build();

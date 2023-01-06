@@ -261,15 +261,14 @@ public class PostService {
     /**service test 하기 위해 void - > boolean으로 변경**/
     public boolean deleteComment(Long postId,Long commentId, String userName) {
 
-
+        postRepository.findById(postId)
+                .orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND));
         Comment comment = commentRepository.findById(commentId).
                 orElseThrow(() -> new PostException(ErrorCode.COMMENT_NOT_FOUND, commentId + " 번 답글은 존재하지 않습니다"));
         User user =
                 userRepository.findOptionalByUserName(userName).orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND, "해당 유저는 존재하지 않습니다"));
 
-        // 해당하는 게시글이 없을 시, 예외 처리
-         postRepository.findById(postId)
-                .orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND));
+
 
         //답글을 쓴 사람만이 삭제하기 가능 ADMIN도 삭제하기 가능
         if (user.getRole().equals(UserRole.USER) && comment.getUser().getId() != user.getId()) {
