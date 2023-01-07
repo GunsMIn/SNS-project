@@ -223,32 +223,10 @@
     }
 </script>
 <script>
-    /* function Do_like(form) {
-         form.postId.value= form.postId.value.trim();
-         fetchPost("/api/v1/posts/mvc/likes", {
-             postId: form.postId.value
-         }).catch((error) => {
-             console.log("에러가 터진건가");
-             console.log(error)
-             console.log("에러원인1: " + err.message);
-             console.log("에러원인2: " + error.message);
-
-             console.log(error.response.data.result);
-             console.log(error.response)
-             console.log(error)
-             console.log("에러가 터진건가");
-             if (error.response.data.result["errorCode"] == "ALREADY_LIKED") {
-                 alert("좋아요는 한번만 입력할 수 있습니다.");
-             }
-         });
-     }*/
-</script>
-<script>
     let Chat__lastLoadedId = 0;
     let id = document.querySelector(`#input-postId`).value;
 
     function Chat__loadMore() {
-        console.log("get도 실행되어야함")
         fetchGet("/chat/messages", {
             fromId: Chat__lastLoadedId, // 0
             postId:id
@@ -266,14 +244,6 @@
             // 메세지를 그리기 전에 Chat__lastLoadedUuid 변수를 갱신합니다.
             Chat__lastLoadedId = messages[messages.length - 1].id;
         }
-
-
-
-
-        /* Chat__countUl.insertAdjacentHTML( "beforebegin",`<span style="font-size: small" >${count}</span>`)*/
-
-
-
         messages.forEach((message) => {
             Chat__elMessageUl
                 .insertAdjacentHTML(
@@ -291,7 +261,6 @@
                 );
         });
     }
-
     //무조건 한번 실행
     Chat__loadMore();
     // SSE 연결 (자동으로 추가)
@@ -304,19 +273,15 @@
 </script>
 <script>
     let comment = {
-
         init: function () {
             var _this = this;
             const commentCreateBtn = document.querySelector('#comment-write-btn');
             commentCreateBtn.addEventListener('click', _this.create);
         },
 
-
         create: function () {
-            console.log("시작은되는건가")
             let id = document.querySelector(`#input-postId`).value;
-
-
+            const Chat__elMessageUl = document.querySelector('.chat__message-ul');
             let data = {
                 comment: document.querySelector('#input-write-comment').value.trim(),
                 name : document.querySelector(`#input-username`).value
@@ -327,7 +292,6 @@
                 alert('댓글 작성후 등록을 해주세요👀');
                 return;
             }
-
             axios.post("/api/v1/posts/mvc/" + id + "/comments",
                 JSON.stringify(data), {
                     headers: {
@@ -356,10 +320,10 @@
 
             axios.post(
                 "/api/v1/posts/mvc/likes",
-                data,{
+                data,
+                {
                     headers: {
-                        'Content-Type': 'application/json'
-                    }
+                        'Content-Type': 'application/json'}
                 }
             ).then((response) => {
                 console.log("좋아요 성공");
@@ -373,10 +337,6 @@
                 console.log(response.data.result.postId);
                 //좋아요
                 likeCount.innerHTML = '👍  ' + response.data.result.count;
-
-
-                  /*  alert("좋아요 성공")
-                    window.location.href = '/post/getOne/'+form.postId.value;*/
                 }
             ).catch((error) => {
                 console.log(error.response.data.result);
@@ -384,10 +344,9 @@
                 console.log(error.toJSON());
                 if (error.response.data.result["errorCode"] == "ALREADY_LIKED") {
                     alert("이미 해당 글에 좋아요👍를 누르셨습니다");
-                    window.location.href = '/post/getOne/'+form.postId.value;
                 } else if (error.response.data.result["errorCode"] == "USERNAME_NOT_FOUND") {
-                    alert("로그인 후에 이용해주세요!");
                     window.location.href = '/members/loginForm';
+                    alert("멋쟁이 SNS의 좋아요 기능은 로그인 후에 가능합니다.😉");
                 }
             });
         }

@@ -48,7 +48,6 @@
         <div>
             <form  style="margin-left: 195px;" onsubmit="main.plusLike(this); return false;" >
                 <input type="hidden" placeholder="작성자" name="postId" th:value="${post.postId}">
-
                 <button type="submit" class="btn-hover color-8 btn btn-outline-secondary btn-lg" id="like-btn"
                         style="font-size: 20px">
                     <div class="fill-one" th:text="'👍  ' + ${ likeCount}"></div>

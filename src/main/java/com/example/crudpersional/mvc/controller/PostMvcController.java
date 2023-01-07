@@ -101,13 +101,15 @@ public class PostMvcController {
     public String getPostList(@PageableDefault(page = 0 ,size = 10, sort ="registeredAt",
             direction = Sort.Direction.DESC) Pageable pageable, Model model,String title) throws Exception {
         //비 로그인 사용자 시 로그인 유도
-        Page<Post> posts = null;
+        Page<PostResponse> posts = null;
         //title 있을 시 검색조건 페이징 처리 작동
         if (title == null) {
             posts = postService.getViewPosts(pageable);
         }else{
             posts = postService.searchByTitle(pageable, title);
         }
+
+
         //new PostSelectResponse();
         //페이지블럭 처리
         //1을 더해주는 이유는 pageable은 0부터라 1을 처리하려면 1을 더해서 시작해주어야 한다.
@@ -123,27 +125,6 @@ public class PostMvcController {
         model.addAttribute("endPage", endPage);
         return "post/postList";
     }
-
-
-    //포스트 상세보기
-   /* @GetMapping("/post/getOne/{id}")
-    public String getPost(@PathVariable Long id, Model model, CommentForm commentForm,Long postId,
-                          @PageableDefault(size = 10,
-                                  sort = "registeredAt",
-                                  direction = Sort.Direction.DESC) Pageable pageable,@SessionAttribute(name = "loginMember", required = false) User loginMember) {
-
-        log.info("id :{}" ,postId);
-        log.info("상세보기 들어온다다다다" );
-        PostSelectResponse postdto = postService.getPost(id);
-        PostMvcResponse post = new PostMvcResponse(postdto);
-        Page<CommentResponse> comments = postService.getComments(id, pageable);
-        model.addAttribute("post", post);
-        model.addAttribute("postId", post.getPostId());
-        model.addAttribute("comments", comments);
-        model.addAttribute("member", loginMember);
-        return "post/postDetail";
-    }*/
-
 
 
     @GetMapping("/post/getOne/{id}")
@@ -166,25 +147,7 @@ public class PostMvcController {
         model.addAttribute("likeCount", likeCount);
         return "post/post";
     }
-// 위의 코드 페이징 처리된 코드
-//    @GetMapping("/post/getOne/{id}")
-//    public String getPost(@PathVariable Long id, Model model, CommentForm commentForm, MessagesRequest req,
-//                          @PageableDefault(size = 10,
-//                                  sort = "registeredAt",
-//                                  direction = Sort.Direction.DESC) Pageable pageable, @SessionAttribute(name = "loginMember", required = false) User loginMember) {
-//        log.info("req:{}{}",req.getPostId(),req.getFromId());
-//        PostSelectResponse postdto = postService.getPost(id);
-//        PostMvcResponse post = new PostMvcResponse(postdto);
-//        Post postentity = postRepository.findById(id).get();
-//        Page<Comment> comments = commentRepository.findAllByPost(postentity,pageable);
-//        //* 댓글 관련 *//*
-//        if (comments != null && !comments.isEmpty()) {
-//            model.addAttribute("comments", comments);
-//        }
-//        model.addAttribute("post", post);
-//        model.addAttribute("member", loginMember);
-//        return "post/postDetail";
-//    }
+
     @GetMapping("/post/{id}/edit")
     public String updatePost(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) User loginMember, @PathVariable Long id,Model model,HttpServletResponse response) throws Exception{
         log.info("id :{}" ,id);
@@ -253,8 +216,7 @@ public class PostMvcController {
     @ResponseBody
     @PostMapping("/api/v1/posts/mvc/likes")
     public Response<LikeResponse> likeMvc(@RequestBody LikeRequest request, @SessionAttribute(name = "loginMember", required = false) User loginMember, HttpServletResponse response) throws Exception {
-        log.info("좋아요 버튼 클릭 후 값 :{} / {}",request.getPostId(),loginMember);
-        //세션에 저장된 user의 정보
+        //로그인 하지 않은 사용자 접근 시 404에러
         if (loginMember == null) {
             throw new UserException(ErrorCode.USERNAME_NOT_FOUND);
         }

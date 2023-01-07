@@ -23,7 +23,6 @@ public class LikeResponse {
 
 
     public static LikeResponse of(LikeEntity likeEntity) {
-
         return LikeResponse.builder()
                 .likeId(likeEntity.getId())
                 .postId(likeEntity.getPost().getId())
@@ -31,7 +30,7 @@ public class LikeResponse {
                 .message("좋아요를 눌렀습니다")
                 .build();
     }
-
+    /**해당 포스트의 좋아요 count가 추가된 변환 메서드**/
     public static LikeResponse of(LikeEntity likeEntity,Integer count) {
         return LikeResponse.builder()
                 .likeId(likeEntity.getId())

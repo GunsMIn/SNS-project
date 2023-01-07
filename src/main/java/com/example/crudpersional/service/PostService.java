@@ -11,6 +11,7 @@ import com.example.crudpersional.exceptionManager.LikeException;
 import com.example.crudpersional.exceptionManager.PostException;
 import com.example.crudpersional.exceptionManager.UserException;
 import com.example.crudpersional.mvc.dto.PostForm;
+import com.example.crudpersional.mvc.dto.PostResponse;
 import com.example.crudpersional.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -319,12 +320,14 @@ public class PostService {
         postRepository.deleteById(id);
     }
 
-    public Page<Post> getViewPosts(Pageable pageable) {
-        return postRepository.findAll(pageable);
+    public Page<PostResponse> getViewPosts(Pageable pageable) {
+        Page<Post> posts = postRepository.findAll(pageable);
+        return PostResponse.toDtoList(posts);
     }
 
-    public Page<Post> searchByTitle(Pageable pageable,String title) {
-        return postRepository.findByTitleContaining(pageable,title);
+    public Page<PostResponse> searchByTitle(Pageable pageable,String title) {
+        Page<Post> posts = postRepository.findByTitleContaining(pageable, title);
+        return PostResponse.toDtoList(posts);
     }
 
 
