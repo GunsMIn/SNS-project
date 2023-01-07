@@ -41,9 +41,9 @@ public class Post extends BaseEntity{
     @OneToMany(mappedBy = "post",cascade = REMOVE, orphanRemoval = true)
     private List<LikeEntity> likes = new ArrayList<>();
 
-
+    //포스트 댓글 갯수
     private Integer commentCount = 0;
-
+    //포스트 좋아요 갯수
     private Integer likeCount = 0;
 
 

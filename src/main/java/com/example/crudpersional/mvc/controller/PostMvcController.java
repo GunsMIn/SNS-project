@@ -17,6 +17,7 @@ import com.example.crudpersional.repository.CommentRepository;
 import com.example.crudpersional.repository.LikeRepository;
 import com.example.crudpersional.repository.PostRepository;
 import com.example.crudpersional.repository.UserRepository;
+import com.example.crudpersional.service.LikeService;
 import com.example.crudpersional.service.PostService;
 import com.sun.xml.bind.v2.model.core.ID;
 import io.swagger.annotations.ApiOperation;
@@ -49,6 +50,7 @@ import java.util.List;
 public class PostMvcController {
 
     private final PostService postService;
+    private final LikeService likeService;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
@@ -117,6 +119,8 @@ public class PostMvcController {
         int startPage =  Math.max(nowPage - 4, 1);
         int endPage = Math.min(nowPage+9, posts.getTotalPages());
         log.info("list:{}",posts);
+        /**페이지 최신순 플래그🔽**/
+        model.addAttribute("flag", "time");
         model.addAttribute("title", title);
         model.addAttribute("posts", posts);
         model.addAttribute("nowPage",nowPage);
@@ -148,6 +152,8 @@ public class PostMvcController {
         int startPage =  Math.max(nowPage - 4, 1);
         int endPage = Math.min(nowPage+9, posts.getTotalPages());
         log.info("list:{}",posts);
+        /**페이지 답글count순 플래그**/
+        model.addAttribute("flag", "comment");
         model.addAttribute("title", title);
         model.addAttribute("posts", posts);
         model.addAttribute("nowPage",nowPage);
@@ -177,6 +183,8 @@ public class PostMvcController {
         int startPage =  Math.max(nowPage - 4, 1);
         int endPage = Math.min(nowPage+9, posts.getTotalPages());
         log.info("list:{}",posts);
+        /**페이지 좋아요순 플래그**/
+        model.addAttribute("flag", "like");
         model.addAttribute("title", title);
         model.addAttribute("posts", posts);
         model.addAttribute("nowPage",nowPage);
@@ -278,7 +286,7 @@ public class PostMvcController {
         if (loginMember == null) {
             throw new UserException(ErrorCode.USERNAME_NOT_FOUND);
         }
-        LikeResponse likeResponse = postService.likes(request.getPostId(), loginMember.getUsername());
+        LikeResponse likeResponse = likeService.likes(request.getPostId(), loginMember.getUsername());
         return Response.success(likeResponse);
     }
 

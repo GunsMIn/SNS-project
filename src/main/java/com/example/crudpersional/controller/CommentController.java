@@ -3,6 +3,7 @@ package com.example.crudpersional.controller;
 import com.example.crudpersional.domain.dto.Response;
 import com.example.crudpersional.domain.dto.comment.*;
 import com.example.crudpersional.domain.entity.Comment;
+import com.example.crudpersional.service.CommentService;
 import com.example.crudpersional.service.PostService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -25,22 +26,21 @@ import java.util.stream.Collectors;
 @Slf4j
 public class CommentController {
     private final PostService postService;
+    private final CommentService commentService;
 
     /**댓글 달기**/
     @ApiOperation(value = "해당 포스트 댓글 달기 ", notes = "postId로 들어온 Post글 댓글 달기 API")
     @PostMapping("/{postId}/comments")
     public Response<CommentResponse> commentFromPost(@PathVariable Long postId, @RequestBody PostCommentRequest postCommentRequest,@ApiIgnore Authentication authentication) {
-        CommentResponse commentResponse = postService.writeComment(postId, postCommentRequest.getComment(), authentication.getName());
+        CommentResponse commentResponse = commentService.writeComment(postId, postCommentRequest.getComment(), authentication.getName());
         return Response.success(commentResponse);
     }
-
-
 
     /**댓글 수정**/
     @ApiOperation(value = "해당 포스트 댓글 수정하기 ", notes = "댓글 수정 하기 API")
     @PutMapping("/{postId}/comments/{commentId}")
     public Response<CommentUpdateResponse> updateComment(@PathVariable Long postId,@PathVariable Long commentId, @RequestBody CommentModifyRequest commentModifyRequest, @ApiIgnore Authentication authentication) {
-        CommentUpdateResponse response = postService.modifyComment(postId, commentId,commentModifyRequest.getComment(), authentication.getName());
+        CommentUpdateResponse response = commentService.modifyComment(postId, commentId,commentModifyRequest.getComment(), authentication.getName());
         return Response.success(response);
     }
 
@@ -48,7 +48,7 @@ public class CommentController {
     @ApiOperation(value = "해당 포스트 댓글 삭제하기 ", notes = "댓글 삭제 하기 API")
     @DeleteMapping("/{postId}/comments/{commentId}")
     public Response<CommentDeleteResponse> deleteComment(@PathVariable Long postId,@PathVariable Long commentId ,@ApiIgnore Authentication authentication) {
-        postService.deleteComment(postId,commentId,authentication.getName());
+        commentService.deleteComment(postId,commentId,authentication.getName());
         return Response.success(new CommentDeleteResponse("댓글 삭제 완료",postId));
     }
 
@@ -60,7 +60,7 @@ public class CommentController {
                                                                sort = "registeredAt",
                                                                direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        Page<CommentResponse> commentResponses = postService.getComments(postId, pageable);
+        Page<CommentResponse> commentResponses = commentService.getComments(postId, pageable);
         return Response.success(commentResponses);
     }
 

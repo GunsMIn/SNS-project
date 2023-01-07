@@ -13,8 +13,8 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "\"likes\"")
-@SQLDelete(sql = "UPDATE \"likes\" SET deleted = true WHERE like_id = ?")
-@Where(clause = "deleted = false")
+/*@SQLDelete(sql = "UPDATE \"likes\" SET deleted = true WHERE like_id = ?")
+@Where(clause = "deleted = false")*/
 //@SQLDelete(sql = "UPDATE LikeEntity SET deleted = true WHERE like_id = ?")*/
 public class LikeEntity extends BaseEntity{
 

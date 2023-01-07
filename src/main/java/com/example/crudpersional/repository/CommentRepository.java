@@ -18,9 +18,4 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     List<Comment> findAllByPost(Post post);
 
-
-
-    @Modifying(clearAutomatically= true)
-    @Query("UPDATE Comment entity SET deleted_at = NOW() where entity.post = :post")
-    void deleteAllByPost(@Param("post") Post postEntity);
 }
