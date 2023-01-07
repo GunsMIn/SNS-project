@@ -1,6 +1,7 @@
 package com.example.crudpersional.domain.entity;
 
 import lombok.*;
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -40,11 +41,31 @@ public class Post extends BaseEntity{
     @OneToMany(mappedBy = "post",cascade = REMOVE, orphanRemoval = true)
     private List<LikeEntity> likes = new ArrayList<>();
 
+
+    private Integer commentCount = 0;
+
+    private Integer likeCount = 0;
+
+
     /**SoftDeleteColumn**/
     @Column(name = "deleted")
     private boolean deleted = Boolean.FALSE;
 
+    /**댓글 갯수 추가 삭제 메서드**/
+    public void addComment() {
+        this.commentCount++ ;
+    }
+    public void deleteComment() {
+        this.commentCount--;
+    }
 
+    /**좋아요 갯수 추가 삭제 메서드**/
+    public void addLike() {
+        this.likeCount++ ;
+    }
+    public void deleteLike() {
+        this.likeCount--;
+    }
 
 
     @Builder

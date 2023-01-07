@@ -11444,6 +11444,7 @@
     </div>
 </header>
 <!-- Main Content-->
+
 <div style="margin:0 auto;text-align: center; ">
     <form th:if="${session.loginMember == null}" th:action="@{/}" method="get">
         <button class="btn-hover color-8">GO HOME!</button>
@@ -11452,6 +11453,7 @@
         <button class="btn-hover color-8">GO HOME!</button>
     </form>
 </div>
+
 <form th:action="@{/posts/list}" method="GET">
 <div class="search_box">
     <input name="title" th:value="${title}" type="text" class="form-control" placeholder="제목으로 검색" maxlength="225"> <i id="keyboard" class="fa fa-keyboard-o"></i>
@@ -11460,7 +11462,11 @@
     </button>
 </div>
 </form>
-
+<div style="margin-left: 36px;">
+    <a th:href="@{/posts/list}">최신순⏱ </a> /
+    <a th:href="@{/posts/list/comment}">댓글순⌨ </a> /
+    <a th:href="@{/posts/list/like}">좋아요순👍 </a>
+</div>
 <div style="margin-left: 30px;">
     <table class="table table-hover">
         <thead>

@@ -153,7 +153,8 @@ public class PostService {
                     throw new LikeException(ErrorCode.ALREADY_LIKED, ErrorCode.ALREADY_LIKED.getMessage());
                 });
         ////like 눌렀는지 확인 비지니스 로직 끝
-
+        /**해당 포스트의 likeCount++ 해주는 메서드**/
+        post.addLike();
         LikeEntity like = LikeEntity.of(user, post);
         LikeEntity savedLike = likeEntityRepository.save(like);
         /**해당 글 좋아요 갯수도 구하기**/
@@ -205,7 +206,7 @@ public class PostService {
     public Integer getLikeCount(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND,ErrorCode.POST_NOT_FOUND.getMessage()));
-
+        
         Integer postLikeCount = likeEntityRepository.countByPost(post);
         return postLikeCount;
     }
@@ -230,6 +231,8 @@ public class PostService {
                         ErrorCode.POST_NOT_FOUND, postId + " 번의 게시글은 존재하지 않습니다."));
         /*user권한 확인하기*/
         User user = userRepository.findOptionalByUserName(userName).orElseThrow(() -> new UserException(ErrorCode.USERNAME_NOT_FOUND, "회원을 찾을 수 없습니다"));
+        /**post엔티티의 댓글 갯수 add 메서드**/
+        post.addComment();
         //comment 엔티티 생성
         Comment commentEntity = Comment.of(user, post, commentBody);
         Comment savedComment = commentRepository.save(commentEntity);
@@ -267,7 +270,7 @@ public class PostService {
     /**service test 하기 위해 void - > boolean으로 변경**/
     public boolean deleteComment(Long postId,Long commentId, String userName) {
 
-        postRepository.findById(postId)
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND));
         Comment comment = commentRepository.findById(commentId).
                 orElseThrow(() -> new PostException(ErrorCode.COMMENT_NOT_FOUND, commentId + " 번 답글은 존재하지 않습니다"));
@@ -278,6 +281,8 @@ public class PostService {
         if (loginUser.getRole().equals(UserRole.USER) && commentUserId != loginUser.getId()) {
             throw new UserException(ErrorCode.INVALID_PERMISSION, userName + "님은 답글을 삭제할 권한이 없습니다.");
         } else {
+            /**post엔티티의 댓글 갯수 delete 메서드**/
+            post.deleteComment();
             commentRepository.deleteById(comment.getId());
         }
         return true;
@@ -297,13 +302,13 @@ public class PostService {
 
     /**MVC Service🔽 (not RestApi Service)**/
     /***********************************************MVC********************************************************/
-    public Post addMvcPost(PostForm postAddRequest, String userName) {
+    public Post addMvcPost(PostForm postForm, String userName) {
         log.info("서비스 userName:{}",userName);
         //userName으로 해당 User엔티티 찾아옴
         User user = userRepository.findOptionalByUserName(userName)
                 .orElseThrow(() -> new UserException(ErrorCode.USERNAME_NOT_FOUND, "회원가입 후 작성해주세요"));
 
-        Post post = postAddRequest.toEntity(user);
+        Post post = postForm.toEntity(user);
         //save를 할때는 JpaRepository<Article,Long>를 사용해야 하기때문에
         //articleRequestDto -> 를 Article 타입으로 바꿔줘야한다.
         Post savedPost = postRepository.save(post);
