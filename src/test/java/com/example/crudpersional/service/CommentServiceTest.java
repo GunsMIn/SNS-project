@@ -2,10 +2,7 @@ package com.example.crudpersional.service;
 import com.example.crudpersional.domain.dto.comment.CommentResponse;
 import com.example.crudpersional.domain.dto.comment.CommentUpdateResponse;
 import com.example.crudpersional.domain.dto.comment.PostMineDto;
-import com.example.crudpersional.domain.entity.AlarmEntity;
-import com.example.crudpersional.domain.entity.Comment;
-import com.example.crudpersional.domain.entity.Post;
-import com.example.crudpersional.domain.entity.User;
+import com.example.crudpersional.domain.entity.*;
 import com.example.crudpersional.domain.entity.alarm.AlarmType;
 import com.example.crudpersional.exceptionManager.ErrorCode;
 import com.example.crudpersional.exceptionManager.PostException;
@@ -144,6 +141,7 @@ public class CommentServiceTest {
 
             when(commentRepository.findById(anyLong())).thenReturn(Optional.of(comment));
             when(userRepository.findOptionalByUserName(anyString())).thenReturn(Optional.of(user));
+            when(postRepository.findById(anyLong())).thenReturn(Optional.of(post));
 
             CommentUpdateResponse updateResponse = postService.modifyComment(all.getCommentId(), comment.getId(),"댓글수정", all.getUserName());
 
@@ -162,17 +160,19 @@ public class CommentServiceTest {
             //user1은 원래 comment 작성자
             User user1 = UserEntityFixture.get(all.getUserName(), all.getPassword());
             //user2은 user1이 작성헸던 post의  comment를 수정하려는 작성자 (여기서는 로그인 회원)
-            User user2 = User.builder().id(2l).userName("다른유저").build();
+            // ADMIN 은 모든 수정이 가능해서 USERROLE USER로 설정해둠
+            User user2 = User.builder().id(2l).userName("다른유저").role(UserRole.USER).build();
             Post post = PostEntityFixture.get(user1);
             //user1이 작성한 comment🔽
             Comment comment = CommentFixture.get(user1, post);
+            when(postRepository.findById(anyLong())).thenReturn(Optional.of(post));
             //user1이 쓴 답변이라고 가정
             when(commentRepository.findById(anyLong())).thenReturn(Optional.of(comment));
             //로그인회원은 user2라고 가정
             when(userRepository.findOptionalByUserName(anyString())).thenReturn(Optional.of(user2));
             //user1이 쓴 comment를 user2가 로그인하여 수정하려함 -> UserException ErrorCode.INVALID_PERMISSION 발생
             UserException userException =
-                    assertThrows(UserException.class, () -> postService.modifyComment(comment.getId(),comment.getId(),
+                    assertThrows(UserException.class, () -> postService.modifyComment(post.getId(),comment.getId(),
                             "댓글수정", user2.getUsername()));
 
             assertEquals(userException.getErrorCode(),ErrorCode.INVALID_PERMISSION);
@@ -256,7 +256,8 @@ public class CommentServiceTest {
         void 댓글_삭제_실패1() throws Exception {
             AllFixture all = AllFixture.getDto();
             User user = UserEntityFixture.get(all.getUserName(), all.getPassword());
-            User anotherUser = User.builder().id(2l).userName("다른유저").build();
+            /**admin은 모든 삭제가 가능하여 테스트시 role 반드시 넣어주어야함 **/
+            User anotherUser = User.builder().id(2l).userName("다른유저").role(UserRole.USER).build();
             Post post = PostEntityFixture.get(user);
             Comment comment = CommentFixture.get(user, post);
 
@@ -283,7 +284,7 @@ public class CommentServiceTest {
             User anotherUser = User.builder().id(2l).userName("다른유저").build();
             Post post = PostEntityFixture.get(user);
             Comment comment = CommentFixture.get(user, post);
-
+            when(postRepository.findById(anyLong())).thenReturn(Optional.of(post));
             when(commentRepository.findById(anyLong())).thenReturn(Optional.empty());
             when(userRepository.findOptionalByUserName(anyString())).thenReturn(Optional.of(anotherUser));
 
@@ -305,6 +306,7 @@ public class CommentServiceTest {
             Post post = PostEntityFixture.get(user);
             Comment comment = CommentFixture.get(user, post);
 
+            when(postRepository.findById(anyLong())).thenReturn(Optional.of(post));
             when(commentRepository.findById(anyLong())).thenReturn(Optional.of(comment));
             when(userRepository.findOptionalByUserName(anyString())).thenReturn(Optional.empty());
 

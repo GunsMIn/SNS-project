@@ -83,7 +83,7 @@ public class PostService {
         return postAddResponse;
     }
 
-    /**글 수정과 삭제에서 사용 될 권한 체트 메서드**/
+    /**글 수정과 삭제에서 사용 될 권한 체크 메서드**/
     /**관리자와 해당 포스트 작성회원만 삭제 수정 가능**/
     private void check(Post post, User user) {
         if (user.getRole() != UserRole.ADMIN && user.getId() != post.getUser().getId()) {
@@ -244,18 +244,21 @@ public class PostService {
 
     /**comment 수정하기**/
     public CommentUpdateResponse modifyComment(Long postId,Long commentId, String updateComment, String name) {
+        //수정 될 답변 관련 변수
+        Comment changedComment = null;
         // 해당하는 게시글이 없을 시, 예외 처리
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND));
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new PostException(ErrorCode.COMMENT_NOT_FOUND, commentId + " 번의 답변을 존재하지 않습니다"));
         User user = userRepository.findOptionalByUserName(name).orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND, "회원을 찾을 수 없습니다"));
-
+        Long commentUserId = comment.getUser().getId();
         //답글을 쓴 사람만이 수정 가능 ADMIN도 수정 가능
-        if ( user.getRole().equals(UserRole.USER) && comment.getUser().getId() != user.getId()) {
-            throw new UserException(ErrorCode.INVALID_PERMISSION);
+        if (user.getRole().equals(UserRole.USER) && commentUserId != user.getId()) {
+            throw new UserException(ErrorCode.INVALID_PERMISSION,ErrorCode.INVALID_PERMISSION.getMessage());
+        }else {
+            //변경감지 수정 메서드 (수정)
+             changedComment = comment.change(updateComment);
         }
-        //변경감지 수정 메서드 (수정)
-        Comment changedComment = comment.change(updateComment);
         return CommentUpdateResponse.of(changedComment);
     }
 
@@ -268,16 +271,15 @@ public class PostService {
                 .orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND));
         Comment comment = commentRepository.findById(commentId).
                 orElseThrow(() -> new PostException(ErrorCode.COMMENT_NOT_FOUND, commentId + " 번 답글은 존재하지 않습니다"));
-        User user =
+        User loginUser =
                 userRepository.findOptionalByUserName(userName).orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND, "해당 유저는 존재하지 않습니다"));
-
-
-
+        Long commentUserId = comment.getUser().getId();
         //답글을 쓴 사람만이 삭제하기 가능 ADMIN도 삭제하기 가능
-        if (user.getRole().equals(UserRole.USER) && comment.getUser().getId() != user.getId()) {
+        if (loginUser.getRole().equals(UserRole.USER) && commentUserId != loginUser.getId()) {
             throw new UserException(ErrorCode.INVALID_PERMISSION, userName + "님은 답글을 삭제할 권한이 없습니다.");
+        } else {
+            commentRepository.deleteById(comment.getId());
         }
-        commentRepository.deleteById(comment.getId());
         return true;
     }
 
