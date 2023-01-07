@@ -39,6 +39,8 @@ import org.junit.jupiter.api.Test;
 public class CommentServiceTest {
 
     @InjectMocks
+    CommentService commentService;
+    @InjectMocks
     PostService postService;
     @Mock
     PostRepository postRepository ;
@@ -68,7 +70,7 @@ public class CommentServiceTest {
         when(commentRepository.save(any())).thenReturn(comment);
         when(alarmRepository.save(any())).thenReturn(alarm);
 
-        CommentResponse commentResponse = postService.writeComment(all.getPostId(), all.getComment(), all.getUserName());
+        CommentResponse commentResponse = commentService.writeComment(all.getPostId(), all.getComment(), all.getUserName());
 
         assertEquals(commentResponse.getComment(),"댓글씁니다");
         assertEquals(commentResponse.getUserName(),"test");
@@ -95,7 +97,7 @@ public class CommentServiceTest {
         when(commentRepository.save(any())).thenReturn(comment);
 
         UserException userException = assertThrows(UserException.class,
-                () -> postService.writeComment(all.getPostId(), all.getComment(), all.getUserName()));
+                () -> commentService.writeComment(all.getPostId(), all.getComment(), all.getUserName()));
 
         Assertions.assertEquals(userException.getErrorCode(), ErrorCode.USERNAME_NOT_FOUND);
         Assertions.assertEquals(userException.getErrorCode().getMessage(), "해당 user를 찾을 수 없습니다.");
@@ -117,7 +119,7 @@ public class CommentServiceTest {
         when(commentRepository.save(any())).thenReturn(comment);
 
         PostException postException = assertThrows(PostException.class,
-                () -> postService.writeComment(all.getPostId(), all.getComment(), all.getUserName()));
+                () -> commentService.writeComment(all.getPostId(), all.getComment(), all.getUserName()));
 
         Assertions.assertEquals(postException.getErrorCode(), ErrorCode.POST_NOT_FOUND);
         Assertions.assertEquals(postException.getErrorCode().getMessage(),  "해당 포스트가 없습니다.");
@@ -143,7 +145,7 @@ public class CommentServiceTest {
             when(userRepository.findOptionalByUserName(anyString())).thenReturn(Optional.of(user));
             when(postRepository.findById(anyLong())).thenReturn(Optional.of(post));
 
-            CommentUpdateResponse updateResponse = postService.modifyComment(all.getCommentId(), comment.getId(),"댓글수정", all.getUserName());
+            CommentUpdateResponse updateResponse = commentService.modifyComment(all.getCommentId(), comment.getId(),"댓글수정", all.getUserName());
 
             assertEquals(updateResponse.getComment(),"댓글수정");
             assertEquals(updateResponse.getId(),comment.getId());
@@ -172,7 +174,7 @@ public class CommentServiceTest {
             when(userRepository.findOptionalByUserName(anyString())).thenReturn(Optional.of(user2));
             //user1이 쓴 comment를 user2가 로그인하여 수정하려함 -> UserException ErrorCode.INVALID_PERMISSION 발생
             UserException userException =
-                    assertThrows(UserException.class, () -> postService.modifyComment(post.getId(),comment.getId(),
+                    assertThrows(UserException.class, () -> commentService.modifyComment(post.getId(),comment.getId(),
                             "댓글수정", user2.getUsername()));
 
             assertEquals(userException.getErrorCode(),ErrorCode.INVALID_PERMISSION);
@@ -198,7 +200,7 @@ public class CommentServiceTest {
             when(postRepository.findById(anyLong())).thenReturn(Optional.of(post));
 
             PostException postException = assertThrows(PostException.class, () ->
-                    postService.modifyComment(post.getId(), comment.getId(),comment.getComment(), user2.getUsername()));
+                    commentService.modifyComment(post.getId(), comment.getId(),comment.getComment(), user2.getUsername()));
 
             assertEquals(postException.getErrorCode(), ErrorCode.COMMENT_NOT_FOUND);
             assertEquals(postException.getErrorCode().getMessage(), ErrorCode.COMMENT_NOT_FOUND.getMessage());
@@ -220,7 +222,7 @@ public class CommentServiceTest {
             when(userRepository.findOptionalByUserName(anyString())).thenReturn(Optional.empty());
             when(postRepository.findById(anyLong())).thenReturn(Optional.of(post));
             UserException userException = assertThrows(UserException.class, () ->
-                    postService.modifyComment(post.getId(), comment.getId(),comment.getComment(), user2.getUsername()));
+                    commentService.modifyComment(post.getId(), comment.getId(),comment.getComment(), user2.getUsername()));
 
             assertEquals(userException.getErrorCode(), ErrorCode.USER_NOT_FOUND);
             assertEquals(userException.getErrorCode().getMessage(), ErrorCode.USER_NOT_FOUND.getMessage());
@@ -244,7 +246,7 @@ public class CommentServiceTest {
          when(commentRepository.findById(anyLong())).thenReturn(Optional.of(comment));
          when(userRepository.findOptionalByUserName(anyString())).thenReturn(Optional.of(user));
          when(postRepository.findById(anyLong())).thenReturn(Optional.of(post));
-         boolean result = postService.deleteComment(all.getPostId(),all.getCommentId(), all.getUserName());
+         boolean result = commentService.deleteComment(all.getPostId(),all.getCommentId(), all.getUserName());
 
          assertEquals(result,true);
          assertDoesNotThrow(()-> result);
@@ -267,7 +269,7 @@ public class CommentServiceTest {
             when(userRepository.findOptionalByUserName(anyString())).thenReturn(Optional.of(anotherUser));
             when(postRepository.findById(anyLong())).thenReturn(Optional.of(post));
 
-            UserException userException = assertThrows(UserException.class, () -> postService.deleteComment(post.getId(),comment.getId(), anotherUser.getUsername()));
+            UserException userException = assertThrows(UserException.class, () -> commentService.deleteComment(post.getId(),comment.getId(), anotherUser.getUsername()));
 
             assertEquals(userException.getErrorCode(),ErrorCode.INVALID_PERMISSION);
             assertEquals(userException.getErrorCode().getMessage(),ErrorCode.INVALID_PERMISSION.getMessage());
@@ -288,7 +290,7 @@ public class CommentServiceTest {
             when(commentRepository.findById(anyLong())).thenReturn(Optional.empty());
             when(userRepository.findOptionalByUserName(anyString())).thenReturn(Optional.of(anotherUser));
 
-            PostException postException = assertThrows(PostException.class, () -> postService.deleteComment(all.getPostId(),all.getCommentId(), all.getUserName()));
+            PostException postException = assertThrows(PostException.class, () -> commentService.deleteComment(all.getPostId(),all.getCommentId(), all.getUserName()));
 
             assertEquals(postException.getErrorCode(),ErrorCode.COMMENT_NOT_FOUND);
             assertEquals(postException.getErrorCode().getStatus(),ErrorCode.COMMENT_NOT_FOUND.getStatus());
@@ -310,7 +312,7 @@ public class CommentServiceTest {
             when(commentRepository.findById(anyLong())).thenReturn(Optional.of(comment));
             when(userRepository.findOptionalByUserName(anyString())).thenReturn(Optional.empty());
 
-            UserException userException = assertThrows(UserException.class, () -> postService.deleteComment(all.getPostId(),all.getCommentId(), all.getUserName()));
+            UserException userException = assertThrows(UserException.class, () -> commentService.deleteComment(all.getPostId(),all.getCommentId(), all.getUserName()));
 
             assertEquals(userException.getErrorCode(),ErrorCode.USER_NOT_FOUND);
             assertEquals(userException.getErrorCode().getStatus(),ErrorCode.USER_NOT_FOUND.getStatus());
@@ -335,7 +337,7 @@ public class CommentServiceTest {
             when(commentRepository.findAllByPost(any(), any())).thenReturn(Page.empty());
             PageRequest request = PageRequest.of(0, 10, Sort.Direction.DESC, "registeredAt");
 
-            Page<CommentResponse> responses = postService.getComments(post.getId(), request);
+            Page<CommentResponse> responses = commentService.getComments(post.getId(), request);
 
             assertEquals(responses.getTotalPages(), 1);
             assertDoesNotThrow(() -> responses);
@@ -354,7 +356,7 @@ public class CommentServiceTest {
             PageRequest request = PageRequest.of(0, 10, Sort.Direction.DESC, "registeredAt");
 
             PostException postException = assertThrows(PostException.class,
-                    () -> postService.getComments(post.getId(), request));
+                    () -> commentService.getComments(post.getId(), request));
 
 
             assertEquals(postException.getErrorCode(), ErrorCode.POST_NOT_FOUND);

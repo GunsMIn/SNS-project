@@ -1,7 +1,9 @@
 package com.example.crudpersional.controller;
 
 import com.example.crudpersional.config.encrypt.EncrypterConfig;
+import com.example.crudpersional.service.LikeService;
 import com.example.crudpersional.service.PostService;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,7 +31,6 @@ import com.example.crudpersional.domain.dto.post.*;
 import com.example.crudpersional.domain.entity.Post;
 import com.example.crudpersional.exceptionManager.ErrorCode;
 import com.example.crudpersional.exceptionManager.PostException;
-import com.example.crudpersional.service.PostService;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.annotation.meta.When;
@@ -45,6 +46,9 @@ class LikeControllerTest {
     @MockBean
     PostService postService;
 
+    @MockBean
+    LikeService likeService;
+    
     @MockBean
     EncrypterConfig encoderConfig;
 
@@ -62,7 +66,7 @@ class LikeControllerTest {
                 .postId(10l)
                 .build();
 
-        when(postService.likes(anyLong(), anyString())).thenReturn(response);
+        when(likeService.likes(anyLong(), anyString())).thenReturn(response);
         mockMvc.perform(post("/api/v1/posts/1/likes")
                 .with(csrf()))
                 .andDo(print())
@@ -70,7 +74,7 @@ class LikeControllerTest {
                 .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
                 .andExpect(jsonPath("$.result").exists());
 
-        verify(postService,times(1)).like(anyLong(), anyString());
+        verify(likeService,times(1)).like(anyLong(), anyString());
     }
 
 
@@ -92,7 +96,7 @@ class LikeControllerTest {
     void like_fail2() throws Exception {
         /**void 메서드의 경우,doThrow사용! when반환값이 없으면 구문이 컴파일되지 않는다. 선택의 여지가 없다**/
         doThrow(new PostException(ErrorCode.POST_NOT_FOUND))
-                .when(postService).like(any(), any());
+                .when(likeService).like(any(), any());
 
         mockMvc.perform(post("/api/v1/posts/1/likes")
                 .with(csrf())

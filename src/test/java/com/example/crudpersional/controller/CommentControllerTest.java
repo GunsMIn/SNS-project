@@ -1,7 +1,9 @@
 package com.example.crudpersional.controller;
 import com.example.crudpersional.domain.dto.comment.*;
 import com.example.crudpersional.exceptionManager.UserException;
+import com.example.crudpersional.service.CommentService;
 import com.example.crudpersional.service.PostService;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -37,6 +39,9 @@ class CommentControllerTest {
     @MockBean
     PostService postService;
 
+    @MockBean
+    CommentService commentService;
+
     @Autowired
     ObjectMapper objectMapper;
 
@@ -62,7 +67,7 @@ class CommentControllerTest {
                     .build();
 
            /**when**/
-            when(postService.writeComment(any(), any(), any())).thenReturn(response);
+            when(commentService.writeComment(any(), any(), any())).thenReturn(response);
             String url = "/api/v1/posts/1/comments";
             mockMvc.perform(post(url)
                     .with(csrf())
@@ -74,7 +79,7 @@ class CommentControllerTest {
                     .andExpect(jsonPath("$.result.userName").value("김건우"))
                     .andExpect(status().isOk());
 
-            verify(postService, atLeastOnce()).writeComment(any(), anyString(), anyString());
+            verify(commentService, atLeastOnce()).writeComment(any(), anyString(), anyString());
 
         }
 
@@ -95,7 +100,7 @@ class CommentControllerTest {
                     .build();
 
             /**when**/
-            when(postService.writeComment(any(), any(), any())).thenThrow(new UserException(ErrorCode.INVALID_PERMISSION));
+            when(commentService.writeComment(any(), any(), any())).thenThrow(new UserException(ErrorCode.INVALID_PERMISSION));
             String url = "/api/v1/posts/1/comments";
             mockMvc.perform(post(url)
                     .with(csrf())
@@ -104,7 +109,7 @@ class CommentControllerTest {
                     .andDo(print())
                     .andExpect(status().isUnauthorized());
 
-            verify(postService, never()).writeComment(any(), anyString(), anyString());
+            verify(commentService, never()).writeComment(any(), anyString(), anyString());
         }
 
 
@@ -125,7 +130,7 @@ class CommentControllerTest {
                     .build();
 
             /**when**/
-            when(postService.writeComment(any(), any(), any())).thenThrow(new PostException(ErrorCode.POST_NOT_FOUND));
+            when(commentService.writeComment(any(), any(), any())).thenThrow(new PostException(ErrorCode.POST_NOT_FOUND));
 
             String url = "/api/v1/posts/1/comments";
             mockMvc.perform(post(url)
@@ -135,7 +140,7 @@ class CommentControllerTest {
                     .andDo(print())
                     .andExpect(status().isNotFound());
 
-            verify(postService, atLeastOnce()).writeComment(any(), anyString(), anyString());
+            verify(commentService, atLeastOnce()).writeComment(any(), anyString(), anyString());
 
         }
     }
@@ -159,7 +164,7 @@ class CommentControllerTest {
         assertThat(request.getPageNumber()).isEqualTo(0);
         assertThat(request.getPageSize()).isEqualTo(10);
         assertThat(request.getSort()).isEqualTo(Sort.by("registeredAt").descending());
-        verify(postService, times(1)).getComments(anyLong(),any());
+        verify(commentService, times(1)).getComments(anyLong(),any());
     }
 
 
@@ -181,8 +186,8 @@ class CommentControllerTest {
                     .userName("김건우")
                     .createdAt(String.valueOf(LocalDateTime.now()))
                     .build();
-            /*postService.modifyComment();*/
-            when(postService.modifyComment(anyLong(),anyLong(), anyString(), anyString())).thenReturn(response);
+            /*commentService.modifyComment();*/
+            when(commentService.modifyComment(anyLong(),anyLong(), anyString(), anyString())).thenReturn(response);
             String url = "/api/v1/posts/1/comments/1";
             mockMvc.perform(put(url)
                     .with(csrf())
@@ -194,7 +199,7 @@ class CommentControllerTest {
                     .andExpect(jsonPath("$.result.comment").value("댓글"))
                     .andExpect(jsonPath("$.result.userName").value("김건우"));
 
-            verify(postService, times(1)).modifyComment(anyLong(),anyLong(),anyString(),anyString());
+            verify(commentService, times(1)).modifyComment(anyLong(),anyLong(),anyString(),anyString());
         }
 
         @Test
@@ -204,8 +209,8 @@ class CommentControllerTest {
 
             CommentModifyRequest request = CommentModifyRequest.builder().comment("댓글").build();
 
-            /*postService.modifyComment();*/
-            when(postService.modifyComment(anyLong(),anyLong(), anyString(), anyString()))
+            /*commentService.modifyComment();*/
+            when(commentService.modifyComment(anyLong(),anyLong(), anyString(), anyString()))
                     .thenThrow(new UserException(ErrorCode.INVALID_PERMISSION));
             String url = "/api/v1/posts/1/comments";
             mockMvc.perform(put(url)
@@ -215,7 +220,7 @@ class CommentControllerTest {
                     .andDo(print())
                     .andExpect(status().isUnauthorized());
 
-            verify(postService, never()).modifyComment(anyLong(),anyLong(),anyString(),anyString());
+            verify(commentService, never()).modifyComment(anyLong(),anyLong(),anyString(),anyString());
         }
 
 
@@ -226,8 +231,8 @@ class CommentControllerTest {
 
             CommentModifyRequest request = CommentModifyRequest.builder().comment("댓글").build();
 
-            /*postService.modifyComment();*/
-            when(postService.modifyComment(anyLong(), anyLong(),anyString(), anyString()))
+            /*commentService.modifyComment();*/
+            when(commentService.modifyComment(anyLong(), anyLong(),anyString(), anyString()))
                     .thenThrow(new PostException(ErrorCode.POST_NOT_FOUND));
 
             String url = "/api/v1/posts/1/comments/1";
@@ -238,7 +243,7 @@ class CommentControllerTest {
                     .andDo(print())
                     .andExpect(status().isNotFound());
 
-            verify(postService,atLeastOnce()).modifyComment(anyLong(),anyLong(),anyString(),anyString());
+            verify(commentService,atLeastOnce()).modifyComment(anyLong(),anyLong(),anyString(),anyString());
         }
 
         @Test
@@ -248,7 +253,7 @@ class CommentControllerTest {
 
             CommentModifyRequest request = CommentModifyRequest.builder().comment("댓글").build();
 
-            when(postService.modifyComment(anyLong(),anyLong(), anyString(), anyString()))
+            when(commentService.modifyComment(anyLong(),anyLong(), anyString(), anyString()))
                     .thenThrow(new PostException(ErrorCode.DATABASE_ERROR));
 
             String url = "/api/v1/posts/1/comments/1";
@@ -259,7 +264,7 @@ class CommentControllerTest {
                     .andDo(print())
                     .andExpect(status().is(ErrorCode.DATABASE_ERROR.getStatus().value()));
 
-            verify(postService,atLeastOnce()).modifyComment(anyLong(),anyLong(),anyString(),anyString());
+            verify(commentService,atLeastOnce()).modifyComment(anyLong(),anyLong(),anyString(),anyString());
         }
 
 
@@ -270,7 +275,7 @@ class CommentControllerTest {
 
             CommentModifyRequest request = CommentModifyRequest.builder().comment("댓글").build();
 
-            when(postService.modifyComment(anyLong(), anyLong(),anyString(), anyString()))
+            when(commentService.modifyComment(anyLong(), anyLong(),anyString(), anyString()))
                     .thenThrow(new UserException(ErrorCode.INVALID_PERMISSION));
 
             String url = "/api/v1/posts/1/comments/1";
@@ -281,7 +286,7 @@ class CommentControllerTest {
                     .andDo(print())
                     .andExpect(status().is(ErrorCode.INVALID_PERMISSION.getStatus().value()));
 
-            verify(postService,atLeastOnce()).modifyComment(anyLong(),anyLong(),anyString(),anyString());
+            verify(commentService,atLeastOnce()).modifyComment(anyLong(),anyLong(),anyString(),anyString());
         }
 
     }
@@ -305,7 +310,7 @@ class CommentControllerTest {
                     .andExpect(jsonPath("$.result.message").value("댓글 삭제 완료"))
                     .andExpect(jsonPath("$.result.commentId").value(1l));
 
-            verify(postService,times(1)).deleteComment(anyLong(),anyLong(),anyString());
+            verify(commentService,times(1)).deleteComment(anyLong(),anyLong(),anyString());
         }
 
 
@@ -323,16 +328,16 @@ class CommentControllerTest {
                     .andDo(print())
                     .andExpect(status().is(ErrorCode.INVALID_PERMISSION.getStatus().value()));
 
-            verify(postService,never()).deleteComment(anyLong(),anyLong(),anyString());
+            verify(commentService,never()).deleteComment(anyLong(),anyLong(),anyString());
         }
 
         @Test
         @WithMockUser
         @DisplayName("댓글 삭제 실패 : 포스트 없음")
         void 댓글_삭제_실패2() throws Exception {
-            /**postService의 메서드 리턴 타입이 void여서 doThrow 방식 사용**/
+            /**commentService의 메서드 리턴 타입이 void여서 doThrow 방식 사용**/
             doThrow(new PostException(ErrorCode.POST_NOT_FOUND))
-                    .when(postService).deleteComment(anyLong(),anyLong(),anyString());
+                    .when(commentService).deleteComment(anyLong(),anyLong(),anyString());
 
             String url = "/api/v1/posts/1/comments/1";
             mockMvc.perform(delete(url)
@@ -341,16 +346,16 @@ class CommentControllerTest {
                     .andDo(print())
                     .andExpect(status().is(ErrorCode.POST_NOT_FOUND.getStatus().value()));
 
-            verify(postService,times(1)).deleteComment(anyLong(),anyLong(),anyString());
+            verify(commentService,times(1)).deleteComment(anyLong(),anyLong(),anyString());
         }
 
         @Test
         @WithMockUser
         @DisplayName("댓글 삭제 실패 : 작성자 불일치")
         void 댓글_삭제_실패3() throws Exception {
-            /**postService의 메서드 리턴 타입이 void여서 doThrow 방식 사용**/
+            /**commentService의 메서드 리턴 타입이 void여서 doThrow 방식 사용**/
             doThrow(new UserException(ErrorCode.INVALID_PERMISSION))
-                    .when(postService).deleteComment(anyLong(),anyLong(),anyString());
+                    .when(commentService).deleteComment(anyLong(),anyLong(),anyString());
 
             String url = "/api/v1/posts/1/comments/1";
             mockMvc.perform(delete(url)
@@ -359,7 +364,7 @@ class CommentControllerTest {
                     .andDo(print())
                     .andExpect(status().is(ErrorCode.INVALID_PERMISSION.getStatus().value()));
 
-            verify(postService,times(1)).deleteComment(anyLong(),anyLong(),anyString());
+            verify(commentService,times(1)).deleteComment(anyLong(),anyLong(),anyString());
         }
 
 
@@ -367,9 +372,9 @@ class CommentControllerTest {
         @WithMockUser
         @DisplayName("댓글 삭제 실패 : DB에러")
         void 댓글_삭제_실패4() throws Exception {
-            /**postService의 메서드 리턴 타입이 void여서 doThrow 방식 사용**/
+            /**commentService의 메서드 리턴 타입이 void여서 doThrow 방식 사용**/
             doThrow(new UserException(ErrorCode.DATABASE_ERROR))
-                    .when(postService).deleteComment(anyLong(),anyLong(),anyString());
+                    .when(commentService).deleteComment(anyLong(),anyLong(),anyString());
 
             String url = "/api/v1/posts/1/comments/1";
             mockMvc.perform(delete(url)
@@ -378,7 +383,7 @@ class CommentControllerTest {
                     .andDo(print())
                     .andExpect(status().is(ErrorCode.DATABASE_ERROR.getStatus().value()));
 
-            verify(postService,times(1)).deleteComment(anyLong(),anyLong(),anyString());
+            verify(commentService,times(1)).deleteComment(anyLong(),anyLong(),anyString());
         }
     }
 

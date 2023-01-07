@@ -51,7 +51,7 @@ import org.mockito.quality.Strictness;
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class LikeServiceTest {
     @InjectMocks
-    PostService postService;
+    LikeService likeService;
     @Mock
     PostRepository postRepository ;
     @Mock
@@ -82,7 +82,7 @@ public class LikeServiceTest {
         when(likeRepository.findByUserAndPost(doLikeUser, post)).thenReturn(Optional.empty());
         when(likeRepository.save(any())).thenReturn(like);
 
-        LikeResponse response = postService.likes(post.getId(), doLikeUser.getUsername());
+        LikeResponse response = likeService.likes(post.getId(), doLikeUser.getUsername());
         //assertj
         assertThat(response.getLikeId()).isEqualTo(like.getId());
         //jupiter
@@ -111,7 +111,7 @@ public class LikeServiceTest {
 
         //post없음
         PostException postException = assertThrows(PostException.class,
-                () -> postService.like(post.getId(), doLikeUser.getUsername()));
+                () -> likeService.like(post.getId(), doLikeUser.getUsername()));
 
         assertThat(postException.getErrorCode()).isEqualTo(ErrorCode.POST_NOT_FOUND);
         assertThat(postException.getErrorCode().getStatus()).isEqualTo(ErrorCode.POST_NOT_FOUND.getStatus());
@@ -142,7 +142,7 @@ public class LikeServiceTest {
 
         //user 없음
         UserException userException = assertThrows(UserException.class,
-                () -> postService.like(post.getId(), doLikeUser.getUsername()));
+                () -> likeService.like(post.getId(), doLikeUser.getUsername()));
 
         assertThat(userException.getErrorCode()).isEqualTo(ErrorCode.USERNAME_NOT_FOUND);
         assertThat(userException.getErrorCode().getStatus()).isEqualTo(ErrorCode.USERNAME_NOT_FOUND.getStatus());
@@ -173,7 +173,7 @@ public class LikeServiceTest {
 
         //user 없음
         LikeException likeException = assertThrows(LikeException.class,
-                () -> postService.like(post.getId(), doLikeUser.getUsername()));
+                () -> likeService.like(post.getId(), doLikeUser.getUsername()));
 
         /**CONFILT 409에러 유발 테스트🔽**/
         assertThat(likeException.getErrorCode()).isEqualTo(ErrorCode.ALREADY_LIKED);
