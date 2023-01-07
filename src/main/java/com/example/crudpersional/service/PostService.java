@@ -155,8 +155,10 @@ public class PostService {
 
         LikeEntity like = LikeEntity.of(user, post);
         LikeEntity savedLike = likeEntityRepository.save(like);
-        LikeResponse likeResponse = LikeResponse.of(savedLike);
+        /**해당 글 좋아요 갯수도 구하기**/
+        Integer count = getLikeCount(postId);
 
+        LikeResponse likeResponse = LikeResponse.of(savedLike,count);
         //*좋아요 눌렀을 때 알림 동작*//*
         // 알림수신자 ,알림 타입 ,발신자 id ,알림 주체 포스트 id
         AlarmEntity entity = AlarmEntity.of(post.getUser(), NEW_LIKE_ON_POST, user.getId(), post.getId());

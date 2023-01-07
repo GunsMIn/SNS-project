@@ -41,17 +41,7 @@ public class LikeController {
 
 
 
-    @ApiOperation(value = "해당 글 좋아요", notes = "정상적인 JWT토큰 발급 받은 사용자만 해당 글 좋아요 가능")
-    @PostMapping("/mvc/likes")
-    public Response likeMvc(@RequestBody LikeRequest request, @SessionAttribute(name = "loginMember", required = false) User loginMember, HttpServletResponse response) throws Exception {
-        log.info("좋아요 버튼 클릭 후 값 :{} / {}",request.getPostId(),loginMember);
-        //세션에 저장된 user의 정보
-        if (loginMember == null) {
-            throw new UserException(ErrorCode.USERNAME_NOT_FOUND);
-        }
-        postService.like(request.getPostId(), loginMember.getUsername());
-        return Response.success("좋아요를 눌렀습니다.");
-    }
+
 
 
 

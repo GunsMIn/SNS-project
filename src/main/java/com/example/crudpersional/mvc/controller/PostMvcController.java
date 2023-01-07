@@ -1,7 +1,9 @@
 
 package com.example.crudpersional.mvc.controller;
 
+import com.example.crudpersional.domain.dto.Response;
 import com.example.crudpersional.domain.dto.comment.CommentResponse;
+import com.example.crudpersional.domain.dto.post.LikeResponse;
 import com.example.crudpersional.domain.dto.post.PostAddRequest;
 import com.example.crudpersional.domain.dto.post.PostSelectResponse;
 import com.example.crudpersional.domain.entity.Comment;
@@ -17,6 +19,7 @@ import com.example.crudpersional.repository.PostRepository;
 import com.example.crudpersional.repository.UserRepository;
 import com.example.crudpersional.service.PostService;
 import com.sun.xml.bind.v2.model.core.ID;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.SQLDelete;
@@ -245,6 +248,19 @@ public class PostMvcController {
         return "/";
     }
 
+
+    @ApiOperation(value = "해당 글 좋아요", notes = "정상적인 JWT토큰 발급 받은 사용자만 해당 글 좋아요 가능")
+    @ResponseBody
+    @PostMapping("/api/v1/posts/mvc/likes")
+    public Response<LikeResponse> likeMvc(@RequestBody LikeRequest request, @SessionAttribute(name = "loginMember", required = false) User loginMember, HttpServletResponse response) throws Exception {
+        log.info("좋아요 버튼 클릭 후 값 :{} / {}",request.getPostId(),loginMember);
+        //세션에 저장된 user의 정보
+        if (loginMember == null) {
+            throw new UserException(ErrorCode.USERNAME_NOT_FOUND);
+        }
+        LikeResponse likeResponse = postService.likes(request.getPostId(), loginMember.getUsername());
+        return Response.success(likeResponse);
+    }
 
 }
 

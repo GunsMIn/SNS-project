@@ -366,9 +366,13 @@
                     }
                 }
             ).then((response) => {
-                    console.log("좋아요 성공");
-                    alert("좋아요 성공")
-                    window.location.href = '/post/getOne/'+form.postId.value;
+                console.log("좋아요 성공");
+                console.log(response);
+                console.log(response.status);
+
+
+                     alert("좋아요 성공")
+                     window.location.href = '/post/getOne/'+form.postId.value;
                 }
             ).catch((error) => {
                 console.log(error.response.data.result);

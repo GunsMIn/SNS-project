@@ -45,7 +45,7 @@
     </header>
     <!-- Main Content-->
     <article>
-       
+
         <div class="container" role="main">
             <!--<h2>  해당 글 상세보기</h2>-->
             <div class="bg-white rounded shadow-sm">
@@ -81,7 +81,7 @@
 
                     <button type="submit" class="btn-hover color-8 btn btn-outline-secondary btn-lg" id="like-btn"
                             style="font-size: 20px">
-                        <div class="fill-one" th:text="'👍  ' + ${ likeCount}"></div>
+                        <div id="likeCount" class="fill-one" th:text="'👍  ' + ${ likeCount}"></div>
                     </button>
                 </form>
             </div>
@@ -306,11 +306,8 @@
     let comment = {
 
         init: function () {
-
             var _this = this;
-
             const commentCreateBtn = document.querySelector('#comment-write-btn');
-
             commentCreateBtn.addEventListener('click', _this.create);
         },
 
@@ -339,8 +336,6 @@
                 }
             ).then((response) => {
                 Chat__loadMore();
-                /* alert("댓글을 작성하셨습니다.");*/
-                /*window.location.href = '/post/getOne/' + id;*/
             });
         }
 
@@ -357,6 +352,8 @@
         plusLike : function (form) {
             const data = form.postId.value;
             form.postId.value= form.postId.value.trim();
+            const likeCount = document.getElementById("likeCount");
+
             axios.post(
                 "/api/v1/posts/mvc/likes",
                 data,{
@@ -365,13 +362,26 @@
                     }
                 }
             ).then((response) => {
-                    console.log("좋아요 성공");
-                    alert("좋아요 성공")
-                    window.location.href = '/post/getOne/'+form.postId.value;
+                console.log("좋아요 성공");
+                console.log(response);
+                console.log(response.status);
+                console.log(response.data);
+                console.log(response.data.resultCode);
+                console.log(response.data.result.count);
+                console.log(response.data.result.userName);
+                console.log(response.data.result.likeId);
+                console.log(response.data.result.postId);
+                //좋아요
+                likeCount.innerHTML = '👍  ' + response.data.result.count;
+
+
+                  /*  alert("좋아요 성공")
+                    window.location.href = '/post/getOne/'+form.postId.value;*/
                 }
             ).catch((error) => {
                 console.log(error.response.data.result);
-                console.log(error.response)
+                console.log(error.response);
+                console.log(error.toJSON());
                 if (error.response.data.result["errorCode"] == "ALREADY_LIKED") {
                     alert("이미 해당 글에 좋아요👍를 누르셨습니다");
                     window.location.href = '/post/getOne/'+form.postId.value;
