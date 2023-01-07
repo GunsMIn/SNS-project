@@ -11476,8 +11476,8 @@
             <th scope="col">내용</th>
             <th scope="col">작성 시간</th>
             <th scope="col">작성인</th>
-            <th scope="col">Like👍</th>
             <th scope="col">Reply⌨</th>
+            <th scope="col">Like👍</th>
         </tr>
         </thead>
         <tbody>
@@ -11488,8 +11488,8 @@
             <td th:text="${post.body}"></td>
             <td th:text="${post.registeredAt}"></td>
             <td th:text="${post.user.username}"></td>
-            <td th:text="${post.likeCount}"></td>
             <td th:text="${post.commentCount}"></td>
+            <td th:text="${post.likeCount}"></td>
 
 
             <td>
@@ -11505,8 +11505,16 @@
     </table>
 
     <div style="text-align: center;">
-        <th:block  th:each="page:${#numbers.sequence(startPage,endPage)}">
+        <th:block th:if="${#strings.equals(flag, 'time')}" th:each="page:${#numbers.sequence(startPage,endPage)}">
             <a class="page-item" th:if="${page != nowPage}" th:href="@{/posts/list(page=${page-1},title=${param.title})}" th:text ="${page}" style="font-size:25px"></a>
+            <strong th:if="${page==nowPage}" th:text ="${page}" style="color:lightskyblue; font-size:25px"></strong>
+        </th:block>
+        <th:block th:if="${#strings.equals(flag, 'comment')}" th:each="page:${#numbers.sequence(startPage,endPage)}">
+            <a class="page-item" th:if="${page != nowPage}" th:href="@{/posts/list/comment(page=${page-1},title=${param.title})}" th:text ="${page}" style="font-size:25px"></a>
+            <strong th:if="${page==nowPage}" th:text ="${page}" style="color:lightskyblue; font-size:25px"></strong>
+        </th:block>
+        <th:block th:if="${#strings.equals(flag, 'like')}" th:each="page:${#numbers.sequence(startPage,endPage)}">
+            <a class="page-item" th:if="${page != nowPage}" th:href="@{/posts/list/like(page=${page-1},title=${param.title})}" th:text ="${page}" style="font-size:25px"></a>
             <strong th:if="${page==nowPage}" th:text ="${page}" style="color:lightskyblue; font-size:25px"></strong>
         </th:block>
     </div>

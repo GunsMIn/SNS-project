@@ -13,6 +13,7 @@ import com.example.crudpersional.mvc.ssr.SseEmitters;
 import com.example.crudpersional.repository.CommentRepository;
 import com.example.crudpersional.repository.PostRepository;
 import com.example.crudpersional.repository.UserRepository;
+import com.example.crudpersional.service.CommentService;
 import com.example.crudpersional.service.PostService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ import java.util.stream.IntStream;
 @RequiredArgsConstructor
 @Slf4j
 public class CommentMvcController {
-    private final PostService postService;
+    private final CommentService commentService;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
@@ -42,7 +43,7 @@ public class CommentMvcController {
     @ResponseBody
     public RsData<Comment> write(@RequestBody CommentForm commentForm) {
         User user = userRepository.findById(commentForm.getId()).orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
-        CommentResponse commentResponse = postService.writeComment(commentForm.getPostId(), commentForm.getContent(), user.getUsername());
+        CommentResponse commentResponse = commentService.writeComment(commentForm.getPostId(), commentForm.getContent(), user.getUsername());
 
         /**서버 측 리스트 SSE 방식일 때 / 폴링일 때는 끄기 **/
         sseEmitters.noti("chat__messageAdded");
@@ -94,7 +95,7 @@ public class CommentMvcController {
     @PostMapping("/api/v1/posts/mvc/{id}/comments")
     public Response<CommentResponse> commentFromPost2(@PathVariable Long id, @RequestBody PostCommentRequest postCommentRequest) {
         log.info("postCommentRequest:{}",postCommentRequest);
-        CommentResponse commentResponse = postService.writeComment(id, postCommentRequest.getComment(), postCommentRequest.getName());
+        CommentResponse commentResponse = commentService.writeComment(id, postCommentRequest.getComment(), postCommentRequest.getName());
         return Response.success(commentResponse);
     }
 
