@@ -1,4 +1,4 @@
-# JPA를 이용한 RestApi 구현 / Spring Security (JWT 토큰 인증/인가) / CI-CD구축 / 비동기 댓글 처리
+# JPA를 이용한 RestApi 구현 / Spring Security (JWT 토큰 인증/인가) / CI-CD구축 / 비동기 좋아요,댓글 처리
 <p align="center"><img width="750" alt="jenkins-docker-springboot-cicd" src="https://user-images.githubusercontent.com/104709432/209429451-36eac449-39d0-40a0-ac41-194c979c021d.png">
 </p>
 </br>
