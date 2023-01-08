@@ -93,9 +93,9 @@ public class CommentMvcController {
     @ApiOperation(value = "해당 포스트 댓글 달기 ", notes = "postId로 들어온 Post글 댓글 달기 API")
     @ResponseBody
     @PostMapping("/api/v1/posts/mvc/{id}/comments")
-    public Response<CommentResponse> commentFromPost2(@PathVariable Long id, @RequestBody PostCommentRequest postCommentRequest) {
+    public Response<CommentResponse> commentFromPost2(@PathVariable Long id, @RequestBody PostCommentRequest postCommentRequest, @SessionAttribute(name = "loginMember", required = false) User loginMember) {
         log.info("postCommentRequest:{}",postCommentRequest);
-        CommentResponse commentResponse = commentService.writeComment(id, postCommentRequest.getComment(), postCommentRequest.getName());
+        CommentResponse commentResponse = commentService.writeComment(id, postCommentRequest.getComment(),loginMember.getUsername());
         return Response.success(commentResponse);
     }
 

@@ -30,7 +30,7 @@ public class LikeController {
     @ApiOperation(value = "해당 글 좋아요", notes = "정상적인 JWT토큰 발급 받은 사용자만 해당 글 좋아요 가능")
     @PostMapping("/{postId}/likes")
     public Response like(@PathVariable Long postId, @ApiIgnore Authentication authentication) {
-        likeService.like(postId, authentication.getName());
+        likeService.likes(postId, authentication.getName());
         return Response.success("좋아요 성공");
     }
 

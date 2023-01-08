@@ -1,5 +1,8 @@
 package com.example.crudpersional.domain.entity;
 
+import com.example.crudpersional.exceptionManager.ErrorCode;
+import com.example.crudpersional.exceptionManager.UserException;
+import com.example.crudpersional.repository.UserRepository;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -51,6 +54,7 @@ public class User implements UserDetails {
 
     @LastModifiedDate
     private String updatedAt;
+    
 
     @PrePersist
     public void onPrePersist(){
