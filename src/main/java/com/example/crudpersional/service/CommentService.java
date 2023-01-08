@@ -25,42 +25,39 @@ public class CommentService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final LikeRepository likeEntityRepository;
     private final CommentRepository commentRepository;
     private final AlarmRepository alarmRepository;
 
 
     /**comment 쓰기(INSERT)**/
     public CommentResponse writeComment(Long postId, String commentBody, String userName) {
-        /*해당 post 찾기*/
-        Post post = postRepository.findById(postId).orElseThrow(()
-                -> new PostException(ErrorCode.POST_NOT_FOUND,ErrorCode.POST_NOT_FOUND.getMessage()));
-        /*user 찾기*/
-        User user = userRepository.findOptionalByUserName(userName).orElseThrow(()
-                -> new UserException(ErrorCode.USERNAME_NOT_FOUND, ErrorCode.USERNAME_NOT_FOUND.getMessage()));
+        /*post와 user 검증 진행🔽*/
+        Post post = checkPost(postId);
+        User user = checkUser(userName);
         /**post엔티티의 댓글 갯수 add 메서드**/
-        /**나 같은 경우에는 mvc컨트롤러와 view 단과 서버통신시 필요한 컬럼(commentCount++용 메서드)**/
+        /**🔽나 같은 경우에는 mvc컨트롤러와 view 단과 서버통신시 필요한 컬럼(commentCount++용 메서드)**/
         post.addComment();
         //연관관계의 값을 넣어준 comment 엔티티🔽
-        Comment commentEntity = Comment.of(user, post, commentBody);
-        Comment savedComment = commentRepository.save(commentEntity);
+        Comment savedComment = commentRepository.save(Comment.of(user, post, commentBody));
         CommentResponse commentResponse = CommentResponse.toResponse(savedComment);
-        /*댓글 작성 후 알림 동작🔽*/
-                                                 // 수신자 ,알림 타입 ,발신자 id ,알림 주체 포스트 id
-        AlarmEntity alarmEntity = AlarmEntity.of(post.getUser(), NEW_COMMENT_ON_POST, user.getId(), post.getId());
-        alarmRepository.save(alarmEntity);
+
+        /**비지니스 로직 : 알람 나 자신이 작성한 글에 댓글을 작성했을때는 알림 작동 안됨 (댓글 작성 후 알림 동작🔽)**/
+        if (user.getId() != post.getUser().getId()) {
+            // 수신자 ,알림 타입 ,발신자 id ,알림 주체 포스트 id
+            AlarmEntity alarmEntity = AlarmEntity.of(post.getUser(), NEW_COMMENT_ON_POST, user.getId(), post.getId());
+            alarmRepository.save(alarmEntity);
+        }
         return commentResponse;
     }
 
-
     /**comment 수정하기**/
     public CommentUpdateResponse modifyComment(Long postId, Long commentId, String updateComment, String name) {
+        // 1.post 유무 검증 2.수정할 comment 유무 검증 3.user 유무 검증 🔽
+        Post post = checkPost(postId);
+        Comment comment = checkComment(commentId);
+        User user = checkUser(name);
         //수정 될 답변 관련 변수
         Comment changedComment = null;
-        // 1.post 유무 검증 2.수정할 comment 유무 검증 3.user 유무 검증 🔽
-        Post post = postRepository.findById(postId).orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND));
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new PostException(ErrorCode.COMMENT_NOT_FOUND, ErrorCode.COMMENT_NOT_FOUND.getMessage()));
-        User user = userRepository.findOptionalByUserName(name).orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND,ErrorCode.POST_NOT_FOUND.getMessage()));
         //수정하려는 답글의 원작자 userId🔽
         Long commentUserId = comment.getUser().getId();
         //1.답글을 쓴 사람만이 수정 가능 2. ADMIN도 수정 가능🔽
@@ -73,25 +70,21 @@ public class CommentService {
         return CommentUpdateResponse.of(changedComment);
     }
 
-
     /**comment 삭제하기**/
     /**service test 하기 위해 void - > boolean으로 변경**/
     public boolean deleteComment(Long postId,Long commentId, String userName) {
         // 1.post 유무 검증 2.수정할 comment 유무 검증 3.user 유무 검증 🔽
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND));
-        Comment comment = commentRepository.findById(commentId).
-                orElseThrow(() -> new PostException(ErrorCode.COMMENT_NOT_FOUND, ErrorCode.COMMENT_NOT_FOUND.getMessage()));
-        User loginUser =
-                userRepository.findOptionalByUserName(userName).orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND, ErrorCode.USER_NOT_FOUND.getMessage()));
-        //삭제하려는 답글의 원작자 userId🔽
-        Long commentUserId = comment.getUser().getId();
+        Post post = checkPost(postId);
+        Comment comment = checkComment(commentId);
+        User loginUser = checkUser(userName);
+
         //1.답글을 쓴 사람만이 삭제하기 가능 2.ADMIN도 삭제하기 가능🔽
-        if (loginUser.getRole().equals(UserRole.USER) && commentUserId != loginUser.getId()) {
+        if (loginUser.getRole().equals(UserRole.USER) &&  comment.getUser().getId() != loginUser.getId()) {
             throw new UserException(ErrorCode.INVALID_PERMISSION, userName + "님은 답글을 삭제할 권한이 없습니다.");
         } else {
+            /**post.delete()가능 구역**/
             /**post엔티티의 댓글 갯수 delete 메서드**/
-            /**나 같은 경우에는 mvc컨트롤러와 view 단과 서버통신시 필요한 컬럼(commentCount--용 메서드)🔽**/
+            /**🔽나 같은 경우에는 mvc컨트롤러와 view 단과 서버통신시 필요한 컬럼(commentCount--용 메서드)🔽**/
             post.deleteComment();
             commentRepository.deleteById(comment.getId());
         }
@@ -102,11 +95,30 @@ public class CommentService {
     @Transactional(readOnly = true)
     public Page<CommentResponse> getComments(Long postId, Pageable pageable) {
         //해당 post 유무 조회
-        Post post = postRepository.findById(postId).
-                orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND));
+        Post post = checkPost(postId);
         //comment List
         Page<Comment> comments = commentRepository.findAllByPost(post, pageable);
         /**comments.map(c -> CommentResponse.toResponse(c)); 🔽 refactoring**/
         return comments.map(CommentResponse::toResponse);
+    }
+
+
+    /**authentication.getName() 으로 해당 user 유뮤 검사 메서드**/
+    private User checkUser(String userName) {
+        /*user 찾기*/
+        return userRepository.findOptionalByUserName(userName).orElseThrow(()
+                -> new UserException(ErrorCode.USERNAME_NOT_FOUND, ErrorCode.USERNAME_NOT_FOUND.getMessage()));
+    }
+
+    /**postId(포스트 id)로 해당 Post 유무 검사(없다면 404에러)**/
+    private Post checkPost(Long postId) {
+        /*해당 post 찾기*/
+        return postRepository.findById(postId).orElseThrow(()
+                -> new PostException(ErrorCode.POST_NOT_FOUND,ErrorCode.POST_NOT_FOUND.getMessage()));
+    }
+
+    /**commentId(댓글 id)로 해당 Comment 유무 검사(없다면 404에러)**/
+    private Comment checkComment(Long commentId) {
+        return commentRepository.findById(commentId).orElseThrow(() -> new PostException(ErrorCode.COMMENT_NOT_FOUND, ErrorCode.COMMENT_NOT_FOUND.getMessage()));
     }
 }

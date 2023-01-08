@@ -47,4 +47,15 @@ public class PostSelectResponse {
                 .build());
         return postDtoList;
     }
+
+    public static PostSelectResponse of(Post post) {
+        return PostSelectResponse.builder()
+                .id(post.getId())
+                .title(post.getTitle())
+                .body(post.getBody())
+                .userName(post.getUser().getUsername())
+                .createdAt(post.getRegisteredAt())
+                .lastModifiedAt(post.getUpdatedAt())
+                .build();
+    }
 }

@@ -41,11 +41,7 @@ public class PostService {
     /**글 단건 조회**/
     @Transactional(readOnly = true)
     public PostSelectResponse getPost(Long postId) {
-        Optional<Post> postOptional = postRepository.findById(postId);
-        //해당 포스트를 찾지 못했을 때
-        Post post = postOptional
-                .orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND, postId+"번의 글을 찾을 수 없습니다."));
-
+        Post post = checkPost(postId);
         PostSelectResponse postSelectResponse = new PostSelectResponse(post);
         return postSelectResponse;
     }
@@ -56,7 +52,7 @@ public class PostService {
         Page<Post> posts = postRepository.findAll(pageable);
         //stream을 이용해서 엔티티를 응답객체로 변경
         List<PostSelectResponse> postSelectResponseList =
-                posts.stream().map(p -> new PostSelectResponse(p)).collect(Collectors.toList());
+                posts.stream().map(PostSelectResponse::of).collect(Collectors.toList());
         return postSelectResponseList;
     }
 
@@ -65,16 +61,14 @@ public class PostService {
     public List<PostSelectResponse> getPostsByTitle (Pageable pageable,String title) {
         Page<Post> posts = postRepository.findByTitleContaining(pageable, title);
         List<PostSelectResponse> postSelectResponseList =
-                posts.stream().map(p -> new PostSelectResponse(p)).collect(Collectors.toList());
+                posts.stream().map(PostSelectResponse::of).collect(Collectors.toList());
         return postSelectResponseList;
     }
 
     /**글 등록**/                                                 //인증으로 들어온 userName
     public PostAddResponse addPost(PostAddRequest postAddRequest, String userName) {
         //userName으로 해당 User엔티티 찾아옴
-        User user = userRepository.findOptionalByUserName(userName)
-                .orElseThrow(() -> new UserException(ErrorCode.USERNAME_NOT_FOUND, "회원가입 후 작성해주세요"));
-
+        User user = checkUser(userName);
         Post post = postAddRequest.toEntity(user);
         //save를 할때는 JpaRepository<Article,Long>를 사용해야 하기때문에
         //articleRequestDto -> 를 Article 타입으로 바꿔줘야한다.
@@ -83,23 +77,14 @@ public class PostService {
         return postAddResponse;
     }
 
-    /**글 수정과 삭제에서 사용 될 권한 체크 메서드**/
-    /**관리자와 해당 포스트 작성회원만 삭제 수정 가능**/
-    private void check(Post post, User user) {
-        if (user.getRole() != UserRole.ADMIN && user.getId() != post.getUser().getId()) {
-            throw new UserException(ErrorCode.INVALID_PERMISSION, user.getUsername()+ "님은"
-                    + post.getId()+"글을 수정.삭제 할 수 있는 권한이없습니다");
-        }
-    }
+
 
     /**글 수정**/
     public PostUpdateResponse updatePost(Long postId, PostUpdateRequest postUpdateRequest,String userName) {
 
-        Post findPost =
-                postRepository.findById(postId).orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND,"해당 글 없습니다"));
-        User user = userRepository.findOptionalByUserName(userName)
-                .orElseThrow(() -> new UserException(ErrorCode.USERNAME_NOT_FOUND, String.format("%s not founded", userName)));
-        // 수정 권한 확인
+        Post findPost = checkPost(postId);
+        User user = checkUser(userName);
+        /*관리자와 해당 포스트 작성회원만 삭제 수정 가능 check 메서드🔽*/
         check(findPost, user);
         //변경감지 수정 메서드
         findPost.update(postUpdateRequest.getTitle(),postUpdateRequest.getBody());
@@ -110,14 +95,9 @@ public class PostService {
     }
     /**글 삭제**/
     public PostDeleteResponse deletePost(Long postId, String userName) {
-        Optional<Post> optionalPost = postRepository.findById(postId);
-        Post post =
-                optionalPost.orElseThrow(() -> new PostException(ErrorCode.POST_NOT_FOUND, postId + "번 글은 존재하지 않아서 삭제할 수 없습니다."));
-
-        User user = userRepository.findOptionalByUserName(userName)
-                .orElseThrow(() -> new UserException(ErrorCode.USERNAME_NOT_FOUND, String.format("%s not founded", userName)));
-
-        //글을 쓴 유저가 아닌 다른 사람이 해당 글을 지우려고 할 때 예외 + admin은 허용
+        Post post = checkPost(postId);
+        User user = checkUser(userName);
+        /*관리자와 해당 포스트 작성회원만 삭제 수정 가능 check 메서드🔽*/
         check(post, user);
         //위의 check 메서드 통과 시 글 삭제
         postRepository.delete(post);
@@ -128,9 +108,7 @@ public class PostService {
     /**내가 쓴 post 보기**/
     @Transactional(readOnly = true)
     public Page<PostMineDto> getMyPeed(String userName, Pageable pageable) {
-        User user = userRepository.findOptionalByUserName(userName).orElseThrow(() ->
-                new UserException(ErrorCode.USERNAME_NOT_FOUND,String.format("%s not founded",userName)));
-
+        User user = checkUser(userName);
         Page<Post> postsByUser = postRepository.findPostsByUser(user, pageable);
         //아래의 map()의 과정은 Page<Post> => Page<PostMineDto> 로 변환과정
         return postsByUser.map(PostMineDto::fromEntity);
@@ -139,11 +117,35 @@ public class PostService {
     /**알람 페이징 조회 20개 **/
     @Transactional(readOnly = true)
     public Page<AlarmResponse> getAlarms(String userName,Pageable pageable) {
-        User user = userRepository.findOptionalByUserName(userName).orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND, ErrorCode.USER_NOT_FOUND.getMessage()));
+        User user = checkUser(userName);
         Page<AlarmEntity> alarmEntities = alarmRepository.findByUser(user,pageable);
         Page<AlarmResponse> alarmResponses = AlarmResponse.toResponse(alarmEntities);
         return alarmResponses;
     }
+
+
+    /**글 수정과 삭제에서 사용 될 권한 체크 메서드**/
+    /**관리자와 해당 포스트 작성회원만 삭제 수정 가능**/
+    private void check(Post post, User user) {
+        if (user.getRole() != UserRole.ADMIN && user.getId() != post.getUser().getId()) {
+            throw new UserException(ErrorCode.INVALID_PERMISSION,ErrorCode.INVALID_PERMISSION.getMessage()); }
+    }
+
+
+    /**authentication.getName() 으로 해당 user 유뮤 검사 메서드**/
+    private User checkUser(String userName) {
+        /*user 찾기*/
+        return userRepository.findOptionalByUserName(userName).orElseThrow(()
+                -> new UserException(ErrorCode.USERNAME_NOT_FOUND, ErrorCode.USERNAME_NOT_FOUND.getMessage()));
+    }
+
+    /**postId(포스트 id)로 해당 Post 유무 검사(없다면 404에러)**/
+    private Post checkPost(Long postId) {
+        /*해당 post 찾기*/
+        return postRepository.findById(postId).orElseThrow(()
+                -> new PostException(ErrorCode.POST_NOT_FOUND,ErrorCode.POST_NOT_FOUND.getMessage()));
+    }
+
 
 
 

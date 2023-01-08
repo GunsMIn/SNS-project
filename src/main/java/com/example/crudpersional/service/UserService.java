@@ -2,9 +2,13 @@ package com.example.crudpersional.service;
 
 import com.example.crudpersional.config.jwt.JwtTokenUtil;
 import com.example.crudpersional.domain.dto.user.*;
+import com.example.crudpersional.domain.entity.Comment;
+import com.example.crudpersional.domain.entity.Post;
 import com.example.crudpersional.domain.entity.User;
 import com.example.crudpersional.domain.entity.UserRole;
 import com.example.crudpersional.exceptionManager.ErrorCode;
+import com.example.crudpersional.exceptionManager.LikeException;
+import com.example.crudpersional.exceptionManager.PostException;
 import com.example.crudpersional.exceptionManager.UserException;
 import com.example.crudpersional.mvc.dto.MemberForm;
 import com.example.crudpersional.repository.UserRepository;
@@ -44,7 +48,7 @@ public class UserService implements UserDetailsService {
         List<User> userList = userRepository.findByUserName(userJoinRequest.getUserName());
         //userList가 비어있지 않다면 이미 존재하는 회원 -> 409 Exception
         if (!userList.isEmpty()) {
-            throw new UserException(ErrorCode.DUPLICATED_USER_NAME,String.format("%s은 이미 가입된 이름 입니다.", userJoinRequest.getUserName()));
+            throw new UserException(ErrorCode.DUPLICATED_USER_NAME, ErrorCode.DUPLICATED_USER_NAME.getMessage());
         }
         //암호화 된 password db save
         String encodePassword = encoder.encode(userJoinRequest.getPassword());
@@ -59,27 +63,21 @@ public class UserService implements UserDetailsService {
     public String login(String userName,String password) {
         log.info("로그인 아이디 : {} , 비밀번호 : {}" , userName,password);
         //1.아이디 존재 여부 체크
-        User user = userRepository.findUserByUserName(userName)
-                .orElseThrow(() -> new UserException(ErrorCode.USERNAME_NOT_FOUND,String.format("%s은 등록되어있지 않은 이름 입니다.", userName)));
+        User user = checkUser(userName);
         //2.비밀번호 유효성 검사
         if (!encoder.matches(password, user.getPassword())) {
-            throw new UserException(ErrorCode.INVALID_PASSWORD,"해당 userName의 password가 잘못됐습니다");
+            throw new UserException(ErrorCode.INVALID_PASSWORD,ErrorCode.INVALID_PASSWORD.getMessage());
         }
         //두 가지 확인중 예외 안났으면 Token발행
         String token = JwtTokenUtil.generateToken(userName, secretKey, expireTimeMs);
         return token;
     }
 
-    public User getUserByUserName(String userName) {
-        return userRepository.findUserByUserName(userName)
-                .orElseThrow(() -> new UserException(ErrorCode.USERNAME_NOT_FOUND,String.format("%s은 등록되어있지 않은 이름 입니다.", userName)));
-    }
-
     /**회원 조회**/
     @Transactional(readOnly = true)
     public UserSelectResponse getUser(Long userId,String checkName) {
         UserSelectResponse userSelectResponse = null;
-        User userOrAdmin = userRepository.findOptionalByUserName(checkName).orElseThrow(() -> new UserException(ErrorCode.INVALID_PERMISSION));
+        User userOrAdmin = checkUser(checkName);
         //ADMIN만 회원 단건 조회 가능
         if (userOrAdmin.getRole().name() == UserRole.ADMIN.name()) {
             User user = userRepository.findById(userId)
@@ -96,7 +94,7 @@ public class UserService implements UserDetailsService {
     @Transactional(readOnly = true)
     public List<UserListResponse> getUsers(String checkName) {
 
-        User checkedUser = userRepository.findOptionalByUserName(checkName).orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND, ErrorCode.USER_NOT_FOUND.getMessage()));
+        User checkedUser = checkUser(checkName);
         //일반 유저(USER)는 회원 전체 조회 접근 불가
         if (checkedUser.getRole().name() == UserRole.USER.name()) {
             throw new UserException(ErrorCode.INVALID_PERMISSION, ErrorCode.INVALID_PERMISSION.getMessage());
@@ -123,8 +121,7 @@ public class UserService implements UserDetailsService {
     private User checkUserRole(String name, Long id, UserRoleDto userRoleDto) {
         //주의! findUser와 changedUser 변수 혼동 No
         //findUser는 토큰을 통해 인증 된 회원 -> 로그인된 회원
-        User findUser = userRepository.findOptionalByUserName(name)
-                .orElseThrow(() -> new UserException(ErrorCode.USERNAME_NOT_FOUND, "해당 회원은 존재하지 않습니다"));
+        User findUser = checkUser(name);
         //Admin회원만 UserRole 전환 가능
         if (findUser.getRole().equals(UserRole.USER)) {
             throw new UserException(ErrorCode.INVALID_PERMISSION, "관리자(ADMIN)만 권한 변경을 할 수 있습니다.");
@@ -139,8 +136,9 @@ public class UserService implements UserDetailsService {
         }else if(userRoleDto.getRole().equals(UserRole.ADMIN.name())){
             changedUser.changeRole(UserRole.ADMIN);
         }else {
-            throw new UserException(ErrorCode.USER_ROLE_NOT_FOUND, "권한 설정은 일반회원(USER),관리자(ADMIN)로 진행해야합니다.");
+            throw new UserException(ErrorCode.USER_ROLE_NOT_FOUND, ErrorCode.USER_ROLE_NOT_FOUND.getMessage());
         }
+
         return changedUser;
     }
 
@@ -148,4 +146,14 @@ public class UserService implements UserDetailsService {
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findOptionalByUserName(username).orElseThrow(()-> new UserException(ErrorCode.USER_NOT_FOUND,""));
     }
+
+
+    /**authentication.getName() 으로 해당 user 유뮤 검사 메서드**/
+    private User checkUser(String userName) {
+        /*user 찾기*/
+        return userRepository.findOptionalByUserName(userName).orElseThrow(()
+                -> new UserException(ErrorCode.USERNAME_NOT_FOUND, ErrorCode.USERNAME_NOT_FOUND.getMessage()));
+    }
+
+
 }
