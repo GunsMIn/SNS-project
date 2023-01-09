@@ -474,7 +474,7 @@
 
 
 ## MAIN
-![새 메인JPG](https://user-images.githubusercontent.com/104709432/210737678-e43cbcb6-8dd8-4b56-a45e-9b67f65f86e5.JPG)
+![메인페이지](https://user-images.githubusercontent.com/104709432/211267784-418628d8-3908-4514-80df-bd0e7a27fe44.JPG)
 ## Login(Validation 적용)
 ![Screenshot 2023-01-09 at 11 57 12](https://user-images.githubusercontent.com/104709432/211234914-b17eafdf-9110-41b7-b740-edf4866b8ace.JPG)
 ## WritePost(Validation 적용)
