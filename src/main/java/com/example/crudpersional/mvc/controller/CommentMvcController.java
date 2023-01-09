@@ -1,6 +1,7 @@
 package com.example.crudpersional.mvc.controller;
 
 import com.example.crudpersional.domain.dto.Response;
+import com.example.crudpersional.domain.dto.comment.CommentDeleteResponse;
 import com.example.crudpersional.domain.dto.comment.CommentResponse;
 import com.example.crudpersional.domain.dto.comment.PostCommentRequest;
 import com.example.crudpersional.domain.entity.Comment;
@@ -19,6 +20,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -99,6 +101,18 @@ public class CommentMvcController {
         return Response.success(commentResponse);
     }
 
+
+    /**댓글 삭제**/
+    @ResponseBody
+    @PostMapping("/post/getOne/api/v1/posts/{postId}/commentMvc/{commentId}/mvc")
+    public Response<CommentDeleteResponse> deleteCommentMVC(@PathVariable Long postId,@PathVariable Long commentId , @RequestBody UserNameDto userNameDto,@SessionAttribute(name = "loginMember", required = false) User loginMember) {
+        log.info("2개 postId:{} / commentId:{} / userName :{} ", postId, commentId,loginMember.getUsername());
+        if (loginMember == null) {
+            throw new UserException(ErrorCode.USER_NOT_FOUND, ErrorCode.USER_NOT_FOUND.getMessage());
+        }
+        commentService.deleteComment(postId,commentId,loginMember.getUsername());
+        return Response.success(new CommentDeleteResponse("댓글 삭제 완료",postId));
+    }
 
     @GetMapping("/toDoList")
     public String goTodoList() {
