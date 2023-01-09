@@ -56,11 +56,8 @@ public class AlarmServiceTest {
     @InjectMocks
     PostService postService;
     @Mock
-    PostRepository postRepository ;
-    @Mock
     UserRepository userRepository ;
-    @Mock
-    CommentRepository commentRepository;
+
     @Mock
     AlarmRepository alarmRepository;
 

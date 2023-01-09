@@ -17,7 +17,6 @@ import static com.example.crudpersional.domain.entity.alarm.AlarmType.NEW_LIKE_O
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 @Slf4j
 public class LikeService {
     private final PostRepository postRepository;
@@ -28,10 +27,12 @@ public class LikeService {
 
 
     /**like 엔티티 변환용**/
+    @Transactional
     public LikeResponse likes(Long postId, String userName) {
         //1.해당 글 찾음 2.해당 유저 찾음 3.like 눌렀는지 확인 비지니스 로직🔽
         Post post = checkPost(postId);
         User user = checkUser(userName);
+        /**좋아요 1번 이상 눌렀는지 확인하는 비지니스 로직🔽**/
         checkCountOfLike(post, user);
         /**해당 포스트의 likeCount++ 해주는 메서드**/
         post.addLike();
@@ -53,6 +54,7 @@ public class LikeService {
 
 
     /**like void**/
+    @Transactional
     public void like(Long postId,String userName) {
         //1.해당 글 찾음 2.해당 유저 찾음 3.like 눌렀는지 확인 비지니스 로직🔽
         Post post = checkPost(postId);
@@ -69,6 +71,7 @@ public class LikeService {
     }
 
     /**해당 글 좋아요 개수 @PathVarable로 들어오는 postId로 post entity조회 후 좋아요 count 계산 후 반환*/
+    @Transactional(readOnly = true)
     public Integer getLikeCount(Long postId) {
         Post post = checkPost(postId);
         Integer postLikeCount = likeEntityRepository.countByPost(post);

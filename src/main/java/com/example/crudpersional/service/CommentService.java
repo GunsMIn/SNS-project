@@ -18,7 +18,6 @@ import static com.example.crudpersional.domain.entity.alarm.AlarmType.NEW_COMMEN
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 @Slf4j
 public class CommentService {
 
@@ -30,6 +29,7 @@ public class CommentService {
 
 
     /**comment 쓰기(INSERT)**/
+    @Transactional
     public CommentResponse writeComment(Long postId, String commentBody, String userName) {
         /*post와 user 검증 진행🔽*/
         Post post = checkPost(postId);
@@ -51,6 +51,7 @@ public class CommentService {
     }
 
     /**comment 수정하기**/
+    @Transactional
     public CommentUpdateResponse modifyComment(Long postId, Long commentId, String updateComment, String name) {
         // 1.post 유무 검증 2.수정할 comment 유무 검증 3.user 유무 검증 🔽
         Post post = checkPost(postId);
@@ -72,6 +73,7 @@ public class CommentService {
 
     /**comment 삭제하기**/
     /**service test 하기 위해 void - > boolean으로 변경**/
+    @Transactional
     public boolean deleteComment(Long postId,Long commentId, String userName) {
         // 1.post 유무 검증 2.수정할 comment 유무 검증 3.user 유무 검증 🔽
         Post post = checkPost(postId);

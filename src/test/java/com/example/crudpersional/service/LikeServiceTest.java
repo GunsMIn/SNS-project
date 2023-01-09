@@ -161,7 +161,7 @@ public class LikeServiceTest {
         User UserOfPost = User.builder().id(2l).userName("post작성유저").build();
         Post post = PostEntityFixture.get(UserOfPost);
         LikeEntity like = LikeFixture.get(doLikeUser, post);
-        AlarmEntity alarm= AlarmFixture.get(post,doLikeUser,AlarmType.NEW_LIKE_ON_POST);
+
 
 
         when(postRepository.findById(any())).thenReturn(Optional.of(post));
