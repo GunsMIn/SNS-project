@@ -8,7 +8,7 @@
 <div id="con">
     <div id="login">
         <div id="login_form"><!--로그인 폼-->
-            <form action="/members/doJoinForm"  th:object="${memberForm}" method="post" >
+
                 <h3 class="login" style="letter-spacing:-1px;">멋쟁이's SNS Alarms</h3>
 
                 <!--<p>
@@ -43,12 +43,12 @@
                 </table>
                 </th:block>
                 <p>
-                    <form method="get" action="/members/loginIndex">
-                     <input type="submit" value="Go Main🦁" class="btn">
+                    <form method="get" th:action="@{/members/loginIndex}">
+                     <input type="submit"  value="Go Main🦁" class="btn">
                    </form>
 
                 </p>
-            </form>
+         
             <hr>
         </div>
         <div>
