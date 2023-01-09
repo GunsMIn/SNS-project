@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .csrf().disable()
                 .cors().and()
                 .authorizeRequests()
-                .antMatchers("/api/v1/users/join", "/api/v1/users/login","/swagger-ui","/api/v1/posts/mvc/**").permitAll() // join, login은 언제나 가능
+                .antMatchers("/api/v1/users/join", "/api/v1/users/login","/swagger-ui","/api/v1/posts/mvc/**","/post/getOne/api/v1/posts/**").permitAll() // join, login은 언제나 가능
                 .antMatchers(HttpMethod.GET,"/api/v1/**").permitAll()   // 모든 get 요청 허용
                 .antMatchers(HttpMethod.GET, "/api/v1/posts/my").authenticated()
                 .antMatchers(HttpMethod.GET, "/api/v1/posts/alarms").authenticated()

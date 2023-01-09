@@ -90,11 +90,9 @@
     <div th:if="${session.loginMember != null}">
         <div class="card">
             <div class="card-header bi bi-chat-right-dots"> Write a Comment</div>
-            <!--   &lt;!&ndash;{{! 댓글작성 부분}}&ndash;&gt;-->
             <form class="container">
                 <input type="hidden" id="input-postId" th:value="${post.postId}">
                 <input type="hidden" id="input-username" th:value="${member.username}">
-                <!--    &lt;!&ndash; {{#user}}&ndash;&gt;-->
                 <div class="card-body">
                     <textarea id="input-write-comment" class="form-control" rows="4" placeholder="댓글을 입력하세요"></textarea>
                 </div>
@@ -117,12 +115,21 @@
             <ul class="list-group-flush" th:each="comment :${comments}" >
                 <li class="list-group-item">
                 <span>
-                    <span style="font-size: small" th:text="${comment.user.username}"></span>
-                    <span style="font-size: xx-small"th:text="${comment.registeredAt}"></span>
-                    <!--      <button class="badge bi bi-pencil-square"> 수정</button>
-                          <button class="badge bi bi-trash"> 삭제</button>-->
+                    <span style="font-size: large" th:text="${comment.user.username}"></span>
+                    <span style="font-size: medium"th:text="${comment.registeredAt}"></span>
+
+                   <form style="display: inline;" onclick="checkLogin()" >
+                    <input type="hidden"  name="postId" th:value="${post.postId}">
+                    <input type="hidden"  name="commentId" th:value="${comment.id}">
+                    <input type="hidden"  name="userName" th:value="${comment.user.username}">
+                    <input type="hidden"  name="session" th:value="${session.loginMember}">
+                            <a type="button" >
+                            삭제
+                            </a>
+                </form>
+
                 </span>
-                    <div th:text="${comment.comment}">댓글 내용</div>
+                    <div id ="commentArea"th:text="${comment.comment}">댓글 내용</div>
                 </li>
             </ul>
             <div class="chat__message-box">
@@ -253,10 +260,18 @@
                 <span>
                 <span style="font-size: small" >${message.userName}</span>
                 <span style="font-size: xx-small" >${message.createdAt}</span>
-                <!--      <button class="badge bi bi-pencil-square"> 수정</button>
-                <button class="badge bi bi-trash"> 삭제</button>-->
+                 <form style="display: inline;" onclick="main.deleteComment(this)" >
+                    <input type="hidden"  name="postId" value="${message.postId}">
+                    <input type="hidden"  name="commentId" value="${message.id}">
+                    <input type="hidden" id="input-username" name="userName" value="${message.userName}">
+
+                            <a type="button" >
+                            삭제
+                            </a>
+                </form>
                 </span>
-                <div > ${message.comment}</div>
+
+                <div  id="commentArea"> ${message.comment}</div>
                 </li>`
                 );
         });
@@ -270,6 +285,13 @@
     sse.addEventListener('chat__messageAdded', e => {
         Chat__loadMore();
     });
+
+    function checkLogin() {
+
+                 alert(" 로그인 후에 삭제 가능합니다.😉");
+                 window.location.href = '/members/loginForm';
+
+    }
 </script>
 <script>
     let comment = {
@@ -310,9 +332,6 @@
 <script>
     let main = {
 
-        init: function () {
-        },
-
         plusLike : function (form) {
             const data = form.postId.value;
             form.postId.value= form.postId.value.trim();
@@ -349,8 +368,45 @@
                     alert("멋쟁이 SNS의 좋아요 기능은 로그인 후에 가능합니다.😉");
                 }
             });
-        }
+        },
+
+
+        deleteComment : function (form) {
+            console.log("클릭??");
+            let postId = form.postId.value;
+            let commentId = form.commentId.value;
+            let data = {
+                name: document.querySelector(`#input-username`).value.trim()
+            };
+            console.log(data);
+            console.log(data.name);
+            let commentArea = document.getElementById("commentArea");
+            /*let elementsByClassName = document.getElementsByClassName("commentArea");*/
+            console.log("postId : "+postId);
+            console.log("commentId : " + commentId);
+                axios.post('/post/getOne/api/v1/posts/'+postId+'/commentMvc/'+commentId+'/mvc', JSON.stringify(data),
+                    {
+                        headers: {
+                            'Content-Type': 'application/json'}
+                    }).then((response) => {
+                    console.log(response);
+                    console.log("삭제 axios");
+                    alert("댓글이 삭제되었습니다.");
+                    commentArea.innerHTML = '삭제된 댓글입니다.';
+               }).catch((error) =>{
+                    console.log(error);
+                    console.log(error.response);
+                    console.log(error.response.data);
+                    console.log(error.response.data.result);
+                    console.log(error.response);
+                    if (error.response.data.result["errorCode"] == "INVALID_PERMISSION") {
+                        alert("해당 글에 삭제할 권한이 없습니다.");
+                    }
+                })
+
+            }
     };
+
     main.init();
 </script>
 </body>

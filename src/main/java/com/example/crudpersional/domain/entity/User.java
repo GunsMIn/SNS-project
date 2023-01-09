@@ -54,7 +54,7 @@ public class User implements UserDetails {
 
     @LastModifiedDate
     private String updatedAt;
-    
+
 
     @PrePersist
     public void onPrePersist(){
