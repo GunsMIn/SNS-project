@@ -473,10 +473,16 @@
 
 
 
-## MY VIEW 
+## MAIN
 ![새 메인JPG](https://user-images.githubusercontent.com/104709432/210737678-e43cbcb6-8dd8-4b56-a45e-9b67f65f86e5.JPG)
-
-
+## Login(Validation 적용)
+![Screenshot 2023-01-09 at 11 57 12](https://user-images.githubusercontent.com/104709432/211234914-b17eafdf-9110-41b7-b740-edf4866b8ace.JPG)
+## WritePost(Validation 적용)
+![글쓰기](https://user-images.githubusercontent.com/104709432/211235183-9b7af6f0-4330-43f9-b58b-58aad474b376.JPG)
+## PostList(최신순 /댓글순 / 좋아요순 / 검색기능 / 페이징처리)
+![Screenshot 2023-01-09 at 11 58 16](https://user-images.githubusercontent.com/104709432/211235007-c29b676e-4b41-4946-af57-6f3fa79fab1d.JPG)
+## PostDetail(Axios 댓글 , 좋아요 비동기 처리 / 게시글 수정, 삭제 / 댓글 등록 , 삭제 )
+![Screenshot 2023-01-09 at 11 58 46](https://user-images.githubusercontent.com/104709432/211235217-68e93921-7c99-4651-8ec5-a0a6babec096.JPG)
 
 
 <br>
