@@ -5,6 +5,7 @@ import com.example.crudpersional.domain.dto.comment.*;
 import com.example.crudpersional.domain.entity.Comment;
 import com.example.crudpersional.service.CommentService;
 import com.example.crudpersional.service.PostService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/posts")
+@Api(tags = "Comment(댓글 API)")
 @Slf4j
 public class CommentController {
     private final PostService postService;

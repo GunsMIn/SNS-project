@@ -30,6 +30,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
+@Api(tags = "Post(게시글 API)")
 @Slf4j
 public class PostController {
 

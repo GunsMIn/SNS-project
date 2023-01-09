@@ -7,6 +7,7 @@ import com.example.crudpersional.domain.dto.user.UserListResponse;
 import com.example.crudpersional.domain.dto.user.UserRoleDto;
 import com.example.crudpersional.domain.dto.user.UserSelectResponse;
 import com.example.crudpersional.service.UserService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -22,6 +23,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@Api(tags = "Admin(관리자 API)")
 @RequestMapping("/api/v1/users")
 public class AdminController {
 

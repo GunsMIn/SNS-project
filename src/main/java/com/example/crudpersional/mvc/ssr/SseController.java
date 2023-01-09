@@ -1,6 +1,7 @@
 package com.example.crudpersional.mvc.ssr;
 
 
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import java.io.IOException;
 @Controller
 @RequestMapping("/sse")
 @RequiredArgsConstructor
+@Api(tags = "Server-Sent Events (SSE API)")
 public class SseController {
 
     private final SseEmitters sseEmitters;

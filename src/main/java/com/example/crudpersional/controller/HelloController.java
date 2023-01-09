@@ -27,4 +27,12 @@ public class HelloController {
         return algorithmService.solution(num);
     }
 
+
+    /**Security test용 api 주소**/
+    @GetMapping("/api/v1/hello/api-auth-test")
+    public String authTest() {
+        return "ok";
+    }
+
+
 }

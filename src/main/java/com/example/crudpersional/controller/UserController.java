@@ -4,6 +4,7 @@ import com.example.crudpersional.domain.dto.*;
 import com.example.crudpersional.domain.dto.user.*;
 import com.example.crudpersional.domain.entity.User;
 import com.example.crudpersional.service.UserService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@Api(tags = "User(회원 API)")
 @RequestMapping("/api/v1/users")
 public class UserController {
 
