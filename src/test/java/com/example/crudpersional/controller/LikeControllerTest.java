@@ -74,7 +74,7 @@ class LikeControllerTest {
                 .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
                 .andExpect(jsonPath("$.result").exists());
 
-        verify(likeService,times(1)).like(anyLong(), anyString());
+        verify(likeService,times(1)).likes(anyLong(), anyString());
     }
 
 
@@ -96,7 +96,7 @@ class LikeControllerTest {
     void like_fail2() throws Exception {
         /**void 메서드의 경우,doThrow사용! when반환값이 없으면 구문이 컴파일되지 않는다. 선택의 여지가 없다**/
         doThrow(new PostException(ErrorCode.POST_NOT_FOUND))
-                .when(likeService).like(any(), any());
+                .when(likeService).likes(any(), any());
 
         mockMvc.perform(post("/api/v1/posts/1/likes")
                 .with(csrf())

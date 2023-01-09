@@ -108,7 +108,8 @@ class PostServiceTest {
                     = assertThrows(UserException.class, () -> postService.addPost(postAddRequest, dto.getUserName()));
 
             Assertions.assertEquals(userException.getErrorCode(), ErrorCode.USERNAME_NOT_FOUND);
-            Assertions.assertEquals(userException.getMessage(),"회원가입 후 작성해주세요");
+            Assertions.assertEquals(userException.getErrorCode().getMessage(), ErrorCode.USERNAME_NOT_FOUND.getMessage());
+
         }
     }
 

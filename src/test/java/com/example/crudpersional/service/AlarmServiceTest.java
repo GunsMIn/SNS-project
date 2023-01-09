@@ -98,9 +98,9 @@ public class AlarmServiceTest {
 
         UserException userException = assertThrows(UserException.class, () -> postService.getAlarms(user.getUsername(), request));
 
-        assertThat(userException.getErrorCode()).isEqualTo(ErrorCode.USER_NOT_FOUND);
-        assertThat(userException.getErrorCode().getStatus()).isEqualTo(ErrorCode.USER_NOT_FOUND.getStatus());
-        assertThat(userException.getErrorCode().getMessage()).isEqualTo(ErrorCode.USER_NOT_FOUND.getMessage());
+        assertThat(userException.getErrorCode()).isEqualTo(ErrorCode.USERNAME_NOT_FOUND);
+        assertThat(userException.getErrorCode().getStatus()).isEqualTo(ErrorCode.USERNAME_NOT_FOUND.getStatus());
+        assertThat(userException.getErrorCode().getMessage()).isEqualTo(ErrorCode.USERNAME_NOT_FOUND.getMessage());
     }
 
 

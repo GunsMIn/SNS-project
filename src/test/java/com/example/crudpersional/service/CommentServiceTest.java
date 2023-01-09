@@ -224,8 +224,8 @@ public class CommentServiceTest {
             UserException userException = assertThrows(UserException.class, () ->
                     commentService.modifyComment(post.getId(), comment.getId(),comment.getComment(), user2.getUsername()));
 
-            assertEquals(userException.getErrorCode(), ErrorCode.USER_NOT_FOUND);
-            assertEquals(userException.getErrorCode().getMessage(), ErrorCode.USER_NOT_FOUND.getMessage());
+            assertEquals(userException.getErrorCode(), ErrorCode.USERNAME_NOT_FOUND);
+            assertEquals(userException.getErrorCode().getMessage(), ErrorCode.USERNAME_NOT_FOUND.getMessage());
         }
     }
 
@@ -314,9 +314,9 @@ public class CommentServiceTest {
 
             UserException userException = assertThrows(UserException.class, () -> commentService.deleteComment(all.getPostId(),all.getCommentId(), all.getUserName()));
 
-            assertEquals(userException.getErrorCode(),ErrorCode.USER_NOT_FOUND);
-            assertEquals(userException.getErrorCode().getStatus(),ErrorCode.USER_NOT_FOUND.getStatus());
-            assertEquals(userException.getErrorCode().getMessage(),ErrorCode.USER_NOT_FOUND.getMessage());
+            assertEquals(userException.getErrorCode(),ErrorCode.USERNAME_NOT_FOUND);
+            assertEquals(userException.getErrorCode().getStatus(),ErrorCode.USERNAME_NOT_FOUND.getStatus());
+            assertEquals(userException.getErrorCode().getMessage(),ErrorCode.USERNAME_NOT_FOUND.getMessage());
         }
     }
 
