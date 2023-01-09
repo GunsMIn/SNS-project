@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="con">
+    <div id="login">
+        <div id="login_form"><!--로그인 폼-->
+            <form action="/members/doJoinForm"  th:object="${memberForm}" method="post" >
+                <h3 class="login" style="letter-spacing:-1px;">멋쟁이's SNS Alarms</h3>
+
+                <!--<p>
+                    <input type="submit" value="Sign in with Google" class="btn" style="background-color:#217Af0">
+                </p>-->
+
+                <hr>
+                <div th:if="${#lists.size(alarms)}==0" class="table table-hover">
+                    <h3>아직 알람이 없습니다.</h3>
+                </div>
+                <th:block  th:if="${#lists.size(alarms)}>=1">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">알람</th>
+                        <th scope="col">시간</th>
+                        <th scope="col">바로가기</th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <tr th:each="alarm :${alarms}">
+                        <td th:text="${alarm.text }+'🎉'"></td>
+                        <td th:text="${alarm.createdAt}"></td>
+                        <td>
+                            <a th:href="@{/post/getOne/{id}(id=${alarm.targetId})}" th:text="${alarm.targetId}+'번 글 바로가기'"style="color: cadetblue;"></a>
+                        </td>
+                    </tr>
+
+                    </tbody>
+                </table>
+                </th:block>
+                <p>
+                    <form method="get" action="/members/loginIndex">
+                     <input type="submit" value="Go Main🦁" class="btn">
+                   </form>
+
+                </p>
+            </form>
+            <hr>
+        </div>
+        <div>
+        </div><!--con-->
+</body>
+<style>
+    /* @import url('http://fonts.googleapis.com/earlyaccess/nanumgothic.css'); */
+    @font-face {font-family: 'Noto Sans KR';font-style: normal;font-weight: 100;src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Thin.woff2) format('woff2'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Thin.woff) format('woff'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Thin.otf) format('opentype');}
+    @font-face {font-family: 'Noto Sans KR';font-style: normal;font-weight: 300;src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Light.woff2) format('woff2'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Light.woff) format('woff'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Light.otf) format('opentype');} @font-face {font-family: 'Noto Sans KR';font-style: normal;font-weight: 400;src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Regular.woff2) format('woff2'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Regular.woff) format('woff'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Regular.otf) format('opentype');} @font-face {font-family: 'Noto Sans KR';font-style: normal;font-weight: 500;src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Medium.woff2) format('woff2'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Medium.woff) format('woff'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Medium.otf) format('opentype');} @font-face {font-family: 'Noto Sans KR';font-style: normal;font-weight: 700;src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Bold.woff2) format('woff2'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Bold.woff) format('woff'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Bold.otf) format('opentype');} @font-face {font-family: 'Noto Sans KR';font-style: normal;font-weight: 900;src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Black.woff2) format('woff2'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Black.woff) format('woff'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Black.otf) format('opentype');}
+
+
+    body {
+        min-height: 100vh;
+
+        background: -webkit-gradient(linear, left bottom, right top, from(#92b5db), to(#1d466c));
+        background: -webkit-linear-gradient(bottom left, #92b5db 0%, #1d466c 100%);
+        background: -moz-linear-gradient(bottom left, #92b5db 0%, #1d466c 100%);
+        background: -o-linear-gradient(bottom left, #92b5db 0%, #1d466c 100%);
+        background: linear-gradient(to top right, #92b5db 0%, #1d466c 100%);
+    }
+    body{
+        margin:0 auto;
+    }
+    /* body, table, div, p ,span{font-family:'Nanum Gothic';} */
+    body, table, div, p ,span{font-family:'Noto Sans KR';}
+
+    a{
+        text-decoration: none;
+        color:#333;
+    }
+    #con{
+        width:100%;
+        height: 100vh;
+        /*background-color:#f5f1ee;*/
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size:cover;
+        padding:0;
+    }
+    #login{
+        width:600px;
+        height: 600px;
+        margin:0 auto;
+        /* position: relative; */
+        /* background:#ddd; */
+    }
+    #login_form{
+        /* text-align:center; */
+        border-radius: 10px;
+        padding:50px;
+        background: #fff;
+        text-align: center;
+        position: absolute;
+        top:50%;
+        left:50%;
+        transform: translate(-50%, -50%);
+    }
+    .login{
+        font-size:25px;
+        font-weight: 900;
+        color:#333;
+    }
+
+    .size{
+        width:300px;
+        height:30px;
+        padding-left:10px;
+        background-color: #f4f4f4;
+        /* margin-left:10px; */
+        border:none;
+        border-radius: 5px;
+    }
+
+    .btn{
+        width:310px;
+        height: 40px;
+        font-size:15px;
+        background-color: #df3278;
+        color:#fff;
+        border:none;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+    .btn:hover{
+        background:#ca296a;
+    }
+    hr{
+        margin-top:20px;
+        background:#eee;
+
+    }
+    .find{
+        color:#ddd;
+        font-size:12px;
+    }
+    .find span{
+        padding-left:10px;
+    }
+    .find span::before{
+        content:'|';
+        color:#333;
+        padding-right: 10px;
+    }
+    .find span:nth-child(1):before{
+        content:none;
+    }
+
+    .find span:nth-child(1){
+        padding-left:0px;
+    }
+
+    .find a:hover{
+        color:#707070;
+    }
+    .field-error {
+        border-color: #dc3545;
+        color: #dc3545;
+    }
+</style>
+<script>
+    var password = document.getElementById("password")
+        ,confirm_password = document.getElementById("confirm_password");
+
+    function validatePassword(){
+        if(password.value != confirm_password.value) { // 만일 두 인풋 필드값이 같지 않을 경우
+            // setCustomValidity의 값을 지정해 무조건 경고 표시가 나게 하고
+            confirm_password.setCustomValidity("비밀번호가 일치하지 않습니다.");
+        }
+        else { // 만일 두 인풋 필드값이 같을 경우
+            // 오류가 없으면 메시지를 빈 문자열로 설정해야한다. 오류 메시지가 비어 있지 않은 한 양식은 유효성 검사를 통과하지 않고 제출되지 않는다.
+            // 따라서 빈값을 주어 submit 처리되게 한다
+            confirm_password.setCustomValidity('');
+        }
+    }
+
+    password.onchange = validatePassword;
+    confirm_password.onkeyup = validatePassword;
+</script>
+</html>

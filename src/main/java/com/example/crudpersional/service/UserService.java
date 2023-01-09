@@ -142,17 +142,16 @@ public class UserService implements UserDetailsService {
         return changedUser;
     }
 
-    @Override
-    public User loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findOptionalByUserName(username).orElseThrow(()-> new UserException(ErrorCode.USER_NOT_FOUND,""));
-    }
-
-
     /**authentication.getName() 으로 해당 user 유뮤 검사 메서드**/
     private User checkUser(String userName) {
         /*user 찾기*/
         return userRepository.findOptionalByUserName(userName).orElseThrow(()
                 -> new UserException(ErrorCode.USERNAME_NOT_FOUND, ErrorCode.USERNAME_NOT_FOUND.getMessage()));
+    }
+
+    @Override
+    public User loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findOptionalByUserName(username).orElseThrow(()-> new UserException(ErrorCode.USER_NOT_FOUND,""));
     }
 
 

@@ -23,8 +23,9 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ms-auto py-4 py-lg-0">
-                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/members/joinUser">Join</a></li>
-                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/members/loginForm">Login</a></li>
+
+                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/get/alarms">Alarms</a></li>
+                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4"href="javascript:void(0)" onClick="javascript:goPost()">Logout</a></li>
                     <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/posts/form">Write Post</a></li>
                     <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/posts/list">Post List</a></li>
                 </ul>
@@ -285,6 +286,14 @@
     sse.addEventListener('chat__messageAdded', e => {
         Chat__loadMore();
     });
+
+    function goPost(){
+        let f = document.createElement('form');
+        f.setAttribute('method', 'post');
+        f.setAttribute('action', '/members/logout');
+        document.body.appendChild(f);
+        f.submit();
+    }
 
     function checkLogin() {
 

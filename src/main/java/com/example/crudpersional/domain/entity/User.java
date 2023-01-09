@@ -56,18 +56,6 @@ public class User implements UserDetails {
     private String updatedAt;
 
 
-    @PrePersist
-    public void onPrePersist(){
-        this.registeredAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"));
-        this.updatedAt = this.registeredAt;
-    }
-
-    @PreUpdate
-    public void onPreUpdate(){
-        this.updatedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"));
-    }
-
-
 
 
     public User(String userName, String password) {
@@ -81,10 +69,6 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public User(UserRole role) {
-        this.role = role;
-    }
-
     public static User of(String userName, String encodedPwd) {
         return  User
                 .builder()
@@ -93,6 +77,10 @@ public class User implements UserDetails {
                 .build();
     }
 
+    /**user의 권한 변경 dirty check**/
+    public User(UserRole role) {
+        this.role = role;
+    }
     public void changeRole(UserRole role) {
         this.role = role;
     }
@@ -130,5 +118,17 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return false;
+    }
+
+    /**날짜**/
+    @PrePersist
+    public void onPrePersist(){
+        this.registeredAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"));
+        this.updatedAt = this.registeredAt;
+    }
+
+    @PreUpdate
+    public void onPreUpdate(){
+        this.updatedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"));
     }
 }
