@@ -9,45 +9,19 @@
     <div id="login">
         <div id="login_form"><!--로그인 폼-->
 
-                <h3 class="login" style="letter-spacing:-1px;">멋쟁이's SNS Alarms</h3>
+            <h3 class="login" style="letter-spacing:-1px;">멋쟁이's SNS Alarms</h3>
 
-                <!--<p>
-                    <input type="submit" value="Sign in with Google" class="btn" style="background-color:#217Af0">
-                </p>-->
 
-                <hr>
-                <div th:if="${#lists.size(alarms)}==0" class="table table-hover">
-                    <h3>아직 알람이 없습니다.</h3>
-                </div>
-                <th:block  th:if="${#lists.size(alarms)}>=1">
-                <table class="table table-hover">
-                    <thead>
-                    <tr>
-                        <th scope="col">알람</th>
-                        <th scope="col">시간</th>
-                        <th scope="col">바로가기</th>
+            <hr>
+            <div  class="table table-hover">
+                <h3>아직 알람이 없습니다.</h3>
+            </div>
+            <p>
+            <form method="get" th:action="@{/members/loginIndex}">
+                <input type="submit"  value="Go Main🦁" class="btn">
+            </form>
 
-                    </tr>
-                    </thead>
-                    <tbody>
-
-                    <tr th:each="alarm :${alarms}">
-                        <td th:text="${alarm.text }+'🎉'"></td>
-                        <td th:text="${alarm.createdAt}"></td>
-                        <td>
-                            <a th:href="@{/post/getOne/{id}(id=${alarm.targetId})}" th:text="${alarm.targetId}+'번 글 바로가기'"style="color: cadetblue;"></a>
-                        </td>
-                    </tr>
-
-                    </tbody>
-                </table>
-                </th:block>
-                <p>
-                    <form method="get" th:action="@{/members/loginIndex}">
-                     <input type="submit"  value="Go Main🦁" class="btn">
-                   </form>
-
-                </p>
+            </p>
 
             <hr>
         </div>

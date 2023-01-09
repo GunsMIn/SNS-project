@@ -261,8 +261,15 @@ public class PostMvcController {
     public String showAlarm(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) User loginMember,@PageableDefault(size = 20, sort ="registeredAt",
             direction = Sort.Direction.DESC) Pageable pageable ,Model model) {
         Page<AlarmResponse> alarms = postService.getAlarms(loginMember.getUsername(), pageable);
-        model.addAttribute("alarms", alarms);
-        return "members/alarm";
+        String url = null;
+        if (!alarms.isEmpty()) {
+            model.addAttribute("alarms", alarms);
+           url = "members/alarm";
+        } else if (alarms.isEmpty()) {
+            model.addAttribute("alarms", alarms);
+            url=  "members/alarmNone";
+        }
+        return url;
     }
 
 
