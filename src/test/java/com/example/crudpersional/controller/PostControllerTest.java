@@ -428,7 +428,7 @@ public class PostControllerTest {
     void 알람_페이징_조회_성공() throws Exception {
 
         PageRequest request = PageRequest.of(0, 20, Sort.Direction.DESC, "registeredAt");
-        String url = "/api/v1/posts/alarms";
+        String url = "/api/v1/alarms";
 
         mockMvc.perform(get(url)
                 .param("size", "20")
@@ -451,7 +451,7 @@ public class PostControllerTest {
         void 알람_페이징_조회_실패() throws Exception {
 
             PageRequest request = PageRequest.of(0, 20, Sort.Direction.DESC, "registeredAt");
-            String url = "/api/v1/posts/alarms";
+            String url = "/api/posts/alarms";
 
             mockMvc.perform(get(url)
                     .param("size", "20")

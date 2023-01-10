@@ -308,7 +308,7 @@ class CommentControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.resultCode").value("SUCCESS"))
                     .andExpect(jsonPath("$.result.message").value("댓글 삭제 완료"))
-                    .andExpect(jsonPath("$.result.commentId").value(1l));
+                    .andExpect(jsonPath("$.result.id").value(1l));
 
             verify(commentService,times(1)).deleteComment(anyLong(),anyLong(),anyString());
         }

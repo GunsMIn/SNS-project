@@ -1,5 +1,7 @@
 package com.example.crudpersional.service;
 import com.example.crudpersional.domain.dto.post.*;
+import com.example.crudpersional.domain.dto.user.UserJoinRequest;
+import com.example.crudpersional.domain.entity.LikeEntity;
 import com.example.crudpersional.domain.entity.Post;
 import com.example.crudpersional.domain.entity.User;
 import com.example.crudpersional.exceptionManager.ErrorCode;
@@ -27,21 +29,29 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
+@ActiveProfiles("test")
 class PostServiceTest {
 
 
     @InjectMocks
     PostService postService;
-
+    @InjectMocks
+    UserService userService;
+    @InjectMocks
+    LikeService likeService;
     @Mock
     PostRepository postRepository ;
     @Mock
     UserRepository userRepository ;
     @Mock
     LikeRepository likeRepository;
+
+
+
 
     @Test
     @DisplayName("조회 성공")
@@ -260,4 +270,40 @@ class PostServiceTest {
             Assertions.assertEquals(postException.getErrorCode().getMessage(),"해당 포스트가 없습니다.");
         }
     }
+
+
+
+    @Test
+    @DisplayName("soft delete test")
+    void softDeleteWithLikeDelete() {
+
+        // user등록
+        User userEntity = userService.join(new UserJoinRequest("김건우", "1234"));
+        // post등록
+        PostAddResponse postDto = postService.addPost(new PostAddRequest("hello", "world"), userEntity.getUsername());
+        // like누름
+        LikeResponse likeEntity = likeService.likes(postDto.getPostId(), userEntity.getUsername());
+
+
+
+
+        // like조회
+        LikeEntity selectedLike = likeRepository.findById(likeEntity.getLikeId())
+                .orElseThrow(() -> new RuntimeException("like가 없습니다."));
+        // post삭제
+        postService.deletePost( postDto.getPostId(),userEntity.getUsername());
+
+        // post선택
+        Optional<Post> selectedPostEntity = postRepository.findById(postDto.getPostId());
+
+        // post는 지워지고 없음
+        assertTrue(selectedPostEntity.isEmpty());
+
+        // like의 deletedAt이 updated되었는지 확인
+        assertThrows(RuntimeException.class, ()->{
+            LikeEntity foundLikeEntity = likeRepository.findById(likeEntity.getLikeId())
+                    .orElseThrow(()->new RuntimeException("해당 id의 like가 없습니다. id:"+likeEntity.getLikeId()));
+        });
     }
+
+}
