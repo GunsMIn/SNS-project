@@ -462,6 +462,27 @@
 		}
 }
 ```
+### 16. 알람 리스트 (GET) : /api/v1/alarms
+- 특정 사용자의 글에 대한 알림 조회
+#### 성공 JSON 응답✔
+```json
+{
+	"resultCode":"SUCCESS",
+  "result": {
+	"content":
+	[
+		{
+	      "id": 1,
+	      "alarmType": "NEW_LIKE_ON_POST",
+        "fromUserId": 1,
+        "targetId": 1,
+	      "text": "new like!",
+	      "createdAt": "2022-12-25T14:53:28.209+00:00",
+	  }
+	]
+	}
+}
+```
 <br>
 
 
