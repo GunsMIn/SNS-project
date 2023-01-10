@@ -63,7 +63,7 @@ public class CommentController {
     @ApiOperation(value = "해당 포스트 댓글 최신순 조회", notes = "id : 포스트 번호(@PathVariable) , paging : 20개 , 최신순 정렬 API")
     @GetMapping("/{postId}/comments")
     public Response<Page<CommentResponse>> getComments(@PathVariable Long postId,
-                                                       @PageableDefault(size = 10,
+                                                       @PageableDefault(size = 20,
                                                                sort = "registeredAt",
                                                                direction = Sort.Direction.DESC) Pageable pageable
     ) {
