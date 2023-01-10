@@ -41,7 +41,7 @@ public class UserService implements UserDetailsService {
     @Value("${jwt.token.secret}")
     private String secretKey;
 
-    private long expireTimeMs = 1000 * 60 * 60; //1시간
+    private long expireTimeMs = 1000 * 60 * 60L; //1시간
 
     /**회원가입**/
     public User join(UserJoinRequest userJoinRequest) {
