@@ -149,9 +149,16 @@ public class UserService implements UserDetailsService {
                 -> new UserException(ErrorCode.USERNAME_NOT_FOUND, ErrorCode.USERNAME_NOT_FOUND.getMessage()));
     }
 
+
+
+    /**JwtTokenFilter에서 사용할 user의 role 추출 메서드@*/
+    public UserRole findRoleByUserName(String userName) {
+        return userRepository.findOptionalByUserName(userName).get().getRole();
+    }
+
     @Override
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findOptionalByUserName(username).orElseThrow(()-> new UserException(ErrorCode.USER_NOT_FOUND,""));
+        return userRepository.findOptionalByUserName(username).orElseThrow(()-> new UserException(ErrorCode.USER_NOT_FOUND));
     }
 
 

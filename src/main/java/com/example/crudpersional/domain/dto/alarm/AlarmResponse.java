@@ -22,20 +22,22 @@ public class AlarmResponse {
     private Long targetId;
     private String text;
     private String createdAt;
+    private String lastModifiedAt;
 
 
     /**map() 을 사용하여 알람엔티티의 페이징응답을 알람DTO페이징으로 변환**/
     public static Page<AlarmResponse> toResponse(Page<AlarmEntity> alarm){
 
         Page<AlarmResponse> responses =
-                 alarm.map(a -> AlarmResponse.builder()
-                .id(a.getId())
-                .alarmType(a.getAlarmType())
-                .fromUserId(a.getFromUserId())
-                .targetId(a.getTargetId())
-                .text(a.getAlarmType().getAlarmText())
-                .createdAt(a.getRegisteredAt())
-                .build());
+                alarm.map(a -> AlarmResponse.builder()
+                        .id(a.getId())
+                        .alarmType(a.getAlarmType())
+                        .fromUserId(a.getFromUserId())
+                        .targetId(a.getTargetId())
+                        .text(a.getAlarmType().getAlarmText())
+                        .createdAt(a.getRegisteredAt())
+                        .lastModifiedAt(a.getUpdatedAt())
+                        .build());
 
         return responses;
     }

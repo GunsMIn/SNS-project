@@ -35,7 +35,7 @@ public class LikeService {
         /**좋아요 1번 이상 눌렀는지 확인하는 비지니스 로직🔽**/
         checkCountOfLike(post, user);
         /**해당 포스트의 likeCount++ 해주는 메서드**/
-       /* post.addLike();*/
+        post.addLike();
         LikeEntity like = LikeEntity.of(user, post);
         LikeEntity savedLike = likeEntityRepository.save(like);
         /**해당 글 좋아요 갯수도 구하기**/
