@@ -31,15 +31,15 @@ public class LikeController {
     @ApiOperation(value = "해당 글 좋아요", notes = "정상적인 JWT토큰 발급 받은 사용자만 해당 글 좋아요 가능")
     @PostMapping("/{postId}/likes")
     public Response<String> like(@PathVariable(name = "postId") Long postId, @ApiIgnore Authentication authentication) {
-        LikeResponse response = likeService.likes(postId, authentication.getName());
-        return Response.successToMessage(response.getMessage());
+         likeService.likes(postId, authentication.getName());
+        return Response.successToMessage("좋아요를 눌렀습니다.");
     }
 
     @ApiOperation(value = "해당 글 좋아요 갯수", notes = "해당 postId에 해당하는 글의 좋아요 count 구하는 API")
     @GetMapping("/{postId}/likes")
-    public Response<String> getLikeCount(@PathVariable(name = "postId") Long postId) {
+    public Response<Integer> getLikeCount(@PathVariable(name = "postId") Long postId) {
         Integer likeCount = likeService.getLikeCount(postId);
-        return Response.successToMessage(String.format("%s번 게시글의 좋아요 개수 : %d", postId, likeCount));
+        return Response.success(likeCount);
     }
 
 
