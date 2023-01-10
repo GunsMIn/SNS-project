@@ -88,7 +88,7 @@ public class PostController {
     }
 
     @ApiOperation(value = "알림 페이징 조회(최신순)", notes = "내가 쓴 포스트 보는 API")
-    @GetMapping("/api/v1/posts/alarms")
+    @GetMapping("/api/v1/alarms")
     public Response<Page<AlarmResponse>> getAlarms(@ApiIgnore Authentication authentication,@PageableDefault(size = 20, sort ="registeredAt",
             direction = Sort.Direction.DESC) Pageable pageable) {
         Page<AlarmResponse> alarmResponses = postService.getAlarms(authentication.getName(),pageable);
