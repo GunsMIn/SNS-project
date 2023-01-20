@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @Api(tags = "Comment(댓글 API)")
 @Slf4j
 public class CommentController {
-    private final PostService postService;
+
     private final CommentService commentService;
 
     /**댓글 달기**/
@@ -55,10 +55,7 @@ public class CommentController {
         return Response.success(new CommentDeleteResponse("댓글 삭제 완료",commentId));
     }
 
-
-
-
-
+    
     /**해당 포스트 댓글 조회(최신순)**/
     @ApiOperation(value = "해당 포스트 댓글 최신순 조회", notes = "id : 포스트 번호(@PathVariable) , paging : 20개 , 최신순 정렬 API")
     @GetMapping("/{postId}/comments")

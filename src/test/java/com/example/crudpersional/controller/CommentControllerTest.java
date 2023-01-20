@@ -208,7 +208,6 @@ class CommentControllerTest {
         void 수정_실패() throws Exception {
 
             CommentModifyRequest request = CommentModifyRequest.builder().comment("댓글").build();
-
             /*commentService.modifyComment();*/
             when(commentService.modifyComment(anyLong(),anyLong(), anyString(), anyString()))
                     .thenThrow(new UserException(ErrorCode.INVALID_PERMISSION));

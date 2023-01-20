@@ -17,6 +17,7 @@ import javax.persistence.*;
 @Getter
 @Table(name = "\"alarm\"")
 public class AlarmEntity extends BaseEntity{
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

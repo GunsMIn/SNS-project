@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 @Api(tags = "Like(좋아요 API)")
 @Slf4j
 public class LikeController {
-    private final PostService postService;
+
     private final LikeService likeService;
 
 

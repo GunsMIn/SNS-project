@@ -16,9 +16,6 @@ public class CrudPersionalApplication {
         SpringApplication.run(CrudPersionalApplication.class, args);
     }
 
-/*    @Bean
-    JPAQueryFactory jpaQueryFactory(EntityManager em) {
-        return new JPAQueryFactory(em);
-    }*/
+
 
 }
